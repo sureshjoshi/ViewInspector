@@ -195,9 +195,11 @@ private extension InspectionEmissary {
                 } catch {
                     XCTFail("\(error.localizedDescription)", file: file, line: line)
                 }
-                if await MainActor.run(body: { [weak self] in self?.callbacks.count }) == 0 {
-                    await MainActor.run { ViewHosting.expel(function: function) }
-                }
+                await MainActor.run(body: { [weak self] in
+                    if self?.callbacks.isEmpty ?? true {
+                        ViewHosting.expel(function: function)
+                    }
+                })
                 expectation.fulfill()
             }
         }
