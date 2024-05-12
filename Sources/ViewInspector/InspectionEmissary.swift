@@ -189,17 +189,15 @@ private extension InspectionEmissary {
                expectation: XCTestExpectation,
                function: String, file: StaticString, line: UInt) {
         callbacks[line] = { view in
-            Task {
+            Task { @MainActor in
                 do {
                     try await inspection(view)
                 } catch {
                     XCTFail("\(error.localizedDescription)", file: file, line: line)
                 }
-                await MainActor.run(body: { [weak self] in
-                    if self?.callbacks.isEmpty ?? true {
-                        ViewHosting.expel(function: function)
-                    }
-                })
+                if self.callbacks.isEmpty {
+                    ViewHosting.expel(function: function)
+                }
                 expectation.fulfill()
             }
         }
@@ -207,13 +205,15 @@ private extension InspectionEmissary {
 
     func setup(inspection: @escaping SubjectInspection,
                function: String, file: StaticString, line: UInt) async throws {
-        try await withUnsafeThrowingContinuation { continuation in
-            callbacks[line] = { view in
-                Task {
-                    do {
-                        continuation.resume(returning: try await inspection(view))
-                    } catch {
-                        continuation.resume(throwing: error)
+        try await withCheckedThrowingContinuation { continuation in
+            Task { @MainActor in
+                callbacks[line] = { view in
+                    Task { @MainActor in
+                        do {
+                            continuation.resume(returning: try await inspection(view))
+                        } catch {
+                            continuation.resume(throwing: error)
+                        }
                     }
                 }
             }

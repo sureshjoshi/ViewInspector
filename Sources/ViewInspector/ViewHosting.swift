@@ -10,20 +10,27 @@ public enum ViewHosting { }
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
 public extension ViewHosting {
     
-    struct ViewId: Hashable {
+    struct ViewId: Hashable, Sendable {
         let function: String
         var key: String { function }
     }
 
     static func host<V>(_ view: V, size: CGSize? = nil, function: String = #function, whileHosted: (V) async throws -> Void) async throws where V: View {
-        await Self.host(view: view, size: size, function: function)
+        let viewId = ViewId(function: function)
+        await Self._host(view: view, size: size, viewId: viewId)
         try await whileHosted(view)
-        await Self.expel(function: function)
+        await Self._expel(viewId: viewId)
+    }
+
+    static func host<V>(view: V, size: CGSize? = nil, function: String = #function) where V: View {
+        let viewId = ViewId(function: function)
+        MainActor.syncRun {
+            _host(view: view, size: size, viewId: viewId)
+        }
     }
 
     @MainActor
-    static func host<V>(view: V, size: CGSize? = nil, function: String = #function) where V: View {
-        let viewId = ViewId(function: function)
+    static func _host<V>(view: V, size: CGSize? = nil, viewId: ViewId) where V: View {
         let medium = { () -> Content.Medium in
             guard let unwrapped = try? Inspector.unwrap(view: view, medium: .empty)
             else { return .empty }
@@ -64,9 +71,15 @@ public extension ViewHosting {
         #endif
     }
 
-    @MainActor
     static func expel(function: String = #function) {
         let viewId = ViewId(function: function)
+        MainActor.syncRun {
+            _expel(viewId: viewId)
+        }
+    }
+
+    @MainActor
+    private static func _expel(viewId: ViewId) {
         #if os(watchOS)
         _ = expel(viewId: viewId)
         try? watchOS(host: nil, viewId: viewId)
@@ -99,10 +112,12 @@ public extension ViewHosting {
         subject.send(array)
     }
     #endif
-    
+
     internal static func medium(function: String = #function) -> Content.Medium {
         let viewId = ViewHosting.ViewId(function: function)
-        return hosted[viewId]?.medium ?? .empty
+        return MainActor.syncRun {
+            hosted[viewId]?.medium ?? .empty
+        }
     }
 }
 
@@ -122,9 +137,9 @@ private extension ViewHosting {
     }
     private static var hosted: [ViewId: Hosted] = [:]
     #if os(macOS)
-    static var window: NSWindow = makeWindow()
+    static let window: NSWindow = makeWindow()
     #elseif os(iOS) || os(tvOS) || os(visionOS)
-    static var window: UIWindow = makeWindow()
+    static let window: UIWindow = makeWindow()
     #endif
     
     // MARK: - Window construction
@@ -426,3 +441,16 @@ public extension ViewHosting {
     }
 }
 #endif
+
+@available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
+internal extension MainActor {
+    static func syncRun<T>(action: @MainActor @Sendable () throws -> T) rethrows -> T {
+        if Thread.isMainThread {
+            return try assumeIsolated(action)
+        } else {
+            return try DispatchQueue.main.sync {
+                try assumeIsolated(action)
+            }
+        }
+    }
+}
