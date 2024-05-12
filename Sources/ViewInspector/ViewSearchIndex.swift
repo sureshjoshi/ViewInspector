@@ -3,8 +3,8 @@ import SwiftUI
 // MARK: - Index
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+@MainActor
 internal extension ViewSearch {
-    
     private static let index: [String: [ViewIdentity]] = {
         let knownViewTypes: [KnownViewType.Type] = [
             ViewType.ActionSheet.self,
@@ -110,7 +110,7 @@ internal extension ViewSearch {
         }
         return index
     }()
-    
+
     private static func identify(_ content: Content) -> ViewIdentity? {
         if let customMapping = content.view as? CustomViewIdentityMapping {
             let viewType = customMapping.viewTypeForSearch

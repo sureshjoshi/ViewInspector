@@ -95,7 +95,7 @@ extension EnvironmentValues {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-struct AnyHelloWorldStyle: HelloWorldStyle {
+struct AnyHelloWorldStyle: HelloWorldStyle, @unchecked Sendable {
     private var _makeBody: (HelloWorldStyle.Configuration) -> AnyView
 
     init<S: HelloWorldStyle>(_ style: S) {
