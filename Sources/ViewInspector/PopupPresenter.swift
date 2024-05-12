@@ -99,6 +99,7 @@ public extension ItemPopupPresenter where Popup == ActionSheet {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension ViewModifier where Self: BasePopupPresenter {
+    @MainActor
     func content() throws -> ViewInspector.Content {
         let view = body(content: _ViewModifier_Content())
         return try view.inspect().viewModifierContent().content
@@ -148,7 +149,7 @@ internal extension ViewType {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension ViewType {
-    static var popupContainerTypePrefix = "ViewInspector.ViewType.PopupContainer"
+    static let popupContainerTypePrefix = "ViewInspector.ViewType.PopupContainer"
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)

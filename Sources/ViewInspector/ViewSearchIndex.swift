@@ -331,7 +331,7 @@ internal extension ViewType.Overlay.API {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension ViewSearch {
     
-    static private(set) var modifierIdentities: [ModifierIdentity] = ViewType.Overlay.API.viewSearchModifierIdentities
+    static let modifierIdentities: [ModifierIdentity] = ViewType.Overlay.API.viewSearchModifierIdentities
     + [
         .init(name: ViewType.Toolbar.typePrefix, builder: { parent, index in
             try parent.content.toolbar(parent: parent, index: index)
@@ -374,8 +374,8 @@ internal extension ViewSearch {
         }),
     ]
     
-    struct ModifierIdentity {
-        typealias Builder = (UnwrappedView, Int?) throws -> UnwrappedView
+    struct ModifierIdentity: Sendable {
+        typealias Builder = @Sendable (UnwrappedView, Int?) throws -> UnwrappedView
         let name: String
         let builder: Builder
         

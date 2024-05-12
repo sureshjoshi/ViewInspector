@@ -157,6 +157,7 @@ internal extension _ViewModifier_Content {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension ViewModifier {
+    @MainActor
     func body() -> Any {
         body(content: .init())
     }

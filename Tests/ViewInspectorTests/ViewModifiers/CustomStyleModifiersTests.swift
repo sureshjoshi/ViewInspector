@@ -83,7 +83,7 @@ struct RedOutlineHelloWorldStyle: HelloWorldStyle {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 struct HelloWorldStyleKey: EnvironmentKey {
-    static var defaultValue: AnyHelloWorldStyle = AnyHelloWorldStyle(DefaultHelloWorldStyle())
+    static let defaultValue: AnyHelloWorldStyle = AnyHelloWorldStyle(DefaultHelloWorldStyle())
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
