@@ -45,7 +45,6 @@ public extension InspectableView where View: MultipleViewContent {
 // MARK: - Custom Attributes
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 public extension InspectableView where View == ViewType.Text {
     
     /**
@@ -54,18 +53,15 @@ public extension InspectableView where View == ViewType.Text {
       - Parameter locale: Defaults to `Locale(identifier: "en")`,
       which is a global default value in the tests scope.
       You can change it by assigning a value to Locale.testsDefault
-    */
-    @preconcurrency 
+    */ 
     func string(locale: Locale = .testsDefault) throws -> String {
         return try ViewType.Text.extractString(from: self, locale: locale)
     }
-    
-    @preconcurrency 
+     
     func attributes() throws -> ViewType.Text.Attributes {
         return try ViewType.Text.Attributes.extract(from: self)
     }
-    
-    @preconcurrency 
+     
     func images() throws -> [Image] {
         return try ViewType.Text.extractImages(from: self)
     }
@@ -75,8 +71,7 @@ public extension InspectableView where View == ViewType.Text {
      If you used explicit style modifiers, for example, `Text("Hi").bold()`,
      consider using `attributes()` instead.
      */
-    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
-    @preconcurrency 
+    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *) 
     func attributedString() throws -> AttributedString {
         return try ViewType.Text.extractAttributedString(from: self)
     }
@@ -85,7 +80,6 @@ public extension InspectableView where View == ViewType.Text {
 // MARK: - String extraction
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 private extension ViewType.Text {
     
     static func extractString(from view: InspectableView<ViewType.Text>,
@@ -234,7 +228,6 @@ extension FormatStyle {
 // MARK: - Image extraction
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 private extension ViewType.Text {
     
     static func extractImages(from view: InspectableView<ViewType.Text>) throws -> [Image] {

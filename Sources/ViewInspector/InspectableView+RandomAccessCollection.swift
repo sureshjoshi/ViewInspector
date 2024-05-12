@@ -2,13 +2,10 @@ import Foundation
 import SwiftUI
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 extension InspectableView: Sequence where View: MultipleViewContent {
     
     public typealias Element = InspectableView<ViewType.ClassifiedView>
-    
-    @preconcurrency 
-    @MainActor
+
     public struct Iterator: IteratorProtocol {
         
         private var index: Int = -1
@@ -19,8 +16,7 @@ extension InspectableView: Sequence where View: MultipleViewContent {
             self.group = group
             self.view = view
         }
-        
-        @preconcurrency
+
         mutating public func next() -> Element? {
             index += 1
             guard index < group.count else { return nil }
@@ -29,14 +25,12 @@ extension InspectableView: Sequence where View: MultipleViewContent {
         }
     }
 
-    @preconcurrency
     public func makeIterator() -> Iterator {
         // swiftlint:disable force_try
         return .init(try! View.children(content), view: self)
         // swiftlint:enable force_try
     }
 
-    @preconcurrency
     public var underestimatedCount: Int {
         // swiftlint:disable force_try
         return try! View.children(content).count

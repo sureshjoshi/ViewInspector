@@ -28,7 +28,6 @@ public extension InspectableView {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Content {
     
     func alert(parent: UnwrappedView, index: Int?) throws -> InspectableView<ViewType.Alert> {
@@ -107,34 +106,28 @@ internal extension Content {
 // MARK: - Custom Attributes
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 public extension InspectableView where View == ViewType.Alert {
 
-    @preconcurrency
     func title() throws -> InspectableView<ViewType.Text> {
         return try View.supplementaryChildren(self).element(at: 0)
             .asInspectableView(ofType: ViewType.Text.self)
     }
     
-    @preconcurrency
     func message() throws -> InspectableView<ViewType.ClassifiedView> {
         return try View.supplementaryChildren(self).element(at: 1)
             .asInspectableView(ofType: ViewType.ClassifiedView.self)
     }
     
-    @preconcurrency
     func primaryButton() throws -> InspectableView<ViewType.AlertButton> {
         return try View.supplementaryChildren(self).element(at: 2)
             .asInspectableView(ofType: ViewType.AlertButton.self)
     }
     
-    @preconcurrency
     func secondaryButton() throws -> InspectableView<ViewType.AlertButton> {
         return try View.supplementaryChildren(self).element(at: 3)
             .asInspectableView(ofType: ViewType.AlertButton.self)
     }
     
-    @preconcurrency
     func dismiss() throws {
         do {
             let container = try Inspector.cast(
@@ -152,10 +145,8 @@ public extension InspectableView where View == ViewType.Alert {
 }
 
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
-@MainActor 
 public extension InspectableView where View == ViewType.Alert {
     
-    @preconcurrency
     func actions() throws -> InspectableView<ViewType.ClassifiedView> {
         return try View.supplementaryChildren(self).element(at: 2)
             .asInspectableView(ofType: ViewType.ClassifiedView.self)
@@ -165,7 +156,6 @@ public extension InspectableView where View == ViewType.Alert {
 // MARK: - Non Standard Children
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 extension ViewType.Alert: SupplementaryChildren {
     static func supplementaryChildren(_ parent: UnwrappedView) throws -> LazyGroup<SupplementaryView> {
         let iOS15Modifier = parent.content.isIOS15Modifier
@@ -234,7 +224,6 @@ extension SwiftUI.Alert.Button: CustomViewIdentityMapping {
 // MARK: - Non Standard Children
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 extension ViewType.AlertButton: SupplementaryChildren {
     static func supplementaryChildren(_ parent: UnwrappedView) throws -> LazyGroup<SupplementaryView> {
         return .init(count: 1) { _ in

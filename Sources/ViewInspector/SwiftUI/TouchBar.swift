@@ -69,7 +69,7 @@ public extension InspectableView {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor internal extension Content {
+internal extension Content {
     func touchBar(parent: UnwrappedView, index: Int?) throws -> InspectableView<ViewType.TouchBar> {
         let rootView = try modifierAttribute(
             modifierName: "_TouchBarModifier", path: "modifier|touchBar",

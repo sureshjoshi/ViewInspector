@@ -34,7 +34,6 @@ public extension InspectableView {
 // MARK: - Internal
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Content {
     func help(parent: UnwrappedView, index: Int?) throws -> InspectableView<ViewType.Text> {
         let text: Any = try {

@@ -225,7 +225,6 @@ internal extension Inspector {
 // MARK: - Attributes lookup
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 public extension Inspector {
 
     /**
@@ -234,7 +233,6 @@ public extension Inspector {
      (lldb) po Inspector.print(view) as AnyObject
      ```
      */
-    @preconcurrency
     static func print(_ value: Any) -> String {
         let tree = attributesTree(value: value, medium: .empty, visited: [])
         return typeName(value: value) + print(tree, level: 1)
@@ -305,7 +303,6 @@ public extension Inspector {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 fileprivate extension Dictionary where Key == String {
     func description(level: Int) -> String {
         let indent = Inspector.indent(level: level)
@@ -316,7 +313,6 @@ fileprivate extension Dictionary where Key == String {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 fileprivate extension Array {
     func description(level: Int) -> String {
         guard count > 0 else {
@@ -331,7 +327,6 @@ fileprivate extension Array {
 // MARK: - View Inspection
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Inspector {
 
     static func viewsInContainer(view: Any, medium: Content.Medium) throws -> LazyGroup<Content> {

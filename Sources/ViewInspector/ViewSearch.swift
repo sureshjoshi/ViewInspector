@@ -18,7 +18,6 @@ public struct ViewSearch {
 // MARK: - Public search API
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 public extension InspectableView {
     
     /**
@@ -30,7 +29,6 @@ public extension InspectableView {
       - Throws: An error if the view cannot be found
       - Returns: A found `Text` view
      */
-    @preconcurrency 
     func find(text: String,
               locale: Locale = .testsDefault
     ) throws -> InspectableView<ViewType.Text> {
@@ -47,7 +45,6 @@ public extension InspectableView {
       - Throws: An error if the view cannot be found
       - Returns: A found `Text` view
      */
-    @preconcurrency 
     func find(textWhere condition: (String, ViewType.Text.Attributes) throws -> Bool,
               locale: Locale = .testsDefault
     ) throws -> InspectableView<ViewType.Text> {
@@ -65,7 +62,6 @@ public extension InspectableView {
       - Throws: An error if the view cannot be found
       - Returns: A found `Button` view
      */
-    @preconcurrency 
     func find(button title: String,
               locale: Locale = .testsDefault
     ) throws -> InspectableView<ViewType.Button> {
@@ -80,7 +76,6 @@ public extension InspectableView {
       - Returns: A found `Link` view
      */
     @available(iOS 14.0, macOS 11.0, tvOS 14.0, *)
-    @preconcurrency 
     func find(link url: URL) throws -> InspectableView<ViewType.Link> {
         return try find(ViewType.Link.self, where: { view in
             try view.url() == url
@@ -97,7 +92,6 @@ public extension InspectableView {
       - Returns: A found `Link` view
      */
     @available(iOS 14.0, macOS 11.0, tvOS 14.0, *)
-    @preconcurrency 
     func find(link label: String,
               locale: Locale = .testsDefault
     ) throws -> InspectableView<ViewType.Link> {
@@ -113,7 +107,6 @@ public extension InspectableView {
       - Throws: An error if the view cannot be found
       - Returns: A found `NavigationLink` view
      */
-    @preconcurrency 
     func find(navigationLink string: String,
               locale: Locale = .testsDefault
     ) throws -> InspectableView<ViewType.NavigationLink> {
@@ -127,7 +120,6 @@ public extension InspectableView {
       - Throws: An error if the view cannot be found
       - Returns: A found view
      */
-    @preconcurrency 
     func find(viewWithId id: AnyHashable) throws -> InspectableView<ViewType.ClassifiedView> {
         return try find { try $0.id() == id }
     }
@@ -139,7 +131,6 @@ public extension InspectableView {
       - Throws: An error if the view cannot be found
       - Returns: A found view
      */
-    @preconcurrency 
     func find(viewWithTag tag: AnyHashable) throws -> InspectableView<ViewType.ClassifiedView> {
         return try find { try $0.tag() == tag }
     }
@@ -152,7 +143,6 @@ public extension InspectableView {
      - Returns: A found view
      */
     @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
-    @preconcurrency 
     func find(
         viewWithAccessibilityLabel accessibilityLabel: String
     ) throws -> InspectableView<ViewType.ClassifiedView> {
@@ -167,7 +157,6 @@ public extension InspectableView {
      - Returns: A found view
      */
     @available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
-    @preconcurrency 
     func find(
         viewWithAccessibilityIdentifier accessibilityIdentifier: String
     ) throws -> InspectableView<ViewType.ClassifiedView> {
@@ -184,7 +173,6 @@ public extension InspectableView {
       - Throws: An error if the view cannot be found
       - Returns: A found view
      */
-    @preconcurrency 
     func find<V>(_ customViewType: V.Type,
                  relation: ViewSearch.Relation = .child,
                  where condition: (InspectableView<ViewType.View<V>>) throws -> Bool = { _ in true }
@@ -207,7 +195,6 @@ public extension InspectableView {
       - Throws: An error if the view cannot be found
       - Returns: A found view
      */
-    @preconcurrency 
     func find<V>(_ customViewType: V.Type,
                  containing string: String,
                  locale: Locale = .testsDefault
@@ -230,7 +217,6 @@ public extension InspectableView {
       - Throws: An error if the view cannot be found
       - Returns: A found view
      */
-    @preconcurrency 
     func find<T>(_ viewType: T.Type,
                  containing string: String,
                  locale: Locale = .testsDefault
@@ -253,7 +239,6 @@ public extension InspectableView {
       - Throws: An error if the view cannot be found
       - Returns: A found view of the given type.
      */
-    @preconcurrency 
     func find<T>(_ viewType: T.Type,
                  relation: ViewSearch.Relation = .child,
                  traversal: ViewSearch.Traversal = .breadthFirst,
@@ -278,7 +263,6 @@ public extension InspectableView {
       - Throws: An error if the view cannot be found
       - Returns: A found view of the given type.
      */
-    @preconcurrency
     func find(relation: ViewSearch.Relation = .child,
               traversal: ViewSearch.Traversal = .breadthFirst,
               skipFound: Int = 0,
@@ -303,7 +287,6 @@ public extension InspectableView {
      Thrown errors are interpreted as "this view does not match"
       - Returns: An array of all matching views or an empty array if none are found.
      */
-    @preconcurrency
     func findAll<V>(_ customViewType: V.Type,
                     where condition: (InspectableView<ViewType.View<V>>) throws -> Bool = { _ in true }
     ) -> [InspectableView<ViewType.View<V>>] where V: SwiftUI.View {
@@ -320,7 +303,6 @@ public extension InspectableView {
      Thrown errors are interpreted as "this view does not match"
       - Returns: An array of all matching views or an empty array if none are found.
      */
-    @preconcurrency
     func findAll<T>(_ viewType: T.Type,
                     where condition: (InspectableView<T>) throws -> Bool = { _ in true }
     ) -> [InspectableView<T>] where T: BaseViewType {
@@ -340,7 +322,6 @@ public extension InspectableView {
      Thrown errors are interpreted as "this view does not match"
       - Returns: An array of all matching views or an empty array if none are found.
      */
-    @preconcurrency
     func findAll(where condition: ViewSearch.Condition) -> [InspectableView<ViewType.ClassifiedView>] {
         var results: [InspectableView<ViewType.ClassifiedView>] = []
         depthFirstTraversal(condition, stopOnFoundMatch: { view in
@@ -356,7 +337,6 @@ public extension InspectableView {
 // MARK: - Search
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 private extension UnwrappedView {
     
     func findParent(condition: ViewSearch.Condition, skipFound: Int
@@ -509,7 +489,6 @@ private extension UnwrappedView {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 private extension UnwrappedView {
     func recursionAbsenceCheck() -> Bool {
         guard content.isCustomView else { return true }
@@ -528,7 +507,6 @@ private extension UnwrappedView {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 private extension ViewSearch.Traversal {
     func search(in view: UnwrappedView,
                 condition: ViewSearch.Condition,

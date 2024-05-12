@@ -92,10 +92,9 @@ public extension InspectableView {
 #if os(iOS) || os(macOS)
 @available(iOS 14.0, macOS 11.0, *)
 @available(tvOS, unavailable)
-@available(watchOS, unavailable)
-@MainActor 
+@available(watchOS, unavailable) 
 public extension MenuStyle {
-    @preconcurrency func inspect() throws -> InspectableView<ViewType.ClassifiedView> {
+    func inspect() throws -> InspectableView<ViewType.ClassifiedView> {
         let config = MenuStyleConfiguration()
         let view = try makeBody(configuration: config).inspect()
         return try .init(view.content, parent: nil, index: nil)

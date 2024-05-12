@@ -48,7 +48,6 @@ extension ViewType.View: MultipleViewContent {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Content {
     var isCustomView: Bool {
         return !Inspector.isSystemType(value: view)
@@ -131,6 +130,7 @@ public extension InspectableView where View: CustomViewType {
 #if os(macOS)
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension NSViewRepresentable {
+    @MainActor
     func nsView() throws -> NSViewType {
         return try ViewHosting.lookup(Self.self)
     }
@@ -138,6 +138,7 @@ public extension NSViewRepresentable {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension NSViewControllerRepresentable {
+    @MainActor
     func viewController() throws -> NSViewControllerType {
         return try ViewHosting.lookup(Self.self)
     }
@@ -146,7 +147,6 @@ public extension NSViewControllerRepresentable {
 #elseif os(iOS) || os(tvOS) || os(visionOS)
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension UIViewRepresentable {
-    @preconcurrency 
     @MainActor
     func uiView() throws -> UIViewType {
         return try ViewHosting.lookup(Self.self)
@@ -155,7 +155,6 @@ public extension UIViewRepresentable {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension UIViewControllerRepresentable {
-    @preconcurrency 
     @MainActor
     func viewController() throws -> UIViewControllerType {
         return try ViewHosting.lookup(Self.self)
