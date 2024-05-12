@@ -3,30 +3,26 @@ import SwiftUI
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public struct Inspector {
-    private static let lock = NSRecursiveLock()
-    
     /// Removes the "(unknown context at <memory_address>)" portion of a type name.
     /// Calls to this method are memoized and retained for the lifetime of the program.
     /// - Parameter typeName: The raw type name. (e.g. `SomeTypeName.(unknown context at $138b3290c).SomePropertyName`)
     /// - Returns: The sanitized type name. (e.g. `SomeTypeName.SomePropertyName`)
     static func sanitizeNamespace(ofTypeName typeName: String) -> String {
         var str = typeName
-
-        if let sanitized = lock.protect(sanitizedNamespacesCache[typeName]) {
+        if let sanitized = cache.protected({ $0.sanitizedNamespaces[typeName] }) {
             return sanitized
         }
 
         let range = NSRange(location: 0, length: str.utf16.count)
-        str = lock.protect(sanitizeNamespaceRegex).stringByReplacingMatches(in: str,
-                                                              options: [],
-                                                              range: range,
-                                                              withTemplate: "")
+        str = sanitizeNamespaceRegex
+            .stringByReplacingMatches(in: str, options: [],
+                                      range: range, withTemplate: "")
 
         // For Objective-C classes String(reflecting:) sometimes adds the namespace __C, drop it too
         str = str.replacingOccurrences(of: "<__C.", with: "<")
 
-        lock.protect {
-            Inspector.sanitizedNamespacesCache[typeName] = str
+        cache.protected {
+            $0.sanitizedNamespaces[typeName] = str
         }
 
         return str
@@ -42,7 +38,7 @@ public struct Inspector {
     static func replaceGenericParameters(inTypeName typeName: String,
                                          withReplacement replacement: String) -> String {
         // Check memoized value
-        if let typeNameDict = lock.protect(Inspector.replacedGenericParametersCache[typeName]),
+        if let typeNameDict = cache.protected({ $0.replacedGenericParameters[typeName] }),
            let cachedResult = typeNameDict[replacement] {
             return cachedResult
         }
@@ -52,10 +48,10 @@ public struct Inspector {
                                                            withReplacement: replacement)
 
         // Store memoized value
-        var typeNameDict = lock.protect(Inspector.replacedGenericParametersCache[typeName]) ?? [:]
-        typeNameDict[replacement] = result
-        lock.protect {
-            Inspector.replacedGenericParametersCache[typeName] = typeNameDict
+        cache.protected { cache in
+            var typeNameDict = cache.replacedGenericParameters[typeName] ?? [:]
+            typeNameDict[replacement] = result
+            cache.replacedGenericParameters[typeName] = typeNameDict
         }
 
         return result
@@ -98,8 +94,19 @@ public struct Inspector {
         return typeName
     }
 
-    private static var replacedGenericParametersCache: [String: [String: String]] = [:]
-    private static var sanitizedNamespacesCache: [String: String] = [:]
+    private final class Cache: @unchecked Sendable {
+        private let lock = NSRecursiveLock()
+        var replacedGenericParameters: [String: [String: String]] = [:]
+        var sanitizedNamespaces: [String: String] = [:]
+
+        @discardableResult
+        func protected<T>(_ closure: (Cache) throws -> T) rethrows -> T {
+            return try lock.protect {
+                return try closure(self)
+            }
+        }
+    }
+    private static let cache = Cache()
 
     private static let sanitizeNamespacePatterns = [
         "(\\.\\(unknown context at ..........\\))",

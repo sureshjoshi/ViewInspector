@@ -5,7 +5,7 @@ import SwiftUI
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension ViewSearch {
     
-    private static var index: [String: [ViewIdentity]] = {
+    private static let index: [String: [ViewIdentity]] = {
         let knownViewTypes: [KnownViewType.Type] = [
             ViewType.ActionSheet.self,
             ViewType.ActionSheet.self,
