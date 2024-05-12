@@ -162,6 +162,7 @@ internal extension ViewType.Overlay.API {
         return value
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func verifySignature(content: Any, modifier: Any, hasMultipleOverlays: Bool) throws {
         let reportFailure: () throws -> Void = {
             throw InspectionError.notSupported("Different view signature")

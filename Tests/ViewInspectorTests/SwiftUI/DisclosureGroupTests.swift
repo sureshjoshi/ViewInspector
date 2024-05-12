@@ -70,10 +70,8 @@ final class DisclosureGroupTests: XCTestCase {
         guard #available(iOS 14, tvOS 14, macOS 11.0, *) else { throw XCTSkip() }
         let sut = DisclosureGroup("", content: { EmptyView() })
         XCTAssertFalse(try sut.inspect().disclosureGroup().isExpanded())
-        // swiftlint:disable line_length
         XCTAssertThrows(try sut.inspect().disclosureGroup().expand(),
                         "You need to enable programmatic expansion by using `DisclosureGroup(isExpanded:, content:, label:`")
-        // swiftlint:enable line_length
     }
     
     func testExpansionWithStateActivation() throws {

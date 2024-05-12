@@ -110,9 +110,8 @@ public struct Inspector {
     ]
 
     private static let sanitizeNamespaceRegex = {
-        // swiftlint:disable force_try
+        // swiftlint:disable:next force_try
         try! NSRegularExpression(pattern: sanitizeNamespacePatterns.joined(separator: "|"))
-        // swiftlint:enable force_try
     }()
 }
 
@@ -345,7 +344,7 @@ internal extension Inspector {
         return try unwrap(content: Content(view, medium: medium))
     }
 
-    // swiftlint:disable cyclomatic_complexity
+    // swiftlint:disable:next cyclomatic_complexity
     static func unwrap(content: Content) throws -> Content {
         switch Inspector.typeName(value: content.view, generics: .remove) {
         case "Tree":
@@ -380,7 +379,6 @@ internal extension Inspector {
             return content
         }
     }
-    // swiftlint:enable cyclomatic_complexity
 
     static func guardType(value: Any, namespacedPrefixes: [String], inspectionCall: String) throws {
 

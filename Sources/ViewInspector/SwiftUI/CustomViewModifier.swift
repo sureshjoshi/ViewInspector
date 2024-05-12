@@ -92,7 +92,8 @@ internal extension Content {
                         .map { !overlayModifiers.contains($0) } ?? true
                 }
 
-                // Recreates the medium to include any additional modifiers and objects that were found while unwrapping the custom modifier.
+                // Recreates the medium to include any additional modifiers and objects
+                // that were found while unwrapping the custom modifier.
                 medium = .init(
                     viewModifiers: viewModifiers,
                     transitiveViewModifiers: viewModifierContentMedium.transitiveViewModifiers,

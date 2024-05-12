@@ -15,22 +15,25 @@ public extension ViewHosting {
         var key: String { function }
     }
 
-    static func host<V>(_ view: V, size: CGSize? = nil, function: String = #function, whileHosted: (V) async throws -> Void) async throws where V: View {
+    static func host<V>(_ view: V, size: CGSize? = nil,
+                        function: String = #function,
+                        whileHosted: (V) async throws -> Void
+    ) async throws where V: View {
         let viewId = ViewId(function: function)
-        await Self._host(view: view, size: size, viewId: viewId)
+        await Self.host(view: view, size: size, viewId: viewId)
         try await whileHosted(view)
-        await Self._expel(viewId: viewId)
+        await Self.expel(viewId: viewId)
     }
 
     static func host<V>(view: V, size: CGSize? = nil, function: String = #function) where V: View {
         let viewId = ViewId(function: function)
         MainActor.syncRun {
-            _host(view: view, size: size, viewId: viewId)
+            host(view: view, size: size, viewId: viewId)
         }
     }
 
     @MainActor
-    static func _host<V>(view: V, size: CGSize? = nil, viewId: ViewId) where V: View {
+    static func host<V>(view: V, size: CGSize? = nil, viewId: ViewId) where V: View {
         let medium = { () -> Content.Medium in
             guard let unwrapped = try? Inspector.unwrap(view: view, medium: .empty)
             else { return .empty }
@@ -74,17 +77,17 @@ public extension ViewHosting {
     static func expel(function: String = #function) {
         let viewId = ViewId(function: function)
         MainActor.syncRun {
-            _expel(viewId: viewId)
+            expel(viewId: viewId)
         }
     }
 
     @MainActor
-    private static func _expel(viewId: ViewId) {
+    private static func expel(viewId: ViewId) {
         #if os(watchOS)
-        _ = expel(viewId: viewId)
+        _ = expelHosted(viewId: viewId)
         try? watchOS(host: nil, viewId: viewId)
         #else
-        guard let hosted = expel(viewId: viewId) else { return }
+        guard let hosted = expelHosted(viewId: viewId) else { return }
         let childVC = hosted.viewController
         willMove(childVC, to: nil)
         childVC.view.removeFromSuperview()
@@ -212,7 +215,7 @@ private extension ViewHosting {
         self.hosted[viewId] = hosted
     }
     
-    static func expel(viewId: ViewId) -> Hosted? {
+    static func expelHosted(viewId: ViewId) -> Hosted? {
         return hosted.removeValue(forKey: viewId)
     }
 }
