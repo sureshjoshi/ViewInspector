@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct ProgressView: KnownViewType {
-        public static var typePrefix: String = "ProgressView"
+        public static let typePrefix: String = "ProgressView"
     }
 }
 

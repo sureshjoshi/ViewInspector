@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct Toggle: KnownViewType {
-        public static var typePrefix: String = "Toggle"
+        public static let typePrefix: String = "Toggle"
     }
 }
 

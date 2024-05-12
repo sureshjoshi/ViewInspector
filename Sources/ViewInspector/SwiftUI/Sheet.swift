@@ -6,7 +6,7 @@ import SwiftUI
 public extension ViewType {
     
     struct Sheet: KnownViewType {
-        public static var typePrefix: String = ViewType.PopupContainer<Sheet>.typePrefix
+        public static let typePrefix: String = ViewType.PopupContainer<Sheet>.typePrefix
         public static var namespacedPrefixes: [String] { [typePrefix] }
         public static func inspectionCall(typeName: String) -> String {
             return "\(typeName.firstLetterLowercased)(\(ViewType.indexPlaceholder))"

@@ -6,8 +6,8 @@ import SwiftUI
 public extension ViewType {
     
     struct Alert: KnownViewType {
-        public static var typePrefix: String = ViewType.PopupContainer<Alert>.typePrefix
-        static var typePrefixIOS15: String = "AlertModifier"
+        public static let typePrefix: String = ViewType.PopupContainer<Alert>.typePrefix
+        static let typePrefixIOS15: String = "AlertModifier"
         public static var namespacedPrefixes: [String] {
             [typePrefix, .swiftUINamespaceRegex + typePrefixIOS15]
         }
@@ -212,7 +212,7 @@ extension ViewType.Alert: SupplementaryChildren {
 public extension ViewType {
     
     struct AlertButton: KnownViewType {
-        public static var typePrefix: String = "Alert.Button"
+        public static let typePrefix: String = "Alert.Button"
     }
 }
 

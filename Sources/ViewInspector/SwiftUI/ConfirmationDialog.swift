@@ -6,7 +6,7 @@ import SwiftUI
 public extension ViewType {
     
     struct ConfirmationDialog: KnownViewType {
-        public static var typePrefix: String = "ConfirmationDialogModifier"
+        public static let typePrefix: String = "ConfirmationDialogModifier"
         public static func inspectionCall(typeName: String) -> String {
             return "confirmationDialog(\(ViewType.indexPlaceholder))"
         }

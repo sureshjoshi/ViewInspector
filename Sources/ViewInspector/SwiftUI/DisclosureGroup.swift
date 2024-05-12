@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct DisclosureGroup: KnownViewType {
-        public static var typePrefix: String = "DisclosureGroup"
+        public static let typePrefix: String = "DisclosureGroup"
     }
 }
 

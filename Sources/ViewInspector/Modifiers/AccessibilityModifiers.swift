@@ -242,7 +242,7 @@ private struct AccessibilityProperty {
         self.value = try Inspector.attribute(path: "typedValue", value: value)
     }
     
-    static var noisePointerValues: Set<UInt64> = {
+    static let noisePointerValues: Set<UInt64> = {
         let view1 = EmptyView().accessibility(label: Text(""))
         let view2 = EmptyView().accessibility(hint: Text(""))
         do {

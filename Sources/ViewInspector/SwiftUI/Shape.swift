@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct Shape: KnownViewType {
-        public static var typePrefix: String = ""
+        public static let typePrefix: String = ""
         public static func inspectionCall(typeName: String) -> String {
             return "shape(\(ViewType.indexPlaceholder))"
         }

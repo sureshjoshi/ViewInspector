@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct Overlay: KnownViewType {
-        public static var typePrefix: String = ""
+        public static let typePrefix: String = ""
         public static var isTransitive: Bool { true }
     }
 }

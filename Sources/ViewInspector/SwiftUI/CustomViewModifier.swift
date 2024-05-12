@@ -117,8 +117,8 @@ internal extension Content {
 public extension ViewType {
     
     struct ViewModifierContent: KnownViewType {
-        public static var typePrefix: String = "_ViewModifier_Content"
-        
+        public static let typePrefix: String = "_ViewModifier_Content"
+
         public static func inspectionCall(typeName: String) -> String {
             return "viewModifierContent(\(ViewType.indexPlaceholder))"
         }

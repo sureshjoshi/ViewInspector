@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct ActionSheet: KnownViewType {
-        public static var typePrefix: String = ViewType.PopupContainer<ActionSheet>.typePrefix
+        public static let typePrefix: String = ViewType.PopupContainer<ActionSheet>.typePrefix
         public static var namespacedPrefixes: [String] { [typePrefix] }
         public static func inspectionCall(typeName: String) -> String {
             return "actionSheet(\(ViewType.indexPlaceholder))"

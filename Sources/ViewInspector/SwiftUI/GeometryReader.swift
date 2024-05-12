@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct GeometryReader: KnownViewType {
-        public static var typePrefix: String = "GeometryReader"
+        public static let typePrefix: String = "GeometryReader"
     }
 }
 

@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct NavigationLink: KnownViewType {
-        public static var typePrefix: String = "NavigationLink"
+        public static let typePrefix: String = "NavigationLink"
     }
 }
 

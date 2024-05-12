@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct TabView: KnownViewType {
-        public static var typePrefix: String = "TabView"
+        public static let typePrefix: String = "TabView"
     }
 }
 

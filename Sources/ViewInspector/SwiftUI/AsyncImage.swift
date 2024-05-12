@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct AsyncImage: KnownViewType {
-        public static var typePrefix: String = "AsyncImage"
+        public static let typePrefix: String = "AsyncImage"
     }
 }
 

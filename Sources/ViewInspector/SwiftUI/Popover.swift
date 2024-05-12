@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct Popover: KnownViewType {
-        public static var typePrefix: String = ViewType.PopupContainer<Popover>.typePrefix
+        public static let typePrefix: String = ViewType.PopupContainer<Popover>.typePrefix
         public static var namespacedPrefixes: [String] { [typePrefix] }
         public static func inspectionCall(typeName: String) -> String {
             return "popover(\(ViewType.indexPlaceholder))"

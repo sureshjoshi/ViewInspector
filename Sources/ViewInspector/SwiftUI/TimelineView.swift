@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct TimelineView: KnownViewType {
-        public static var typePrefix: String = "TimelineView"
+        public static let typePrefix: String = "TimelineView"
     }
 }
 

@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct LazyHStack: KnownViewType {
-        public static var typePrefix: String = "LazyHStack"
+        public static let typePrefix: String = "LazyHStack"
     }
 }
 

@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct ShareLink: KnownViewType {
-        public static var typePrefix: String = "ShareLink"
+        public static let typePrefix: String = "ShareLink"
     }
 }
 
