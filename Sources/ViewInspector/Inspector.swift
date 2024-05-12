@@ -95,15 +95,15 @@ public struct Inspector {
     }
 
     private final class Cache: @unchecked Sendable {
-        private let lock = NSRecursiveLock()
+        private let lock = NSLock()
         var replacedGenericParameters: [String: [String: String]] = [:]
         var sanitizedNamespaces: [String: String] = [:]
 
         @discardableResult
         func protected<T>(_ closure: (Cache) throws -> T) rethrows -> T {
-            return try lock.protect {
-                return try closure(self)
-            }
+            lock.lock()
+            defer { lock.unlock() }
+            return try closure(self)
         }
     }
     private static let cache = Cache()
