@@ -15,7 +15,7 @@ public protocol InspectionEmissary: AnyObject {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension InspectionEmissary where V: View {
     
-    typealias ViewInspection = @Sendable @MainActor (InspectableView<ViewType.View<V>>) async throws -> Void
+    typealias ViewInspection = @MainActor @Sendable (InspectableView<ViewType.View<V>>) async throws -> Void
     
     @discardableResult
     func inspect(after delay: TimeInterval = 0,
@@ -73,7 +73,7 @@ public extension InspectionEmissary where V: View {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension InspectionEmissary where V: ViewModifier {
     
-    typealias ViewModifierInspection = @Sendable @MainActor (InspectableView<ViewType.ViewModifier<V>>) async throws -> Void
+    typealias ViewModifierInspection = @MainActor @Sendable (InspectableView<ViewType.ViewModifier<V>>) async throws -> Void
     
     @discardableResult
     func inspect(after delay: TimeInterval = 0,
@@ -123,7 +123,7 @@ public extension InspectionEmissary where V: ViewModifier {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 private extension InspectionEmissary {
     
-    typealias SubjectInspection = @Sendable @MainActor (_ subject: V) async throws -> Void
+    typealias SubjectInspection = @MainActor @Sendable (_ subject: V) async throws -> Void
     
     func inspect(after delay: TimeInterval,
                  function: String, file: StaticString, line: UInt,

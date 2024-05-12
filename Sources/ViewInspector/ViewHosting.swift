@@ -20,9 +20,9 @@ public extension ViewHosting {
                         whileHosted: (V) async throws -> Void
     ) async throws where V: View {
         let viewId = ViewId(function: function)
-        await Self.host(view: view, size: size, viewId: viewId)
+        await host(view: view, size: size, viewId: viewId)
         try await whileHosted(view)
-        await Self.expel(viewId: viewId)
+        await expel(viewId: viewId)
     }
 
     static func host<V>(view: V, size: CGSize? = nil, function: String = #function) where V: View {
@@ -33,7 +33,7 @@ public extension ViewHosting {
     }
 
     @MainActor
-    static func host<V>(view: V, size: CGSize? = nil, viewId: ViewId) where V: View {
+    private static func host<V>(view: V, size: CGSize? = nil, viewId: ViewId) where V: View {
         let medium = { () -> Content.Medium in
             guard let unwrapped = try? Inspector.unwrap(view: view, medium: .empty)
             else { return .empty }
