@@ -11,7 +11,28 @@ public extension Locale {
      }
      ````
      */
-    static var testsDefault: Locale = Locale(identifier: "en")
+    nonisolated
+    static var testsDefault: Locale {
+        get {
+            storage.protected(\.locale)
+        }
+        set {
+            storage.protected({ $0.locale = newValue })
+        }
+    }
+
+    private final class Storage: @unchecked Sendable {
+        private let lock = NSLock()
+        var locale: Locale = Locale(identifier: "en")
+
+        @discardableResult
+        func protected<T>(_ closure: (Storage) throws -> T) rethrows -> T {
+            lock.lock()
+            defer { lock.unlock() }
+            return try closure(self)
+        }
+    }
+    private static let storage = Storage()
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
