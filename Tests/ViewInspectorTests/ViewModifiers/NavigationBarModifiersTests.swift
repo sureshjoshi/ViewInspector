@@ -57,6 +57,7 @@ final class NavigationBarItemsTests: XCTestCase {
         XCTAssertNoThrow(try sut.inspect().emptyView())
     }
     
+    @MainActor
     func testIncorrectUnwrap() throws {
         try skipForiOS15()
         let view = NavigationView {
@@ -68,6 +69,7 @@ final class NavigationBarItemsTests: XCTestCase {
             "Please insert '.navigationBarItems()' before list(0) for unwrapping the underlying view hierarchy.")
     }
     
+    @MainActor
     func testUnknownHierarchyTypeUnwrap() throws {
         try skipForiOS15()
         let view = NavigationView {
@@ -79,6 +81,7 @@ final class NavigationBarItemsTests: XCTestCase {
             "Please substitute 'List<Never, Text>.self' as the parameter for 'navigationBarItems()' inspection call")
     }
     
+    @MainActor
     func testKnownHierarchyTypeUnwrap() throws {
         try skipForiOS15()
         let string = "abc"

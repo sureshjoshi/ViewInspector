@@ -37,6 +37,7 @@ class EnvironmentObjectInjectionTests: XCTestCase {
         XCTAssertEqual(try sut.inspect().find(ViewType.Text.self).string(), "env_true")
     }
     
+    @MainActor
     func testEnvironmentObjectInjectionDuringSyncInspection() throws {
         let obj1 = TestEnvObject1()
         let obj2 = TestEnvObject2()
@@ -49,6 +50,7 @@ class EnvironmentObjectInjectionTests: XCTestCase {
         XCTAssertEqual(try sut.inspect().findAll(ViewType.Text.self).first?.string(), "env_false")
     }
     
+    @MainActor
     func testEnvironmentObjectInjectionOnDidAppearInspection() throws {
         let obj1 = TestEnvObject1()
         let obj2 = TestEnvObject2()
@@ -62,6 +64,7 @@ class EnvironmentObjectInjectionTests: XCTestCase {
         wait(for: [exp], timeout: 0.5)
     }
     
+    @MainActor
     func testEnvironmentObjectInjectionDuringAsyncInspection() throws {
         let obj1 = TestEnvObject1()
         let obj2 = TestEnvObject2()

@@ -18,6 +18,7 @@ final class InspectionEmissaryTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
+    @MainActor
     func testViewModifierOnFunction() throws {
         let binding = Binding(wrappedValue: false)
         var sut = TestViewModifier(flag: binding)
@@ -32,7 +33,8 @@ final class InspectionEmissaryTests: XCTestCase {
         ViewHosting.host(view: view)
         wait(for: [exp], timeout: 0.1)
     }
-    
+
+    @MainActor
     func testViewInspectAfter() throws {
         let sut = TestView(flag: false)
         let exp1 = sut.inspection.inspect { view in
@@ -48,6 +50,7 @@ final class InspectionEmissaryTests: XCTestCase {
         wait(for: [exp1, exp2], timeout: 0.2)
     }
     
+    @MainActor
     func testViewModifierInspectAfter() throws {
         let binding = Binding(wrappedValue: false)
         let sut = TestViewModifier(flag: binding)
@@ -109,6 +112,7 @@ final class InspectionEmissaryTests: XCTestCase {
         wait(for: [exp1, exp2, exp3], timeout: 0.2)
     }
     
+    @MainActor
     func testViewModifierInspectOnReceive() throws {
         let binding = Binding(wrappedValue: false)
         let sut = TestViewModifier(flag: binding)
@@ -133,6 +137,7 @@ final class InspectionEmissaryTests: XCTestCase {
         wait(for: [exp1, exp2, exp3], timeout: 0.2)
     }
     
+    @MainActor
     func testViewModifierInspectOnReceiveAfter() throws {
         let binding = Binding(wrappedValue: false)
         let sut = TestViewModifier(flag: binding)
@@ -173,6 +178,7 @@ final class InspectionEmissaryTests: XCTestCase {
         }
     }
     
+    @MainActor
     @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
     func testAsyncViewModifierInspectAfter() async throws {
         let binding = Binding(wrappedValue: false)
@@ -257,6 +263,7 @@ final class InspectionEmissaryTests: XCTestCase {
         }
     }
     
+    @MainActor
     @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
     func testAsyncViewModifierInspectOnReceive() async throws {
         let binding = Binding(wrappedValue: false)
@@ -292,6 +299,7 @@ final class InspectionEmissaryTests: XCTestCase {
         }
     }
     
+    @MainActor
     @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
     func testAsyncViewModifierInspectOnReceiveAfter() async throws {
         let binding = Binding(wrappedValue: false)

@@ -5,6 +5,7 @@ import SwiftUI
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ListTests: XCTestCase {
     
+    @MainActor
     func testSingleEnclosedView() throws {
         let sampleView = Text("Test")
         let view = List { sampleView }
@@ -12,6 +13,7 @@ final class ListTests: XCTestCase {
         XCTAssertEqual(sut, sampleView)
     }
     
+    @MainActor
     func testSingleEnclosedViewIndexOutOfBounds() throws {
         let sampleView = Text("Test")
         let view = List { sampleView }
@@ -20,6 +22,7 @@ final class ListTests: XCTestCase {
             "Enclosed view index '1' is out of bounds: '0 ..< 1'")
     }
     
+    @MainActor
     func testMultipleEnclosedViews() throws {
         let sampleView1 = Text("Test")
         let sampleView2 = Text("Abc")
@@ -33,6 +36,7 @@ final class ListTests: XCTestCase {
         XCTAssertEqual(view3, sampleView3)
     }
     
+    @MainActor
     func testSearch() throws {
         let view = AnyView(List { EmptyView(); Text("abc") })
         XCTAssertEqual(try view.inspect().find(ViewType.List.self).pathToRoot,
@@ -41,6 +45,7 @@ final class ListTests: XCTestCase {
                        "anyView().list().text(1)")
     }
     
+    @MainActor
     func testMultipleEnclosedViewsIndexOutOfBounds() throws {
         let sampleView1 = Text("Test")
         let sampleView2 = Text("Abc")
@@ -50,17 +55,20 @@ final class ListTests: XCTestCase {
             "Enclosed view index '2' is out of bounds: '0 ..< 2'")
     }
     
+    @MainActor
     func testResetsModifiers() throws {
         let view = List { Text("Test") }.padding()
         let sut = try view.inspect().list().text(0)
         XCTAssertEqual(sut.content.medium.viewModifiers.count, 0)
     }
     
+    @MainActor
     func testExtractionFromSingleViewContainer() throws {
         let view = AnyView(List { Text("Test") })
         XCTAssertNoThrow(try view.inspect().anyView().list())
     }
     
+    @MainActor
     func testExtractionFromMultipleViewContainer() throws {
         let view = List {
             List { Text("Test") }

@@ -5,6 +5,7 @@ import SwiftUI
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ConditionalContentTests: XCTestCase {
     
+    @MainActor
     func testConditionalView() throws {
         let view = ConditionalView()
         let string1 = try view.inspect().group().text(0).string()
