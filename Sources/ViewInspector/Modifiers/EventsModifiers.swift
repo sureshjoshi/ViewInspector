@@ -62,4 +62,15 @@ public extension InspectableView {
             type: (@Sendable () async -> Void).self, call: "task")
         await callback()
     }
+
+    func callTask(id: some Equatable, index: Int = 0) async throws {
+        let typeName = Inspector.typeName(type: type(of: id))
+        let callback = try modifierAttribute(
+            modifierName: "_TaskValueModifier<\(typeName)>",
+            path: "modifier|action",
+            type: (@Sendable () async -> Void).self,
+            call: "task",
+            index: index)
+        await callback()
+    }
 }

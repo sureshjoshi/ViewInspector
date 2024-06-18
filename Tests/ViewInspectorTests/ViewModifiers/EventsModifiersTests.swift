@@ -157,6 +157,69 @@ final class ViewEventsTests: XCTestCase {
         try await sut.inspect().emptyView().callTask()
         await fulfillment(of: [exp], timeout: 0.1)
     }
+
+    func testTaskIdInspection() async throws {
+        guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
+        let exp = XCTestExpectation(description: #function)
+        let sut = EmptyView().padding()
+            .task(id: "id") {
+                exp.fulfill()
+            }
+        try await sut.inspect().emptyView().callTask(id: "id")
+        await fulfillment(of: [exp], timeout: 0.1)
+    }
+
+    func testTaskIdInspectionWithIndex() async throws {
+        guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
+        let exp1 = XCTestExpectation(description: "task1")
+        let exp2 = XCTestExpectation(description: "task2")
+        exp1.assertForOverFulfill = true
+        exp2.assertForOverFulfill = true
+
+        let sut = EmptyView().padding()
+            .task(id: "id1") {
+                exp1.fulfill()
+            }
+            .task(id: "id2") {
+                exp2.fulfill()
+            }
+
+        try await sut.inspect().emptyView().callTask(id: "id1", index: 0)
+        await fulfillment(of: [exp1], timeout: 0.1)
+
+        try await sut.inspect().emptyView().callTask(id: "id2", index: 1)
+        await fulfillment(of: [exp2], timeout: 0.1)
+    }
+
+    func testTaskIdInspectionMultipleDifferentTypes() async throws {
+        guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
+        struct CustomEquatableStruct: Equatable {
+            let value: Int
+        }
+        let exp1 = XCTestExpectation(description: "task1")
+        let exp2 = XCTestExpectation(description: "task2")
+        let exp3 = XCTestExpectation(description: "task3")
+        exp1.assertForOverFulfill = true
+        exp2.assertForOverFulfill = true
+        exp3.assertForOverFulfill = true
+
+        let sut = EmptyView().padding()
+            .task(id: "id") {
+                exp1.fulfill()
+            }
+            .task(id: 2) {
+                exp2.fulfill()
+            }
+            .task(id: CustomEquatableStruct(value: 1)) {
+                exp3.fulfill()
+            }
+
+        async let _ = try sut.inspect().emptyView().callTask(id: 2)
+        async let _ = try sut.inspect().emptyView().callTask(id: "id")
+        async let _ = try sut.inspect().emptyView().callTask(id: CustomEquatableStruct(value: 1))
+
+        await fulfillment(of: [exp1, exp2, exp3], timeout: 0.1)
+    }
 }
 
 // MARK: - ViewPublisherEventsTests
