@@ -23,6 +23,13 @@ public extension InspectableView {
         return try contentForModifierLookup
             .overlay(parent: self, api: [.background, .backgroundStyle], index: index)
     }
+
+    @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+    func accessibilityActions(_ index: Int? = nil) throws -> InspectableView<ViewType.Overlay> {
+        return try contentForModifierLookup
+            .overlay(parent: self, api: [.background, .backgroundStyle],
+                     apiName: "accessibilityActions", index: index)
+    }
 }
 
 // MARK: - Content
@@ -51,7 +58,8 @@ internal extension Content {
         return try overlay(parent: parent, api: [api], index: index)
     }
     
-    func overlay(parent: UnwrappedView, api: [ViewType.Overlay.API], index: Int?
+    func overlay(parent: UnwrappedView, api: [ViewType.Overlay.API],
+                 apiName: String? = nil, index: Int?
     ) throws -> InspectableView<ViewType.Overlay> {
         let modifiers = modifiersMatching { modifier in
             api.contains(where: {
@@ -59,7 +67,7 @@ internal extension Content {
             })
         }
         let hasMultipleOverlays = modifiers.count > 1
-        let apiName = api.first!.call
+        let apiName = apiName ?? api.first!.call
         guard let (modifier, rootView) = modifiers.lazy.compactMap({ modifier -> (Any, Any)? in
             for anApi in api {
                 do {

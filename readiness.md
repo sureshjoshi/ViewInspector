@@ -577,6 +577,7 @@ This document reflects the current status of the [ViewInspector](https://github.
 |:white_check_mark:| `func accessibilityHint(...) -> some View` |
 |:white_check_mark:| `func accessibilityActivationPoint(...) -> some View` |
 |:white_check_mark:| `func accessibilityAction(...) -> some View` |
+|:white_check_mark:| `func accessibilityActions(...) -> some View` |
 |:technologist:| `func accessibilityAction<Label>(action: () -> Void, label: () -> Label) -> some View` |
 |:technologist:| `func accessibilityAction<S>(named name: S, () -> Void) -> some View` |
 |:white_check_mark:| `func accessibilityAdjustableAction((AccessibilityAdjustmentDirection) -> Void) -> some View` |

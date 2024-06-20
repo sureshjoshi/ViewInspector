@@ -170,7 +170,22 @@ final class ViewAccessibilityActionTests: XCTestCase {
         let sut = EmptyView().accessibilityAction(.default) { }
         XCTAssertNoThrow(try sut.inspect().emptyView())
     }
-    
+
+    func testAccessibilityActions() throws {
+        guard #available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+        else { throw XCTSkip() }
+        let view = EmptyView().accessibilityActions {
+            EmptyView()
+            AnyView(Text("test"))
+        }
+        let sut = try view.inspect()
+        let view1 = try sut.emptyView().accessibilityActions().anyView(1).text()
+        XCTAssertEqual(view1.pathToRoot,
+                       "emptyView().accessibilityActions().anyView(1).text()")
+        let view2 = try sut.find(text: "test")
+        XCTAssertEqual(try view2.string(), "test")
+    }
+
     func testAccessibilityActionInspection() throws {
         guard #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
