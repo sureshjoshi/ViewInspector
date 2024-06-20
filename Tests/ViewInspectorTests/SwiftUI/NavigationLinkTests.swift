@@ -108,6 +108,7 @@ final class NavigationLinkTests: XCTestCase {
         XCTAssertThrows(try sut.deactivate(), errorMessage)
     }
     
+    @MainActor
     @available(watchOS 7.0, *)
     func testNavigationWithStateActivation() throws {
         let view = TestViewState()
@@ -137,6 +138,7 @@ final class NavigationLinkTests: XCTestCase {
         XCTAssertFalse(try sut1.isActive())
     }
     
+    @MainActor
     @available(watchOS 7.0, *)
     func testNavigationWithStateDeactivation() throws {
         let view = TestViewState()
@@ -166,6 +168,7 @@ final class NavigationLinkTests: XCTestCase {
         XCTAssertFalse(try sut1.isActive())
     }
     
+    @MainActor
     @available(watchOS 7.0, *)
     func testNavigationWithStateReactivation() throws {
         let view = TestViewState()

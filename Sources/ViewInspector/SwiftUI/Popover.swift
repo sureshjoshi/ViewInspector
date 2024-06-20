@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct Popover: KnownViewType {
-        public static var typePrefix: String = ViewType.PopupContainer<Popover>.typePrefix
+        public static let typePrefix: String = ViewType.PopupContainer<Popover>.typePrefix
         public static var namespacedPrefixes: [String] { [typePrefix] }
         public static func inspectionCall(typeName: String) -> String {
             return "popover(\(ViewType.indexPlaceholder))"
@@ -54,7 +54,6 @@ public extension InspectableView {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Content {
     
     func popover(parent: UnwrappedView, index: Int?) throws -> InspectableView<ViewType.Popover> {
@@ -125,24 +124,20 @@ public extension InspectableView where View == ViewType.Popover {
 @available(iOS 13.0, macOS 10.15, *)
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
-@MainActor 
 public extension InspectableView where View == ViewType.Popover {
     
     @available(*, deprecated, message: "Simply remove `contentView()` from the inspection chain")
-    @preconcurrency
     func contentView() throws -> InspectableView<ViewType.ClassifiedView> {
         return try contentView(EmptyView.self)
     }
     
     @available(*, deprecated, message: "Simply remove `contentView()` from the inspection chain")
-    @preconcurrency
     func contentView<T>(_ viewType: T.Type) throws -> InspectableView<ViewType.ClassifiedView> {
         let content = try ViewType.Popover.child(self.content)
         return try .init(content, parent: self, index: nil)
     }
     
     @available(*, deprecated, message: "Use `popover` inspection call - it throws if Popover is not presented")
-    @preconcurrency
     func isPresented() throws -> Bool {
         return true
     }

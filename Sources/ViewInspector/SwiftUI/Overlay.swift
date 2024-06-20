@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct Overlay: KnownViewType {
-        public static var typePrefix: String = ""
+        public static let typePrefix: String = ""
         public static var isTransitive: Bool { true }
     }
 }
@@ -44,7 +44,6 @@ extension ViewType.Overlay: MultipleViewContent {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Content {
     
     func overlay(parent: UnwrappedView, api: ViewType.Overlay.API, index: Int?
@@ -123,7 +122,6 @@ internal extension ViewType.Overlay {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension ViewType.Overlay.API {
     
     var modifierName: String {
@@ -164,6 +162,7 @@ internal extension ViewType.Overlay.API {
         return value
     }
 
+    // swiftlint:disable:next cyclomatic_complexity
     func verifySignature(content: Any, modifier: Any, hasMultipleOverlays: Bool) throws {
         let reportFailure: () throws -> Void = {
             throw InspectionError.notSupported("Different view signature")

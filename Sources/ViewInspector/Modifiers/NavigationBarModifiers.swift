@@ -73,15 +73,12 @@ extension ViewType.EnvironmentReaderView: SingleViewContent {
 @available(iOS 13.0, tvOS 13.0, *)
 @available(macOS, unavailable)
 @available(watchOS, unavailable)
-@MainActor 
 public extension InspectableView where View: SingleViewContent {
-    
-    @preconcurrency
+
     func navigationBarItems() throws -> InspectableView<ViewType.ClassifiedView> {
         return try navigationBarItems(AnyView.self)
     }
-    
-    @preconcurrency
+
     func navigationBarItems<V>(_ viewType: V.Type) throws ->
         InspectableView<ViewType.ClassifiedView> where V: SwiftUI.View {
         return try navigationBarItems(viewType: viewType, content: try child())
@@ -91,15 +88,12 @@ public extension InspectableView where View: SingleViewContent {
 // MARK: - Extraction from MultipleViewContent parent
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 public extension InspectableView where View: MultipleViewContent {
-    
-    @preconcurrency
+
     func navigationBarItems(_ index: Int = 0) throws -> InspectableView<ViewType.ClassifiedView> {
         return try navigationBarItems(AnyView.self, index)
     }
     
-    @preconcurrency
     func navigationBarItems<V>(_ viewType: V.Type, _ index: Int = 0) throws ->
         InspectableView<ViewType.ClassifiedView> where V: SwiftUI.View {
         return try navigationBarItems(viewType: viewType, content: try child(at: index))
@@ -109,7 +103,6 @@ public extension InspectableView where View: MultipleViewContent {
 // MARK: - Unwrapping the EnvironmentReaderView
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension InspectableView {
     
     func navigationBarItems<V>(viewType: V.Type, content: Content) throws ->
@@ -126,10 +119,8 @@ internal extension InspectableView {
         
         let expectedViewType = closureDesc.navigationBarItemsWrappedViewType
         guard Inspector.typeName(type: viewType) == expectedViewType else {
-            // swiftlint:disable line_length
             throw InspectionError.notSupported(
                 "Please substitute '\(expectedViewType).self' as the parameter for 'navigationBarItems()' inspection call")
-            // swiftlint:enable line_length
         }
         
         guard let typedClosure = withUnsafeBytes(of: closure, {
@@ -150,6 +141,6 @@ private extension String {
 }
 
 private struct FakeNavigationBarItemsKey: PreferenceKey {
-    static var defaultValue: String = ""
+    static let defaultValue: String = ""
     static func reduce(value: inout String, nextValue: () -> String) { }
 }

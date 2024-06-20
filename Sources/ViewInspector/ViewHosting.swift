@@ -5,29 +5,35 @@ import UIKit
 #endif
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-@preconcurrency 
-@MainActor
 public enum ViewHosting { }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
-@MainActor
 public extension ViewHosting {
     
-    struct ViewId: Hashable {
+    struct ViewId: Hashable, Sendable {
         let function: String
         var key: String { function }
     }
-    
-    @preconcurrency 
-    static func host<V>(_ view: V, size: CGSize? = nil, function: String = #function, whileHosted: (V) async throws -> Void) async throws where V: View {
-        Self.host(view: view, size: size, function: function)
+
+    static func host<V>(_ view: V, size: CGSize? = nil,
+                        function: String = #function,
+                        whileHosted: (V) async throws -> Void
+    ) async throws where V: View {
+        let viewId = ViewId(function: function)
+        await host(view: view, size: size, viewId: viewId)
         try await whileHosted(view)
-        Self.expel(function: function)
+        await expel(viewId: viewId)
     }
-    
-    @preconcurrency
+
     static func host<V>(view: V, size: CGSize? = nil, function: String = #function) where V: View {
         let viewId = ViewId(function: function)
+        MainActor.syncRun {
+            host(view: view, size: size, viewId: viewId)
+        }
+    }
+
+    @MainActor
+    private static func host<V>(view: V, size: CGSize? = nil, viewId: ViewId) where V: View {
         let medium = { () -> Content.Medium in
             guard let unwrapped = try? Inspector.unwrap(view: view, medium: .empty)
             else { return .empty }
@@ -67,15 +73,21 @@ public extension ViewHosting {
         window.layoutIfNeeded()
         #endif
     }
-    
-    @preconcurrency
+
     static func expel(function: String = #function) {
         let viewId = ViewId(function: function)
+        MainActor.syncRun {
+            expel(viewId: viewId)
+        }
+    }
+
+    @MainActor
+    private static func expel(viewId: ViewId) {
         #if os(watchOS)
-        _ = expel(viewId: viewId)
+        _ = expelHosted(viewId: viewId)
         try? watchOS(host: nil, viewId: viewId)
         #else
-        guard let hosted = expel(viewId: viewId) else { return }
+        guard let hosted = expelHosted(viewId: viewId) else { return }
         let childVC = hosted.viewController
         willMove(childVC, to: nil)
         childVC.view.removeFromSuperview()
@@ -85,7 +97,6 @@ public extension ViewHosting {
     }
     
     #if os(watchOS)
-    @preconcurrency
     private static func watchOS(host view: AnyView?, viewId: ViewId) throws {
         typealias Subject = CurrentValueSubject<[(String, AnyView)], Never>
         guard let subject: Subject = try subjectForWatchOS(type: Subject.self) else {
@@ -104,16 +115,19 @@ public extension ViewHosting {
         subject.send(array)
     }
     #endif
-    
+
     internal static func medium(function: String = #function) -> Content.Medium {
         let viewId = ViewHosting.ViewId(function: function)
-        return hosted[viewId]?.medium ?? .empty
+        return MainActor.syncRun {
+            hosted[viewId]?.medium ?? .empty
+        }
     }
 }
 
 // MARK: - Private
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+@MainActor
 private extension ViewHosting {
     
     struct Hosted {
@@ -126,9 +140,9 @@ private extension ViewHosting {
     }
     private static var hosted: [ViewId: Hosted] = [:]
     #if os(macOS)
-    static var window: NSWindow = makeWindow()
+    static let window: NSWindow = makeWindow()
     #elseif os(iOS) || os(tvOS) || os(visionOS)
-    static var window: UIWindow = makeWindow()
+    static let window: UIWindow = makeWindow()
     #endif
     
     // MARK: - Window construction
@@ -201,7 +215,7 @@ private extension ViewHosting {
         self.hosted[viewId] = hosted
     }
     
-    static func expel(viewId: ViewId) -> Hosted? {
+    static func expelHosted(viewId: ViewId) -> Hosted? {
         return hosted.removeValue(forKey: viewId)
     }
 }
@@ -246,6 +260,7 @@ private class RootViewController: NSViewController {
 // MARK: - UIView lookup
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 7.0, *)
+@MainActor
 internal extension ViewHosting {
     #if os(macOS)
     static func lookup<V>(_ view: V.Type) throws -> V.NSViewType
@@ -429,3 +444,10 @@ public extension ViewHosting {
     }
 }
 #endif
+
+@available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
+internal extension MainActor {
+    static func syncRun<T>(action: @MainActor @Sendable () throws -> T) rethrows -> T {
+        return try assumeIsolated(action)
+    }
+}

@@ -20,10 +20,10 @@ public extension ViewType {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension ViewType.Toolbar {
     struct Item: KnownViewType {
-        public static var typePrefix: String = "ToolbarItem"
+        public static let typePrefix: String = "ToolbarItem"
     }
     struct ItemGroup: KnownViewType {
-        public static var typePrefix: String = "ToolbarItemGroup"
+        public static let typePrefix: String = "ToolbarItemGroup"
     }
 }
 
@@ -38,7 +38,6 @@ public extension InspectableView {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Content {
     
     func toolbar(parent: UnwrappedView, index: Int?) throws -> InspectableView<ViewType.Toolbar> {

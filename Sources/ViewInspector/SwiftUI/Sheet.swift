@@ -6,7 +6,7 @@ import SwiftUI
 public extension ViewType {
     
     struct Sheet: KnownViewType {
-        public static var typePrefix: String = ViewType.PopupContainer<Sheet>.typePrefix
+        public static let typePrefix: String = ViewType.PopupContainer<Sheet>.typePrefix
         public static var namespacedPrefixes: [String] { [typePrefix] }
         public static func inspectionCall(typeName: String) -> String {
             return "\(typeName.firstLetterLowercased)(\(ViewType.indexPlaceholder))"
@@ -58,7 +58,6 @@ public extension InspectableView {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Content {
     
     func sheet(parent: UnwrappedView, index: Int?, name: String = "Sheet") throws -> InspectableView<ViewType.Sheet> {

@@ -5,7 +5,7 @@ import UniformTypeIdentifiers.UTType
 public extension ViewType {
     
     struct ForEach: KnownViewType {
-        public static var typePrefix: String { "ForEach" }
+        public static let typePrefix: String = "ForEach"
     }
 }
 

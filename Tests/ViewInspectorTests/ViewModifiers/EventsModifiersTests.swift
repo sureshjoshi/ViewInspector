@@ -148,6 +148,7 @@ final class ViewEventsTests: XCTestCase {
         XCTAssertNoThrow(try sut.inspect().emptyView())
     }
     
+    @MainActor
     func testTaskInspection() async throws {
         guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
         let exp = XCTestExpectation(description: #function)

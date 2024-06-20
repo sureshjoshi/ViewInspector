@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
 
     struct NavigationDestination: KnownViewType {
-        public static var typePrefix: String = "ViewDestinationNavigationDestinationModifier"
+        public static let typePrefix: String = "ViewDestinationNavigationDestinationModifier"
         public static func inspectionCall(typeName: String) -> String {
             return "navigationDestination(\(ViewType.indexPlaceholder))"
         }
@@ -22,7 +22,6 @@ public extension InspectableView {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Content {
 
     func navigationDestination(parent: UnwrappedView, index: Int?) throws

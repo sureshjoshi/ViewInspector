@@ -74,6 +74,7 @@ final class CustomViewBuilderTests: XCTestCase {
         XCTAssertNoThrow(try sut.inspect().view(TestViewBuilderView<Text>.self).actualView().content)
     }
     
+    @MainActor
     func testViewBody() {
         XCTAssertNoThrow(TestViewBuilderView { Text("Test") }.body)
     }

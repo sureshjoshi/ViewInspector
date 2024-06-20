@@ -28,6 +28,7 @@ final class OpaqueViewTests: XCTestCase {
         XCTAssertEqual(sut.content.medium.viewModifiers.count, 0)
     }
     
+    @MainActor
     func testInspectableTestViews() {
         XCTAssertNoThrow(InspectableTestView().body)
         XCTAssertNoThrow(EnvInspectableTestView().body)

@@ -15,7 +15,7 @@ public protocol InspectionEmissary: AnyObject {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension InspectionEmissary where V: View {
     
-    typealias ViewInspection = @Sendable @MainActor (InspectableView<ViewType.View<V>>) async throws -> Void
+    typealias ViewInspection = @MainActor @Sendable (InspectableView<ViewType.View<V>>) async throws -> Void
     
     @discardableResult
     func inspect(after delay: TimeInterval = 0,
@@ -73,7 +73,7 @@ public extension InspectionEmissary where V: View {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension InspectionEmissary where V: ViewModifier {
     
-    typealias ViewModifierInspection = @Sendable @MainActor (InspectableView<ViewType.ViewModifier<V>>) async throws -> Void
+    typealias ViewModifierInspection = @MainActor @Sendable (InspectableView<ViewType.ViewModifier<V>>) async throws -> Void
     
     @discardableResult
     func inspect(after delay: TimeInterval = 0,
@@ -123,7 +123,7 @@ public extension InspectionEmissary where V: ViewModifier {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 private extension InspectionEmissary {
     
-    typealias SubjectInspection = @Sendable @MainActor (_ subject: V) async throws -> Void
+    typealias SubjectInspection = @MainActor @Sendable (_ subject: V) async throws -> Void
     
     func inspect(after delay: TimeInterval,
                  function: String, file: StaticString, line: UInt,
@@ -189,32 +189,31 @@ private extension InspectionEmissary {
                expectation: XCTestExpectation,
                function: String, file: StaticString, line: UInt) {
         callbacks[line] = { view in
-            Task {
+            Task { @MainActor in
                 do {
                     try await inspection(view)
                 } catch {
                     XCTFail("\(error.localizedDescription)", file: file, line: line)
                 }
-                await MainActor.run(body: { [weak self] in
-                    if self?.callbacks.isEmpty ?? true {
-                        ViewHosting.expel(function: function)
-                    }
-                })
+                if self.callbacks.isEmpty {
+                    ViewHosting.expel(function: function)
+                }
                 expectation.fulfill()
             }
         }
     }
-    
-    @MainActor 
+
     func setup(inspection: @escaping SubjectInspection,
                function: String, file: StaticString, line: UInt) async throws {
-        try await withUnsafeThrowingContinuation { @MainActor continuation in
-            callbacks[line] = { view in
-                Task {
-                    do {
-                        continuation.resume(returning: try await inspection(view))
-                    } catch {
-                        continuation.resume(throwing: error)
+        try await withCheckedThrowingContinuation { continuation in
+            Task { @MainActor in
+                callbacks[line] = { view in
+                    Task { @MainActor in
+                        do {
+                            continuation.resume(returning: try await inspection(view))
+                        } catch {
+                            continuation.resume(throwing: error)
+                        }
                     }
                 }
             }
@@ -225,10 +224,8 @@ private extension InspectionEmissary {
 // MARK: - on keyPath inspection
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor
 public extension View {
     @discardableResult
-    @preconcurrency
     mutating func on(_ keyPath: WritableKeyPath<Self, ((Self) -> Void)?>,
                      function: String = #function, file: StaticString = #file, line: UInt = #line,
                      perform: @escaping ((InspectableView<ViewType.View<Self>>) throws -> Void)
@@ -241,10 +238,8 @@ public extension View {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 public extension ViewModifier {
     @discardableResult
-    @preconcurrency
     mutating func on(_ keyPath: WritableKeyPath<Self, ((Self) -> Void)?>,
                      function: String = #function, file: StaticString = #file, line: UInt = #line,
                      perform: @escaping ((InspectableView<ViewType.ViewModifier<Self>>) throws -> Void)
@@ -257,7 +252,6 @@ public extension ViewModifier {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 private extension Inspector {
     static func injectInspectionCallback<T>(
         value: inout T, keyPath: WritableKeyPath<T, ((T) -> Void)?>,
@@ -267,9 +261,11 @@ private extension Inspector {
         let description = Inspector.typeName(value: self) + " callback at line #\(line)"
         let expectation = XCTestExpectation(description: description)
         value[keyPath: keyPath] = { body in
-            inspection(body)
-            ViewHosting.expel(function: function)
-            expectation.fulfill()
+            Task { @MainActor in
+                inspection(body)
+                ViewHosting.expel(function: function)
+                expectation.fulfill()
+            }
         }
         return expectation
     }

@@ -3,10 +3,9 @@ import SwiftUI
 // MARK: - Index
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
+@MainActor
 internal extension ViewSearch {
-    
-    private static var index: [String: [ViewIdentity]] = {
+    private static let index: [String: [ViewIdentity]] = {
         let knownViewTypes: [KnownViewType.Type] = [
             ViewType.ActionSheet.self,
             ViewType.ActionSheet.self,
@@ -111,7 +110,7 @@ internal extension ViewSearch {
         }
         return index
     }()
-    
+
     private static func identify(_ content: Content) -> ViewIdentity? {
         if let customMapping = content.view as? CustomViewIdentityMapping {
             let viewType = customMapping.viewTypeForSearch
@@ -178,9 +177,7 @@ internal protocol CustomViewIdentityMapping {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension ViewSearch {
-    
-    @preconcurrency 
-    @MainActor
+
     struct ViewIdentity {
         
         typealias ChildrenBuilder = (UnwrappedView) throws -> LazyGroup<UnwrappedView>
@@ -229,7 +226,6 @@ internal extension ViewSearch {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 private extension KnownViewType {
     static func viewSearchIdentity(genericTypeName: String? = nil) -> ViewSearch.ViewIdentity {
         return ViewSearch.ViewIdentity(
@@ -261,7 +257,6 @@ extension KnownViewType {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 extension KnownViewType where Self: SingleViewContent {
     static func childViewsBuilder() -> ViewSearch.ViewIdentity.ChildrenBuilder {
         return { parent in
@@ -271,7 +266,6 @@ extension KnownViewType where Self: SingleViewContent {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 extension KnownViewType where Self: MultipleViewContent {
     static func childViewsBuilder() -> ViewSearch.ViewIdentity.ChildrenBuilder {
         return { parent in
@@ -281,7 +275,6 @@ extension KnownViewType where Self: MultipleViewContent {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 extension KnownViewType where Self: SingleViewContent & MultipleViewContent {
     static func childViewsBuilder() -> ViewSearch.ViewIdentity.ChildrenBuilder {
         return { parent in
@@ -291,7 +284,6 @@ extension KnownViewType where Self: SingleViewContent & MultipleViewContent {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 extension KnownViewType where Self: SupplementaryChildren {
     static func supplementaryViewsBuilder() -> ViewSearch.ViewIdentity.SupplementaryBuilder {
         return { parent in
@@ -303,7 +295,6 @@ extension KnownViewType where Self: SupplementaryChildren {
 // MARK: - Descendants
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 private extension LazyGroup where T == Content {
     func descendants(_ parent: UnwrappedView, indexed: Bool) -> LazyGroup<UnwrappedView> {
         return .init(count: count, { index in
@@ -314,7 +305,6 @@ private extension LazyGroup where T == Content {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 private extension Content {
     func descendants(_ parent: UnwrappedView) -> LazyGroup<UnwrappedView> {
         return .init(count: 1) { _ in
@@ -326,7 +316,6 @@ private extension Content {
 // MARK: - ModifierIdentity
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension ViewType.Overlay.API {
     
     static var viewSearchModifierIdentities: [ViewSearch.ModifierIdentity] {
@@ -340,10 +329,9 @@ internal extension ViewType.Overlay.API {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension ViewSearch {
     
-    static private(set) var modifierIdentities: [ModifierIdentity] = ViewType.Overlay.API.viewSearchModifierIdentities
+    static let modifierIdentities: [ModifierIdentity] = ViewType.Overlay.API.viewSearchModifierIdentities
     + [
         .init(name: ViewType.Toolbar.typePrefix, builder: { parent, index in
             try parent.content.toolbar(parent: parent, index: index)
@@ -386,10 +374,8 @@ internal extension ViewSearch {
         }),
     ]
     
-    @preconcurrency 
-    @MainActor
-    struct ModifierIdentity {
-        typealias Builder = (UnwrappedView, Int?) throws -> UnwrappedView
+    struct ModifierIdentity: Sendable {
+        typealias Builder = @Sendable (UnwrappedView, Int?) throws -> UnwrappedView
         let name: String
         let builder: Builder
         
@@ -409,7 +395,6 @@ internal extension ViewSearch {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Content {
     
     func modifierDescendants(parent: UnwrappedView) -> LazyGroup<UnwrappedView> {

@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct LazyHStack: KnownViewType {
-        public static var typePrefix: String = "LazyHStack"
+        public static let typePrefix: String = "LazyHStack"
     }
 }
 
@@ -30,11 +30,9 @@ public extension InspectableView where View: MultipleViewContent {
 
 // MARK: - Content Extraction
 
-@available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, *) 
 extension ViewType.LazyHStack: MultipleViewContent {
-    
-    @preconcurrency
+
     public static func children(_ content: Content) throws -> LazyGroup<Content> {
         let view = try Inspector.attribute(path: "tree|content", value: content.view)
         return try Inspector.viewsInContainer(view: view, medium: content.medium)

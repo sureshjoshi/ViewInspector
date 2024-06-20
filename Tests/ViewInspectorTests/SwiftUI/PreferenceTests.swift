@@ -61,7 +61,7 @@ final class PreferenceTests: XCTestCase {
     }
     
     struct Key: PreferenceKey {
-        static var defaultValue: String = "abc"
+        static let defaultValue: String = "abc"
         static func reduce(value: inout String, nextValue: () -> String) {
             value = nextValue()
         }

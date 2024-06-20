@@ -4,7 +4,7 @@ import SwiftUI
 public extension ViewType {
     
     struct LazyVGrid: KnownViewType {
-        public static var typePrefix: String = "LazyVGrid"
+        public static let typePrefix: String = "LazyVGrid"
     }
 }
 

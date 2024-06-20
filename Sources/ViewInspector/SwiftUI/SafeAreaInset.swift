@@ -6,7 +6,7 @@ import SwiftUI
 public extension ViewType {
     
     struct SafeAreaInset: KnownViewType {
-        public static var typePrefix: String = "_InsetViewModifier"
+        public static let typePrefix: String = "_InsetViewModifier"
         public static func inspectionCall(typeName: String) -> String {
             return "safeAreaInset(\(ViewType.indexPlaceholder))"
         }
@@ -24,7 +24,6 @@ public extension InspectableView {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Content {
     
     func safeAreaInset(parent: UnwrappedView, index: Int?) throws -> InspectableView<ViewType.SafeAreaInset> {

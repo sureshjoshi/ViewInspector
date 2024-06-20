@@ -9,13 +9,15 @@ internal struct ContentExtractor {
 
     internal func extractContent(environmentObjects: [AnyObject]) throws -> Any {
         try validateSourceBeforeExtraction()
-        switch contentSource {
-        case .view(let view):
-            return try view.extractContent(environmentObjects: environmentObjects)
-        case .viewModifier(let viewModifier):
-            return try viewModifier.extractContent(environmentObjects: environmentObjects)
-        case .gesture(let gesture):
-            return try gesture.extractContent(environmentObjects: environmentObjects)
+        return try MainActor.syncRun { [contentSource] in
+            switch contentSource {
+            case .view(let view):
+                return try view.extractContent(environmentObjects: environmentObjects)
+            case .viewModifier(let viewModifier):
+                return try viewModifier.extractContent(environmentObjects: environmentObjects)
+            case .gesture(let gesture):
+                return try gesture.extractContent(environmentObjects: environmentObjects)
+            }
         }
     }
 
@@ -83,7 +85,7 @@ internal struct ContentExtractor {
         }
     }
 
-    private enum ContentSource {
+    private enum ContentSource: @unchecked Sendable {
         case view(any View)
         case viewModifier(any ViewModifier)
         case gesture(any Gesture)
@@ -112,7 +114,7 @@ private extension ViewModifier {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension View {
-    
+    @MainActor
     func extractContent(environmentObjects: [AnyObject]) throws -> Any {
         var copy = self
         environmentObjects.forEach { copy = EnvironmentInjection.inject(environmentObject: $0, into: copy) }
@@ -128,7 +130,7 @@ public extension View {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension ViewModifier {
-    
+    @MainActor
     func extractContent(environmentObjects: [AnyObject]) throws -> Any {
         var copy = self
         environmentObjects.forEach { copy = EnvironmentInjection.inject(environmentObject: $0, into: copy) }

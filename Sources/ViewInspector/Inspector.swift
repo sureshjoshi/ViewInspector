@@ -3,30 +3,26 @@ import SwiftUI
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public struct Inspector {
-    private static let lock = NSRecursiveLock()
-    
     /// Removes the "(unknown context at <memory_address>)" portion of a type name.
     /// Calls to this method are memoized and retained for the lifetime of the program.
     /// - Parameter typeName: The raw type name. (e.g. `SomeTypeName.(unknown context at $138b3290c).SomePropertyName`)
     /// - Returns: The sanitized type name. (e.g. `SomeTypeName.SomePropertyName`)
     static func sanitizeNamespace(ofTypeName typeName: String) -> String {
         var str = typeName
-
-        if let sanitized = lock.protect(sanitizedNamespacesCache[typeName]) {
+        if let sanitized = cache.protected({ $0.sanitizedNamespaces[typeName] }) {
             return sanitized
         }
 
         let range = NSRange(location: 0, length: str.utf16.count)
-        str = lock.protect(sanitizeNamespaceRegex).stringByReplacingMatches(in: str,
-                                                              options: [],
-                                                              range: range,
-                                                              withTemplate: "")
+        str = sanitizeNamespaceRegex
+            .stringByReplacingMatches(in: str, options: [],
+                                      range: range, withTemplate: "")
 
         // For Objective-C classes String(reflecting:) sometimes adds the namespace __C, drop it too
         str = str.replacingOccurrences(of: "<__C.", with: "<")
 
-        lock.protect {
-            Inspector.sanitizedNamespacesCache[typeName] = str
+        cache.protected {
+            $0.sanitizedNamespaces[typeName] = str
         }
 
         return str
@@ -42,7 +38,7 @@ public struct Inspector {
     static func replaceGenericParameters(inTypeName typeName: String,
                                          withReplacement replacement: String) -> String {
         // Check memoized value
-        if let typeNameDict = lock.protect(Inspector.replacedGenericParametersCache[typeName]),
+        if let typeNameDict = cache.protected({ $0.replacedGenericParameters[typeName] }),
            let cachedResult = typeNameDict[replacement] {
             return cachedResult
         }
@@ -52,10 +48,10 @@ public struct Inspector {
                                                            withReplacement: replacement)
 
         // Store memoized value
-        var typeNameDict = lock.protect(Inspector.replacedGenericParametersCache[typeName]) ?? [:]
-        typeNameDict[replacement] = result
-        lock.protect {
-            Inspector.replacedGenericParametersCache[typeName] = typeNameDict
+        cache.protected { cache in
+            var typeNameDict = cache.replacedGenericParameters[typeName] ?? [:]
+            typeNameDict[replacement] = result
+            cache.replacedGenericParameters[typeName] = typeNameDict
         }
 
         return result
@@ -98,8 +94,19 @@ public struct Inspector {
         return typeName
     }
 
-    private static var replacedGenericParametersCache: [String: [String: String]] = [:]
-    private static var sanitizedNamespacesCache: [String: String] = [:]
+    private final class Cache: @unchecked Sendable {
+        private let lock = NSLock()
+        var replacedGenericParameters: [String: [String: String]] = [:]
+        var sanitizedNamespaces: [String: String] = [:]
+
+        @discardableResult
+        func protected<T>(_ closure: (Cache) throws -> T) rethrows -> T {
+            lock.lock()
+            defer { lock.unlock() }
+            return try closure(self)
+        }
+    }
+    private static let cache = Cache()
 
     private static let sanitizeNamespacePatterns = [
         "(\\.\\(unknown context at ..........\\))",
@@ -110,9 +117,8 @@ public struct Inspector {
     ]
 
     private static let sanitizeNamespaceRegex = {
-        // swiftlint:disable force_try
+        // swiftlint:disable:next force_try
         try! NSRegularExpression(pattern: sanitizeNamespacePatterns.joined(separator: "|"))
-        // swiftlint:enable force_try
     }()
 }
 
@@ -225,7 +231,6 @@ internal extension Inspector {
 // MARK: - Attributes lookup
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 public extension Inspector {
 
     /**
@@ -234,7 +239,6 @@ public extension Inspector {
      (lldb) po Inspector.print(view) as AnyObject
      ```
      */
-    @preconcurrency
     static func print(_ value: Any) -> String {
         let tree = attributesTree(value: value, medium: .empty, visited: [])
         return typeName(value: value) + print(tree, level: 1)
@@ -305,7 +309,6 @@ public extension Inspector {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 fileprivate extension Dictionary where Key == String {
     func description(level: Int) -> String {
         let indent = Inspector.indent(level: level)
@@ -316,7 +319,6 @@ fileprivate extension Dictionary where Key == String {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 fileprivate extension Array {
     func description(level: Int) -> String {
         guard count > 0 else {
@@ -331,7 +333,6 @@ fileprivate extension Array {
 // MARK: - View Inspection
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Inspector {
 
     static func viewsInContainer(view: Any, medium: Content.Medium) throws -> LazyGroup<Content> {
@@ -350,7 +351,7 @@ internal extension Inspector {
         return try unwrap(content: Content(view, medium: medium))
     }
 
-    // swiftlint:disable cyclomatic_complexity
+    // swiftlint:disable:next cyclomatic_complexity
     static func unwrap(content: Content) throws -> Content {
         switch Inspector.typeName(value: content.view, generics: .remove) {
         case "Tree":
@@ -385,7 +386,6 @@ internal extension Inspector {
             return content
         }
     }
-    // swiftlint:enable cyclomatic_complexity
 
     static func guardType(value: Any, namespacedPrefixes: [String], inspectionCall: String) throws {
 

@@ -269,7 +269,7 @@ extension Bundle {
         return bundle
     }
     
-    private static var testResources: Bundle = {
+    private static let testResources: Bundle = {
         let bundleName = "ViewInspector_ViewInspectorTests"
         let bundle = Bundle(for: TextTests.self)
         if let resourcePath = bundle.resourceURL?

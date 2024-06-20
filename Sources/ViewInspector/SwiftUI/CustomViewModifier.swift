@@ -18,10 +18,8 @@ public extension ViewType {
 // MARK: - Extraction from SingleViewContent parent
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 public extension InspectableView {
 
-    @preconcurrency
     func modifier<T>(_ type: T.Type, _ index: Int? = nil) throws -> InspectableView<ViewType.ViewModifier<T>>
     where T: ViewModifier {
         let name = Inspector.typeName(type: type)
@@ -43,10 +41,8 @@ public extension InspectableView {
 // MARK: - Children
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 extension ViewType.ViewModifier: SingleViewContent {
-    
-    @preconcurrency
+
     public static func child(_ content: Content) throws -> Content {
         if content.isCustomView {
             return try content.extractCustomView()
@@ -66,7 +62,6 @@ extension ViewType.ViewModifier: MultipleViewContent {
 // MARK: - Internal
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-@MainActor 
 internal extension Content {
     func unwrappedModifiedContent() throws -> Content {
         let view = try Inspector.attribute(label: "content", value: self.view)
@@ -97,7 +92,8 @@ internal extension Content {
                         .map { !overlayModifiers.contains($0) } ?? true
                 }
 
-                // Recreates the medium to include any additional modifiers and objects that were found while unwrapping the custom modifier.
+                // Recreates the medium to include any additional modifiers and objects
+                // that were found while unwrapping the custom modifier.
                 medium = .init(
                     viewModifiers: viewModifiers,
                     transitiveViewModifiers: viewModifierContentMedium.transitiveViewModifiers,
@@ -121,8 +117,8 @@ internal extension Content {
 public extension ViewType {
     
     struct ViewModifierContent: KnownViewType {
-        public static var typePrefix: String = "_ViewModifier_Content"
-        
+        public static let typePrefix: String = "_ViewModifier_Content"
+
         public static func inspectionCall(typeName: String) -> String {
             return "viewModifierContent(\(ViewType.indexPlaceholder))"
         }
@@ -161,6 +157,7 @@ internal extension _ViewModifier_Content {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension ViewModifier {
+    @MainActor
     func body() -> Any {
         body(content: .init())
     }

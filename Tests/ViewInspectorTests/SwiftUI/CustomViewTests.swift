@@ -30,6 +30,7 @@ final class CustomViewTests: XCTestCase {
         XCTAssertEqual(text2, "abc")
     }
     
+    @MainActor
     func testEnvironmentStateChanges() throws {
         let sut = EnvironmentStateTestView()
         let viewModel = ExternalState()
@@ -44,12 +45,14 @@ final class CustomViewTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
+    @MainActor
     func testEnvironmentObjectModifier() throws {
         let viewModel = ExternalState()
         let view = EnvironmentStateTestView().environmentObject(viewModel)
         XCTAssertNoThrow(try view.inspect().view(EnvironmentStateTestView.self))
     }
 
+    @MainActor
     func testEnvironmentObjectActualView() throws {
         let viewModel = ExternalState()
         let view = EnvironmentStateTestView().environmentObject(viewModel)
@@ -101,6 +104,7 @@ final class CustomViewTests: XCTestCase {
             """)
     }
     
+    @MainActor
     func testEnvViewResetsModifiers() throws {
         let sut = EnvironmentStateTestView()
         let exp = sut.inspection.inspect { view in
@@ -169,12 +173,14 @@ final class CustomViewTests: XCTestCase {
         XCTAssertNoThrow(try view.inspect().hStack().view(SimpleTestView.self, 1))
     }
     
+    @MainActor
     func testExtractionEnvView1FromSingleViewContainer() throws {
         let viewModel = ExternalState()
         let view = AnyView(EnvironmentStateTestView().environmentObject(viewModel))
         XCTAssertNoThrow(try view.inspect().anyView().view(EnvironmentStateTestView.self))
     }
     
+    @MainActor
     func testExtractionEnvViewFromMultipleViewContainer() throws {
         let view = HStack { EnvironmentStateTestView(); EnvironmentStateTestView() }
         XCTAssertNoThrow(try view.inspect().hStack().view(EnvironmentStateTestView.self, 0))
@@ -191,6 +197,7 @@ final class CustomViewTests: XCTestCase {
                        "anyView().view(ObservedStateTestView.self).text()")
     }
     
+    @MainActor
     func testAsyncSearch() throws {
         let view = EnvironmentStateTestView()
         let sut = AnyView(view)
@@ -259,6 +266,7 @@ final class CustomViewTests: XCTestCase {
             """)
     }
     
+    @MainActor
     func testTestViews() {
         XCTAssertNoThrow(SimpleTestView().body)
         XCTAssertNoThrow(ObservedStateTestView(viewModel: ExternalState()).body)
