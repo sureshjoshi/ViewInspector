@@ -261,8 +261,8 @@ private extension Inspector {
         let description = Inspector.typeName(value: self) + " callback at line #\(line)"
         let expectation = XCTestExpectation(description: description)
         value[keyPath: keyPath] = { body in
-            inspection(body)
             Task { @MainActor in
+                inspection(body)
                 ViewHosting.expel(function: function)
                 expectation.fulfill()
             }

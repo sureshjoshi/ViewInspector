@@ -448,12 +448,6 @@ public extension ViewHosting {
 @available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
 internal extension MainActor {
     static func syncRun<T>(action: @MainActor @Sendable () throws -> T) rethrows -> T {
-        if Thread.isMainThread {
-            return try assumeIsolated(action)
-        } else {
-            return try DispatchQueue.main.sync {
-                try assumeIsolated(action)
-            }
-        }
+        return try assumeIsolated(action)
     }
 }

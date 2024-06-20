@@ -11,7 +11,6 @@ public extension Locale {
      }
      ````
      */
-    nonisolated
     static var testsDefault: Locale {
         get {
             storage.protected(\.locale)
@@ -216,8 +215,7 @@ private extension ViewType.Text {
                     path: "storage|formatStyleValue|format", value: container, type: (any FormatStyle).self),
                 let input = try? Inspector.attribute(
                     path: "storage|formatStyleValue|input", value: container),
-                let string = formatStyle.string(for: input, locale: locale)
-            {
+                let string = formatStyle.string(for: input, locale: locale) {
                 return string
             }
         }
