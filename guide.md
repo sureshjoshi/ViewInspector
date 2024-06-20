@@ -13,7 +13,7 @@
 
 ## The Basics
 
-Cosidering you have a view:
+Consider you have a view:
 
 ```swift
 struct ContentView: View {
@@ -190,7 +190,7 @@ The parameter `traversal` allows you to toggle between "breadth-first" and "dept
 
 The parameter `skipFound` is the number of matches you want to skip before returning the matching view you need (defaults to 0).
 
-The condition is called with an anonymous view, giving you the flexibility of either unwrapping it for verifying it's type or just assuring a certain modifier is applied.
+The condition is called with an anonymous view, giving you the flexibility of either unwrapping it for verifying its type or just assuring a certain modifier is applied.
 
 Here is how `find(viewWithId:)` is implemented in the library:
 
@@ -348,7 +348,7 @@ An advantage of this variant is simplicity and a minimal intrusion in the source
 
 ### Approach #2
 
-This one works for a more complex test scenarios where we want to inspect the view after a time span or when it receives an update from a publisher.
+This one works for more complex test scenarios where we want to inspect the view after a time span or when it receives an update from a publisher.
 
 Here is a code snippet that you need to include in the **build** target to make it work:
 
@@ -381,7 +381,7 @@ Once you add these two snippets, the **ViewInspector** will be fully armed for i
 
 ---
 
-For the same sample view we considered in the approach #1, instead of `onAppear / didAppear` dance we should use another two lines:
+For the same sample view we considered in approach #1, instead of `onAppear / didAppear` dance we should use another two lines:
 
 ```swift
 struct ContentView: View {
