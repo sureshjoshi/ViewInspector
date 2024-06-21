@@ -154,10 +154,16 @@ private extension ViewHosting {
             styleMask: [.titled, .resizable, .miniaturizable, .closable],
             backing: .buffered,
             defer: false)
-        window.contentViewController = RootViewController()
+        installRootViewController(window)
         window.makeKeyAndOrderFront(window)
         window.layoutIfNeeded()
         return window
+    }
+    @discardableResult
+    static func installRootViewController(_ window: NSWindow) -> NSViewController {
+        let vc = RootViewController()
+        window.contentViewController = vc
+        return vc
     }
     #elseif os(iOS) || os(tvOS) || os(visionOS)
     static func makeWindow() -> UIWindow {
@@ -167,11 +173,17 @@ private extension ViewHosting {
         let frame = UIScreen.main.bounds
         #endif
         let window = UIWindow(frame: frame)
-        window.rootViewController = UIViewController()
-        window.rootViewController?.view.translatesAutoresizingMaskIntoConstraints = false
+        installRootViewController(window)
         window.makeKeyAndVisible()
         window.layoutIfNeeded()
         return window
+    }
+    @discardableResult
+    static func installRootViewController(_ window: UIWindow) -> UIViewController {
+        let vc = UIViewController()
+        window.rootViewController = vc
+        vc.view.translatesAutoresizingMaskIntoConstraints = false
+        return vc
     }
     #endif
     
@@ -179,14 +191,14 @@ private extension ViewHosting {
     
     #if os(macOS)
     static var rootViewController: NSViewController {
-        window.contentViewController!
+        window.contentViewController ?? installRootViewController(window)
     }
     static func hostVC<V>(_ view: V) -> NSHostingController<V> where V: View {
         NSHostingController(rootView: view)
     }
     #elseif os(iOS) || os(tvOS) || os(visionOS)
     static var rootViewController: UIViewController {
-        window.rootViewController!
+        window.rootViewController ?? installRootViewController(window)
     }
     static func hostVC<V>(_ view: V) -> UIHostingController<V> where V: View {
         UIHostingController(rootView: view)
