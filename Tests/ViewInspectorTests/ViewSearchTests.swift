@@ -209,6 +209,7 @@ final class ViewSearchTests: XCTestCase {
         XCTAssertEqual(values, ["2", "3"])
     }
     
+    @MainActor
     func testConflictingViewTypeNames() throws {
         guard #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -222,6 +223,7 @@ final class ViewSearchTests: XCTestCase {
                        "group().styleConfigurationLabel(2)")
     }
     
+    @MainActor
     func testShapesSearching() throws {
         let sut = Group {
             Circle().inset(by: 5)

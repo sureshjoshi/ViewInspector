@@ -52,6 +52,7 @@ final class ModifiedContentTests: XCTestCase {
                         "EmptyView does not have 'TestModifier' modifier at index 1")
     }
     
+    @MainActor
     func testEmptyModifierUnwrapping() throws {
         let view = Text("Test")
             .modifier(EmptyModifier.identity)
@@ -70,6 +71,7 @@ final class ModifiedContentTests: XCTestCase {
                        "emptyView().modifier(TestModifier.self).viewModifierContent()")
     }
     
+    @MainActor
     func testMultipleModifiersInspection() throws {
         let binding = Binding(wrappedValue: false)
         let view = EmptyView()
@@ -96,6 +98,7 @@ final class ModifiedContentTests: XCTestCase {
             "emptyView().modifier(TestModifier.self, 1).viewModifierContent()")
     }
     
+    @MainActor
     func testDirectAsyncInspection() throws {
         let binding = Binding(wrappedValue: false)
         var sut = TestModifier2(value: binding)
@@ -114,6 +117,7 @@ final class ModifiedContentTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
+    @MainActor
     func testOnAsyncInspection() throws {
         let binding = Binding(wrappedValue: false)
         var sut = TestModifier2(value: binding)
@@ -127,6 +131,7 @@ final class ModifiedContentTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
+    @MainActor
     func testModifierWithEnvObjects() throws {
         let sut1 = EmptyView().modifier(TestModifier3())
         XCTAssertThrows(try sut1.inspect().emptyView().modifier(TestModifier3.self, 0).text(1),
@@ -148,6 +153,7 @@ final class ModifiedContentTests: XCTestCase {
             "emptyView().modifier(TestModifier3.self).group().text(1)")
     }
     
+    @MainActor
     func testApplyingInnerModifiersToTheContent() throws {
         let obj = ExternalState()
         let sut = TestModifier4.ViewWithEnvObject()

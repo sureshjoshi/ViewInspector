@@ -158,6 +158,13 @@ public extension PrimitiveButtonStyleConfiguration {
                    Int64, Int64, Int64, Int64, Int32) =
             (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
     }
+    private struct Allocator114 {
+        let head: (Bool, Bool) = (false, false)
+        let onTrigger: () -> Void
+        let tail: (Int64, Int64, Int64, Int64, Int64, Int64,
+                   Int64, Int64, Int64, Int64, Int64, Int16) =
+            (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    }
     init(onTrigger: @escaping () -> Void) {
         switch MemoryLayout<Self>.size {
         case 16:
@@ -166,6 +173,8 @@ public extension PrimitiveButtonStyleConfiguration {
             self = unsafeBitCast(Allocator24(onTrigger: onTrigger), to: Self.self)
         case 100:
             self = unsafeBitCast(Allocator100(onTrigger: onTrigger), to: Self.self)
+        case 114:
+            self = unsafeBitCast(Allocator114(onTrigger: onTrigger), to: Self.self)
         default:
             fatalError(MemoryLayout<Self>.actualSize())
         }

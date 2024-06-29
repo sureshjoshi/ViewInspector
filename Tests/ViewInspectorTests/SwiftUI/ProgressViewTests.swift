@@ -74,6 +74,7 @@ final class ProgressViewTests: XCTestCase {
         XCTAssertEqual(sut, "abc")
     }
     
+    @MainActor
     func testProgressViewStyleInspection() throws {
         guard #available(iOS 14, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -90,6 +91,7 @@ final class ProgressViewTests: XCTestCase {
         XCTAssertEqual(sut2.fractionCompleted, 0.9)
     }
     
+    @MainActor
     func testCustomProgressViewStyleInspection() throws {
         guard #available(iOS 14, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }

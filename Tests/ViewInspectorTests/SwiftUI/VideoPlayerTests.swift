@@ -9,6 +9,7 @@ final class VideoPlayerTests: XCTestCase {
     
     private let player = AVPlayer(url: URL(string: "https://sample.com/test.mp4")!)
     
+    @MainActor
     func testEnclosedView() throws {
         guard #available(iOS 14.0, macOS 11.0, watchOS 7.0, tvOS 14.0, *)
         else { throw XCTSkip() }
@@ -19,6 +20,7 @@ final class VideoPlayerTests: XCTestCase {
         XCTAssertEqual(try text.string(), "Test")
     }
     
+    @MainActor
     func testResetsModifiers() throws {
         guard #available(iOS 14.0, macOS 11.0, watchOS 7.0, tvOS 14.0, *)
         else { throw XCTSkip() }
@@ -29,6 +31,7 @@ final class VideoPlayerTests: XCTestCase {
         XCTAssertEqual(view.content.medium.viewModifiers.count, 0)
     }
     
+    @MainActor
     func testExtractionFromSingleViewContainer() throws {
         guard #available(iOS 14.0, macOS 11.0, watchOS 7.0, tvOS 14.0, *)
         else { throw XCTSkip() }
@@ -38,6 +41,7 @@ final class VideoPlayerTests: XCTestCase {
         XCTAssertNoThrow(try view.inspect().button().labelView().videoPlayer())
     }
     
+    @MainActor
     func testExtractionFromMultipleViewContainer() throws {
         guard #available(iOS 14.0, macOS 11.0, watchOS 7.0, tvOS 14.0, *)
         else { throw XCTSkip() }
@@ -49,6 +53,7 @@ final class VideoPlayerTests: XCTestCase {
         XCTAssertNoThrow(try view.inspect().hStack().videoPlayer(1))
     }
     
+    @MainActor
     func testSearch() throws {
         guard #available(iOS 14.0, macOS 11.0, watchOS 7.0, tvOS 14.0, *)
         else { throw XCTSkip() }
@@ -59,6 +64,7 @@ final class VideoPlayerTests: XCTestCase {
             "anyView().videoPlayer().videoOverlay().emptyView()")
     }
     
+    @MainActor
     func testPlayerExtraction() throws {
         guard #available(iOS 14.0, macOS 11.0, watchOS 7.0, tvOS 14.0, *)
         else { throw XCTSkip() }

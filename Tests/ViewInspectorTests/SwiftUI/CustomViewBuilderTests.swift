@@ -7,12 +7,14 @@ import SwiftUI
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class CustomViewBuilderTests: XCTestCase {
     
+    @MainActor
     func testSingleEnclosedView() throws {
         let sut = TestViewBuilderView { Text("Test") }
         let string = try sut.inspect().text(0).string()
         XCTAssertEqual(string, "Test")
     }
     
+    @MainActor
     func testSingleEnclosedViewIndexOutOfBounds() throws {
         let sut = TestViewBuilderView { Text("Test") }
         XCTAssertThrows(
@@ -20,6 +22,7 @@ final class CustomViewBuilderTests: XCTestCase {
             "Enclosed view index '1' is out of bounds: '0 ..< 1'")
     }
     
+    @MainActor
     func testMultipleEnclosedViews() throws {
         let sampleView1 = Text("Test")
         let sampleView2 = Text("Abc")
@@ -33,6 +36,7 @@ final class CustomViewBuilderTests: XCTestCase {
         XCTAssertEqual(view3, sampleView3)
     }
     
+    @MainActor
     func testMultipleEnclosedViewsIndexOutOfBounds() throws {
         let sampleView1 = Text("Test")
         let sampleView2 = Text("Abc")
@@ -42,6 +46,7 @@ final class CustomViewBuilderTests: XCTestCase {
             "Enclosed view index '2' is out of bounds: '0 ..< 2'")
     }
     
+    @MainActor
     func testResetsModifiers() throws {
         let view1 = TestViewBuilderView { Text("Test") }.padding().offset()
         let sut1 = try view1.inspect().view(TestViewBuilderView<Text>.self).text(0)
@@ -51,6 +56,7 @@ final class CustomViewBuilderTests: XCTestCase {
         XCTAssertEqual(sut2.content.medium.viewModifiers.count, 0)
     }
     
+    @MainActor
     func testExtractionFromSingleViewContainer() throws {
         let view = AnyView(TestViewBuilderView {
             Spacer()
@@ -60,6 +66,7 @@ final class CustomViewBuilderTests: XCTestCase {
             .view(TestViewBuilderView<EmptyView>.self).text(1))
     }
     
+    @MainActor
     func testExtractionFromMultipleViewContainer() throws {
         let view = HStack {
             TestViewBuilderView { Text("Test") }
@@ -69,6 +76,7 @@ final class CustomViewBuilderTests: XCTestCase {
         XCTAssertNoThrow(try view.inspect().hStack().view(TestViewBuilderView<Text>.self, 1))
     }
     
+    @MainActor
     func testActualView() throws {
         let sut = TestViewBuilderView { Text("Test") }
         XCTAssertNoThrow(try sut.inspect().view(TestViewBuilderView<Text>.self).actualView().content)
@@ -79,6 +87,7 @@ final class CustomViewBuilderTests: XCTestCase {
         XCTAssertNoThrow(TestViewBuilderView { Text("Test") }.body)
     }
     
+    @MainActor
     func testSearch() throws {
         let view = HStack {
             TestViewBuilderView { Text("Test"); EmptyView() }
@@ -90,6 +99,7 @@ final class CustomViewBuilderTests: XCTestCase {
         XCTAssertEqual(path2, "hStack().view(TestViewBuilderView<EmptyView>.self, 0).text(0)")
     }
     
+    @MainActor
     func testLocalViewBuilder() throws {
         struct ViewWrapper<V: View>: View {
             @ViewBuilder var view: () -> V

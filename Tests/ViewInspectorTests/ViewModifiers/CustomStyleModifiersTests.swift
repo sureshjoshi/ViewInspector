@@ -7,12 +7,14 @@ import SwiftUI
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class CustomStyleModifiersTests: XCTestCase {
     
+    @MainActor
     func testHelloWorldStyle() throws {
         let sut = EmptyView().helloWorldStyle(RedOutlineHelloWorldStyle())
         XCTAssertNoThrow(try sut.inspect().emptyView())
         print(type(of: sut))
     }
     
+    @MainActor
     func testHelloWorldStyleInspection() throws {
         let sut = EmptyView().helloWorldStyle(RedOutlineHelloWorldStyle())
         XCTAssertTrue(try sut.inspect().customStyle("helloWorldStyle") is RedOutlineHelloWorldStyle)
@@ -23,6 +25,7 @@ final class CustomStyleModifiersTests: XCTestCase {
         XCTAssertNoThrow(try style.inspect().zStack())
     }
     
+    @MainActor
     func testHelloWorldStyleAsyncInspection() throws {
         let style = RedOutlineHelloWorldStyle()
         var body = try style.inspect().view(RedOutlineHelloWorldStyle.StyleBody.self).actualView()

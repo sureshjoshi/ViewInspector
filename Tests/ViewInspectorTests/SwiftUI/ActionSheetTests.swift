@@ -28,6 +28,7 @@ final class ActionSheetTests: XCTestCase {
             """)
     }
     
+    @MainActor
     func testInspectionErrorSheetNotPresented() throws {
         let binding = Binding(wrappedValue: false)
         let sut = EmptyView().actionSheet2(isPresented: binding) { ActionSheet(title: Text("abc")) }
@@ -35,6 +36,7 @@ final class ActionSheetTests: XCTestCase {
                         "View for ActionSheet is absent")
     }
     
+    @MainActor
     func testInspectionErrorSheetWithItemNotPresented() throws {
         let binding = Binding<Int?>(wrappedValue: nil)
         let sut = EmptyView().actionSheet2(item: binding) { value in
@@ -43,7 +45,8 @@ final class ActionSheetTests: XCTestCase {
         XCTAssertThrows(try sut.inspect().emptyView().actionSheet(),
                         "View for ActionSheet is absent")
     }
-    
+
+    @MainActor
     func testTitleInspection() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().actionSheet2(isPresented: binding) {
@@ -54,6 +57,7 @@ final class ActionSheetTests: XCTestCase {
         XCTAssertEqual(title.pathToRoot, "emptyView().actionSheet().title()")
     }
     
+    @MainActor
     func testMessageInspection() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().actionSheet2(isPresented: binding) {
@@ -64,6 +68,7 @@ final class ActionSheetTests: XCTestCase {
         XCTAssertEqual(message.pathToRoot, "emptyView().actionSheet().message()")
     }
     
+    @MainActor
     func testNoMessageError() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().actionSheet2(isPresented: binding) {
@@ -73,6 +78,7 @@ final class ActionSheetTests: XCTestCase {
                         "View for message is absent")
     }
     
+    @MainActor
     func testButtonsInspection() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().actionSheet2(isPresented: binding) {
@@ -97,6 +103,7 @@ final class ActionSheetTests: XCTestCase {
             "View for button at index 3 is absent")
     }
     
+    @MainActor
     func testTapOnButtonWithoutCallback() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().actionSheet2(isPresented: binding) {
@@ -108,6 +115,7 @@ final class ActionSheetTests: XCTestCase {
         XCTAssertFalse(binding.wrappedValue)
     }
     
+    @MainActor
     func testTapOnButtonWithCallback() throws {
         let exp = XCTestExpectation(description: #function)
         let binding = Binding(wrappedValue: true)
@@ -123,6 +131,7 @@ final class ActionSheetTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
+    @MainActor
     func testActionSheetWithItem() throws {
         let binding = Binding<Int?>(wrappedValue: 6)
         let sut = EmptyView().actionSheet2(item: binding) { value in
@@ -134,6 +143,7 @@ final class ActionSheetTests: XCTestCase {
         XCTAssertNil(binding.wrappedValue)
     }
     
+    @MainActor
     func testDismiss() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().actionSheet2(isPresented: binding) {
@@ -145,6 +155,7 @@ final class ActionSheetTests: XCTestCase {
         XCTAssertThrows(try sut.inspect().actionSheet(), "View for ActionSheet is absent")
     }
     
+    @MainActor
     func testDismissForItemVersion() throws {
         let binding = Binding<Int?>(wrappedValue: 6)
         let sut = EmptyView().actionSheet2(item: binding) { value in
@@ -155,6 +166,7 @@ final class ActionSheetTests: XCTestCase {
         XCTAssertThrows(try sut.inspect().actionSheet(), "View for ActionSheet is absent")
     }
     
+    @MainActor
     func testMultipleSheetsInspection() throws {
         let binding1 = Binding(wrappedValue: true)
         let binding2 = Binding(wrappedValue: true)
@@ -179,6 +191,7 @@ final class ActionSheetTests: XCTestCase {
                         "Search did not find a match")
     }
     
+    @MainActor
     func testFindAndPathToRoots() throws {
         let binding = Binding(wrappedValue: true)
         let sut = ActionSheetFindTestView(sheet1: binding, sheet2: binding, sheet3: binding)

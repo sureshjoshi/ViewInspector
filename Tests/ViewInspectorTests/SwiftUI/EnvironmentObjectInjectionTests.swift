@@ -6,6 +6,7 @@ import SwiftUI
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 class EnvironmentObjectInjectionTests: XCTestCase {
     
+    @MainActor
     func testEnvironmentObjectMemoryLayout() throws {
         typealias RealType = EnvironmentObject<TestEnvObject1>
         XCTAssertEqual(MemoryLayout<RealType>.size, EnvObject.structSize)
@@ -28,6 +29,7 @@ class EnvironmentObjectInjectionTests: XCTestCase {
         XCTAssertEqual(store?.value1, obj.value1)
     }
     
+    @MainActor
     func testDirectEnvironmentObjectInjection() throws {
         let obj1 = TestEnvObject1()
         let obj2 = TestEnvObject2()
@@ -83,6 +85,7 @@ class EnvironmentObjectInjectionTests: XCTestCase {
         wait(for: [exp1, exp2], timeout: 0.5)
     }
     
+    @MainActor
     func testMissingEnvironmentObjectErrorForView() throws {
         var sut = EnvironmentObjectInnerView()
         XCTAssertThrows(try sut.inspect().find(ViewType.Text.self),

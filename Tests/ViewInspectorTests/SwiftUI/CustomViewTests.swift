@@ -7,6 +7,7 @@ import SwiftUI
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 7.0, *)
 final class CustomViewTests: XCTestCase {
     
+    @MainActor
     func testLocalStateChanges() throws {
         let sut = LocalStateTestView(flag: false)
         let exp = sut.inspection.inspect { view in
@@ -20,6 +21,7 @@ final class CustomViewTests: XCTestCase {
         wait(for: [exp], timeout: 0.5)
     }
     
+    @MainActor
     func testObservedStateChanges() throws {
         let viewModel = ExternalState()
         let view = ObservedStateTestView(viewModel: viewModel)
@@ -115,6 +117,7 @@ final class CustomViewTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
+    @MainActor
     @available(watchOS, deprecated: 7.0)
     func testExtractionOfTestViewRepresentable() throws {
         let view = AnyView(TestViewRepresentable())
@@ -141,6 +144,7 @@ final class CustomViewTests: XCTestCase {
         #endif
     }
     
+    @MainActor
     func testExtractionOfViewControllerRepresentable() throws {
         #if !os(watchOS)
         let view = AnyView(TestViewControllerRepresentable())
@@ -210,6 +214,7 @@ final class CustomViewTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
+    @MainActor
     func testActualView() throws {
         let sut = LocalStateTestView(flag: true)
         let exp = sut.inspection.inspect { view in

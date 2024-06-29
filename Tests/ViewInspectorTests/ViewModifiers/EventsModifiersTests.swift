@@ -181,8 +181,8 @@ private extension Inspector {
 
 private final class XCFlagExpectation: XCTestExpectation {
     
-    var isFulfilled: Bool = false
-    
+    private(set) var isFulfilled: Bool = false
+
     override func fulfill() {
         isFulfilled = true
         super.fulfill()

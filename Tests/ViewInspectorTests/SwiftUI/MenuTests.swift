@@ -60,6 +60,7 @@ final class MenuTests: XCTestCase {
         XCTAssertEqual(sut, "abc")
     }
     
+    @MainActor
     func testLabelStyleInspection() throws {
         guard #available(iOS 14, tvOS 14, macOS 11.0, *) else { throw XCTSkip() }
         let sut = EmptyView().menuStyle(DefaultMenuStyle())
@@ -84,6 +85,7 @@ final class MenuTests: XCTestCase {
                         "Menu does not have 'primaryAction' attribute")
     }
     
+    @MainActor
     func testCustomMenuStyleInspection() throws {
         guard #available(iOS 14, tvOS 14, macOS 11.0, *) else { throw XCTSkip() }
         let sut = TestMenuStyle()

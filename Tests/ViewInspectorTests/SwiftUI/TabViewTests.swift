@@ -54,6 +54,7 @@ final class TabViewTests: XCTestCase {
                        "anyView().tabView().text(0).tabItem().text()")
     }
     
+    @MainActor
     func testTabSelection() throws {
         let sut = TestTabSelectionView()
         let viewNotFound = "Search did not find a match"

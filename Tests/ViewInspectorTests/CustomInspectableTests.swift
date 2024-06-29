@@ -6,6 +6,7 @@ import SwiftUI
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class CustomInspectableTests: XCTestCase {
 
+    @MainActor
     func testCustomInspectableViewRepresentable() throws {
         let sut = CustomViewRepresentable(labels: ["1", "abc"])
         XCTAssertNoThrow(try sut.inspect().find(text: "abc"))

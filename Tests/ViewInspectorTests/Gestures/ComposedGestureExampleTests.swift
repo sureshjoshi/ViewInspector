@@ -8,6 +8,7 @@ import Combine
 @available(watchOS, unavailable)
 final class ComposedGestureExampleTests: XCTestCase {
     
+    @MainActor
     func testComposedGestureFirst() throws {
         let sut = TestGestureView10()
         let exp1 = sut.inspection.inspect { view in
@@ -30,6 +31,7 @@ final class ComposedGestureExampleTests: XCTestCase {
         wait(for: [exp1, exp2], timeout: 0.1)
     }
 
+    @MainActor
     func testComposedGestureSecond() throws {
         let sut = TestGestureView10()
         let exp1 = sut.inspection.inspect { view in
@@ -52,6 +54,7 @@ final class ComposedGestureExampleTests: XCTestCase {
         wait(for: [exp1, exp2], timeout: 0.1)
     }
     
+    @MainActor
     func testComposedGestureAltFirst() throws {
         let sut = TestGestureView11()
         let exp1 = sut.inspection.inspect { view in
@@ -83,6 +86,7 @@ final class ComposedGestureExampleTests: XCTestCase {
             "Type mismatch: TapGesture is not ExclusiveGesture, SequenceGesture, or SimultaneousGesture")
     }
     
+    @MainActor
     func testComposedGestureComplex() throws {
         let sut = TestGestureView12()
         let exp = sut.inspection.inspect { view in

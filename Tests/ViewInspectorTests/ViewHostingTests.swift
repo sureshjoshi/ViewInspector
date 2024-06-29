@@ -82,6 +82,7 @@ final class ViewHostingTests: XCTestCase {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ViewHostingTests: XCTestCase {
     
+    @MainActor
     func testUIViewUpdate() throws {
         let exp = XCTestExpectation(description: "updateUIView")
         exp.expectedFulfillmentCount = 2
@@ -96,6 +97,7 @@ final class ViewHostingTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
 
+    @MainActor
     func testUIViewExtraction() throws {
         let exp = XCTestExpectation(description: "extractUIView")
         let flag = Binding(wrappedValue: false)
@@ -112,6 +114,7 @@ final class ViewHostingTests: XCTestCase {
         wait(for: [exp], timeout: 0.2)
     }
     
+    @MainActor
     func testUIViewExtractionAfterStateUpdate() throws {
         let exp = XCTestExpectation(description: "extractUIView")
         var sut = UITestView.WrapperView(flag: false, didUpdate: { })
