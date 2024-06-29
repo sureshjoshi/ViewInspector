@@ -7,6 +7,7 @@ import SwiftUI
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class InspectionEmissaryTests: XCTestCase {
     
+    @MainActor
     func testViewOnFunction() throws {
         var sut = TestView(flag: false)
         let exp = sut.on(\.didAppear) { view in
@@ -72,6 +73,7 @@ final class InspectionEmissaryTests: XCTestCase {
         wait(for: [exp1, exp2], timeout: 0.2)
     }
     
+    @MainActor
     func testViewInspectOnReceive() throws {
         let sut = TestView(flag: false)
         let exp1 = sut.inspection.inspect { view in
@@ -92,6 +94,7 @@ final class InspectionEmissaryTests: XCTestCase {
         wait(for: [exp1, exp2, exp3], timeout: 0.2)
     }
     
+    @MainActor
     func testViewInspectOnReceiveAfter() throws {
         let sut = TestView(flag: false)
         let exp1 = sut.inspection.inspect { view in
@@ -162,6 +165,7 @@ final class InspectionEmissaryTests: XCTestCase {
         wait(for: [exp1, exp2, exp3], timeout: 0.2)
     }
     
+    @MainActor
     @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
     func testAsyncViewInspectAfter() async throws {
         let sut = TestView(flag: false)
@@ -201,6 +205,7 @@ final class InspectionEmissaryTests: XCTestCase {
         }
     }
     
+    @MainActor
     @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
     func testAsyncViewInspectOnReceive() async throws {
         let sut = TestView(flag: false)
@@ -232,6 +237,7 @@ final class InspectionEmissaryTests: XCTestCase {
         }
     }
     
+    @MainActor
     @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
     func testAsyncViewInspectOnReceiveAfter() async throws {
         let sut = TestView(flag: false)

@@ -127,6 +127,7 @@ final class NavigationBarItemsTests: XCTestCase {
             "EmptyView does not have 'navigationBarItems' modifier")
     }
     
+    @MainActor
     func testCustomViewUnwrapStepOne() throws {
         try skipForiOS15()
         let sut = TestView()
@@ -138,6 +139,7 @@ final class NavigationBarItemsTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
+    @MainActor
     func testCustomViewUnwrapStepTwo() throws {
         try skipForiOS15()
         let sut = TestView()
@@ -149,6 +151,7 @@ final class NavigationBarItemsTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
     
+    @MainActor
     func testCustomViewUnwrapStepThree() throws {
         try skipForiOS15()
         let sut = TestView()

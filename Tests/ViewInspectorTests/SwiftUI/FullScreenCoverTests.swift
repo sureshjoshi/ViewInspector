@@ -33,6 +33,7 @@ final class FullScreenCoverTests: XCTestCase {
             """)
     }
 
+    @MainActor
     func testInspectionErrorFullScreenCoverNotPresented() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -42,6 +43,7 @@ final class FullScreenCoverTests: XCTestCase {
                         "View for FullScreenCover is absent")
     }
 
+    @MainActor
     func testInspectionErrorFullScreenCoverWithItemNotPresented() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -51,6 +53,7 @@ final class FullScreenCoverTests: XCTestCase {
                         "View for FullScreenCover is absent")
     }
 
+    @MainActor
     func testContentInspection() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -63,6 +66,7 @@ final class FullScreenCoverTests: XCTestCase {
         XCTAssertEqual(title.pathToRoot, "emptyView().fullScreenCover().text()")
     }
 
+    @MainActor
     func testContentInteraction() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -77,6 +81,7 @@ final class FullScreenCoverTests: XCTestCase {
         XCTAssertEqual(button.pathToRoot, "emptyView().fullScreenCover().button(1)")
     }
 
+    @MainActor
     func testDismiss() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -92,6 +97,7 @@ final class FullScreenCoverTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
 
+    @MainActor
     func testDismissForItemVersion() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -105,6 +111,7 @@ final class FullScreenCoverTests: XCTestCase {
         XCTAssertThrows(try sut.inspect().fullScreenCover(), "View for FullScreenCover is absent")
     }
 
+    @MainActor
     func testMultipleFullScreenCoversInspection() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -130,6 +137,7 @@ final class FullScreenCoverTests: XCTestCase {
                         "Search did not find a match")
     }
 
+    @MainActor
     func testFindAndPathToRoots() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }

@@ -89,11 +89,13 @@ final class ButtonTests: XCTestCase {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class GlobalModifiersForButton: XCTestCase {
     
+    @MainActor
     func testButtonStyle() throws {
         let sut = EmptyView().buttonStyle(PlainButtonStyle())
         XCTAssertNoThrow(try sut.inspect().emptyView())
     }
     
+    @MainActor
     func testButtonStyleInspection() throws {
         let sut1 = EmptyView().buttonStyle(PlainButtonStyle())
         let sut2 = EmptyView().buttonStyle(TestButtonStyle())
@@ -123,6 +125,7 @@ final class ButtonStyleInspectionTests: XCTestCase {
         })
     }
     
+    @MainActor
     func testButtonStyle() throws {
         let style = TestButtonStyle()
         let sut1 = try style.inspect(isPressed: false)
@@ -132,6 +135,7 @@ final class ButtonStyleInspectionTests: XCTestCase {
     }
     
     #if !os(tvOS)
+    @MainActor
     func testPrimitiveButtonStyleExtraction() throws {
         guard #available(iOS 13.1, macOS 10.16, tvOS 13.1, *)
         else { throw XCTSkip() }
@@ -140,6 +144,7 @@ final class ButtonStyleInspectionTests: XCTestCase {
         XCTAssertNoThrow(try button.anyView().styleConfigurationLabel().blur())
     }
     
+    @MainActor
     func testPrimitiveButtonStyleLabel() throws {
         let triggerExp = XCTestExpectation(description: "label.trigger()")
         triggerExp.expectedFulfillmentCount = 1

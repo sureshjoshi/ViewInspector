@@ -54,6 +54,7 @@ final class DisclosureGroupTests: XCTestCase {
         XCTAssertEqual(string, "abc")
     }
     
+    @MainActor
     func testSearch() throws {
         guard #available(iOS 14, tvOS 14, macOS 11.0, *) else { throw XCTSkip() }
         let sut = DisclosureGroup(content: {
@@ -86,6 +87,7 @@ final class DisclosureGroupTests: XCTestCase {
         XCTAssertFalse(try view.inspect().disclosureGroup().isExpanded())
     }
     
+    @MainActor
     func testExpansionWithBindingActivation() throws {
         guard #available(iOS 14, tvOS 14, macOS 11.0, *) else { throw XCTSkip() }
         let expanded = Binding<Bool>(wrappedValue: false)

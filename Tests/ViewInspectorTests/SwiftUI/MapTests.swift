@@ -11,6 +11,7 @@ class MapTests: XCTestCase {
         center: CLLocationCoordinate2D(latitude: 123, longitude: 321),
         latitudinalMeters: 987, longitudinalMeters: 6)
     
+    @MainActor
     func testExtractionFromSingleViewContainer() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -18,6 +19,7 @@ class MapTests: XCTestCase {
         XCTAssertNoThrow(try sut.inspect().anyView().map())
     }
 
+    @MainActor
     func testExtractionFromMultipleViewContainer() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -29,6 +31,7 @@ class MapTests: XCTestCase {
         XCTAssertNoThrow(try view.inspect().hStack().map(1))
     }
 
+    @MainActor
     func testSearch() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -36,6 +39,7 @@ class MapTests: XCTestCase {
         XCTAssertEqual(try view.inspect().find(ViewType.Map.self).pathToRoot, "anyView().map()")
     }
 
+    @MainActor
     func testExtractingCoordinateRegionValue() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -43,6 +47,7 @@ class MapTests: XCTestCase {
         XCTAssertEqual(try sut.inspect().map().coordinateRegion(), testRegion)
     }
     
+    @MainActor
     func testSettingCoordinateRegionValue() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -54,6 +59,7 @@ class MapTests: XCTestCase {
         XCTAssertEqual(binding.wrappedValue, testRegion)
     }
     
+    @MainActor
     func testErrorOnSettingCoordinateRegionWhenNonResponsive() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -65,6 +71,7 @@ class MapTests: XCTestCase {
                         "Map is unresponsive: it is hidden")
     }
     
+    @MainActor
     func testExtractingMapRectValue() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -76,6 +83,7 @@ class MapTests: XCTestCase {
         XCTAssertEqual(try sut.inspect().map().mapRect(), rect)
     }
     
+    @MainActor
     func testSettingMapRectValue() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -91,6 +99,7 @@ class MapTests: XCTestCase {
         XCTAssertEqual(binding.wrappedValue, rect)
     }
     
+    @MainActor
     func testErrorOnSettingMapRectWhenNonResponsive() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -107,6 +116,7 @@ class MapTests: XCTestCase {
                         "Map is unresponsive: it is hidden")
     }
 
+    @MainActor
     func testExtractingInteractionModes() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -119,6 +129,7 @@ class MapTests: XCTestCase {
         XCTAssertEqual(value, .pan)
     }
 
+    @MainActor
     func testExtractingShowsUserLocation() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -131,6 +142,7 @@ class MapTests: XCTestCase {
         XCTAssertEqual(value, true)
     }
 
+    @MainActor
     func testExtractingUserTrackingMode() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -143,6 +155,7 @@ class MapTests: XCTestCase {
         XCTAssertEqual(value, .follow)
     }
     
+    @MainActor
     func testSettingUserTrackingMode() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }

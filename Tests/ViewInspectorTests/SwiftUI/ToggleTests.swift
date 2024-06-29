@@ -72,11 +72,13 @@ final class ToggleTests: XCTestCase {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class GlobalModifiersForToggle: XCTestCase {
     
+    @MainActor
     func testToggleStyle() throws {
         let sut = EmptyView().toggleStyle(DefaultToggleStyle())
         XCTAssertNoThrow(try sut.inspect().emptyView())
     }
     
+    @MainActor
     func testToggleStyleInspection() throws {
         let sut = EmptyView().toggleStyle(DefaultToggleStyle())
         XCTAssertTrue(try sut.inspect().toggleStyle() is DefaultToggleStyle)
@@ -89,6 +91,7 @@ final class GlobalModifiersForToggle: XCTestCase {
         XCTAssertTrue(sut2.isOn)
     }
     
+    @MainActor
     func testCustomMenuStyleInspection() throws {
         let sut = TestToggleStyle()
         XCTAssertEqual(try sut.inspect(isOn: true).vStack().styleConfigurationLabel(0).blur().radius, 5)
