@@ -352,7 +352,8 @@ This document reflects the current status of the [ViewInspector](https://github.
 |:white_check_mark:| `func onChange<V>(of: V, perform: (V) -> Void) -> some View` |
 |:white_check_mark:| `func onChange<V>(of: V, initial: Bool, _ action: () -> Void) -> some View` |
 |:white_check_mark:| `func onChange<V>(of: V, initial: Bool, _ action: (V, V) -> Void) -> some View` |
-|:white_check_mark:| `func task(...) -> some View` |
+|:white_check_mark:| `func task(priority: TaskPriority, () async -> Void) -> some View` |
+|:white_check_mark:| `func task<T>(id: T, priority: TaskPriority, () async -> Void) -> some View` |
 
 ### Handling View Hover and Focus
 
