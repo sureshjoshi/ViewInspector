@@ -203,6 +203,7 @@ final class ViewEventsTests: XCTestCase {
         await fulfillment(of: [exp], timeout: 0.1)
     }
 
+    @MainActor
     func testTaskIdInspection() async throws {
         guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
         let exp = XCTestExpectation(description: #function)
@@ -214,6 +215,7 @@ final class ViewEventsTests: XCTestCase {
         await fulfillment(of: [exp], timeout: 0.1)
     }
 
+    @MainActor
     func testTaskIdInspectionWithIndex() async throws {
         guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
         let exp1 = XCTestExpectation(description: "task1")
@@ -236,6 +238,7 @@ final class ViewEventsTests: XCTestCase {
         await fulfillment(of: [exp2], timeout: 0.1)
     }
 
+    @MainActor
     func testTaskIdInspectionMultipleDifferentTypes() async throws {
         guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
         struct CustomEquatableStruct: Equatable {
@@ -259,9 +262,9 @@ final class ViewEventsTests: XCTestCase {
                 exp3.fulfill()
             }
 
-        async let _ = try sut.inspect().emptyView().callTask(id: 2)
-        async let _ = try sut.inspect().emptyView().callTask(id: "id")
-        async let _ = try sut.inspect().emptyView().callTask(id: CustomEquatableStruct(value: 1))
+        _ = try await sut.inspect().emptyView().callTask(id: 2)
+        _ = try await sut.inspect().emptyView().callTask(id: "id")
+        _ = try await sut.inspect().emptyView().callTask(id: CustomEquatableStruct(value: 1))
 
         await fulfillment(of: [exp1, exp2, exp3], timeout: 0.1)
     }
