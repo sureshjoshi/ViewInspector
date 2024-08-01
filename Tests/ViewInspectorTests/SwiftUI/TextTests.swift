@@ -248,6 +248,13 @@ final class TextTests: XCTestCase {
         XCTAssertEqual(try sut.inspect().text().string(locale: .init(identifier: "de_DE")),
                        "Test 1.234 and 56,78\u{a0}%")
     }
+
+    func testCurrencyFormatStyle() throws {
+        guard #available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+        else { throw XCTSkip() }
+        let sut = Text(5000, format: .currency(code: "USD").scale(100).locale(Locale(identifier: "en")))
+        XCTAssertEqual(try sut.inspect().text().string(), "$500,000.00")
+    }
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)

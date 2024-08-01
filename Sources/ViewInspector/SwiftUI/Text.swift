@@ -120,6 +120,8 @@ private extension ViewType.Text {
             return try extractString(attachmentTextStorage: textStorage)
         case "DateTextStorage":
             return try extractString(dateTextStorage: textStorage)
+        case "FormatStyleStorage":
+            return try extractString(formatStyleStorage: textStorage)
         case "FormatterTextStorage":
             return try extractString(formatterTextStorage: textStorage)
         case "AttributedStringTextStorage":
@@ -147,7 +149,20 @@ private extension ViewType.Text {
         return (try firstText.inspect().text().string(locale: locale))
             + (try secondText.inspect().text().string(locale: locale))
     }
-    
+
+    // MARK: - FormatStyleStorage
+
+    private static func extractString(formatStyleStorage: Any) throws -> String {
+        let input = try Inspector
+            .attribute(path: "storage|input", value: formatStyleStorage)
+        let formatter = try Inspector
+            .attribute(path: "storage|format", value: formatStyleStorage)
+        if let currencyFormatter = formatter as? CurrencyFormatter {
+            return try currencyFormatter.format(value: input)
+        }
+        throw InspectionError.notSupported("Unknown text formatter: \(Inspector.typeName(value: formatter))")
+    }
+
     // MARK: - FormatterTextStorage
     
     private static func extractString(formatterTextStorage: Any) throws -> String {
@@ -156,7 +171,7 @@ private extension ViewType.Text {
         let object = try Inspector.attribute(label: "object", value: formatterTextStorage)
         return formatter.string(for: object) ?? ""
     }
-    
+
     // MARK: - AttachmentTextStorage
     
     private static func extractString(attachmentTextStorage: Any) throws -> String {
@@ -210,8 +225,7 @@ private extension ViewType.Text {
         }
 
         if #available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *) {
-            if
-                let formatStyle = try? Inspector.attribute(
+            if let formatStyle = try? Inspector.attribute(
                     path: "storage|formatStyleValue|format", value: container, type: (any FormatStyle).self),
                 let input = try? Inspector.attribute(
                     path: "storage|formatStyleValue|input", value: container),
@@ -241,6 +255,21 @@ extension FormatStyle {
         guard let input = input as? FormatInput else { return nil }
         let formatter = self.locale(locale)
         return formatter.format(input) as? String
+    }
+}
+
+private protocol CurrencyFormatter {
+    func format(value: Any) throws -> String
+}
+
+@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension IntegerFormatStyle.Currency: CurrencyFormatter {
+
+    func format(value: Any) throws -> String {
+        guard let input = value as? Value else {
+            throw InspectionError.typeMismatch(factual: Inspector.typeName(value: value), expected: Inspector.typeName(type: Value.self))
+        }
+        return self.format(input)
     }
 }
 
