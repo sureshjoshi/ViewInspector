@@ -350,8 +350,8 @@ This document reflects the current status of the [ViewInspector](https://github.
 |:---:|---|
 |:white_check_mark:| `func onReceive<P>(P, perform: (P.Output) -> Void) -> some View` |
 |:white_check_mark:| `func onChange<V>(of: V, perform: (V) -> Void) -> some View` |
-|:white_check_mark:| `func onChange<V>(of: V, initial: Bool = false, _ action: () -> Void) -> some View` |
-|:white_check_mark:| `func onChange<V>(of: V, initial: Bool = false, _ action: (V, V) -> Void) -> some View` |
+|:white_check_mark:| `func onChange<V>(of: V, initial: Bool, _ action: () -> Void) -> some View` |
+|:white_check_mark:| `func onChange<V>(of: V, initial: Bool, _ action: (V, V) -> Void) -> some View` |
 |:white_check_mark:| `func task(...) -> some View` |
 
 ### Handling View Hover and Focus
