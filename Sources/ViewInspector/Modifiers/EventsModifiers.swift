@@ -36,6 +36,17 @@ public extension InspectableView {
             call: "onChange", index: index)
         callback(value)
     }
+
+    @available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
+    func callOnChange<E: Equatable>(oldValue: E, newValue: E, index: Int = 0) throws {
+        let typeName = Inspector.typeName(type: E.self)
+        let callback = try modifierAttribute(
+            modifierName: "_ValueActionModifier2<\(typeName)>",
+            path: "modifier|action",
+            type: ((E, E) -> Void).self,
+            call: "onChange", index: index)
+        callback(oldValue, newValue)
+    }
 }
 
 @available(iOS 15, macOS 12, tvOS 15, watchOS 8, *)

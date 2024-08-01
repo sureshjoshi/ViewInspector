@@ -60,6 +60,50 @@ final class ViewEventsTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
 
+    func testOnChangeInitial() throws {
+        guard #available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
+        else { throw XCTSkip() }
+        let val = ""
+        let sut = EmptyView().onChange(of: val, initial: true) {}
+        XCTAssertNoThrow(try sut.inspect().emptyView())
+    }
+
+    func testOnChangeInitialInspection() throws {
+        guard #available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
+        else { throw XCTSkip() }
+        let val = Optional(Inspector.TestValue(value: "initial"))
+        let exp = XCTestExpectation(description: #function)
+        let sut = EmptyView().padding().onChange(of: val, initial: true) {
+            exp.fulfill()
+        }.padding()
+        try sut.inspect().emptyView()
+            .callOnChange(oldValue: val, newValue: Inspector.TestValue(value: "expected"))
+        wait(for: [exp], timeout: 0.1)
+    }
+
+    func testOnChangeOldValueNewValue() throws {
+        guard #available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
+        else { throw XCTSkip() }
+        let val = ""
+        let sut = EmptyView().onChange(of: val) { _, _ in }
+        XCTAssertNoThrow(try sut.inspect().emptyView())
+    }
+
+    func testOnChangeOldValueNewValueInspection() throws {
+        guard #available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
+        else { throw XCTSkip() }
+        let val = Optional(Inspector.TestValue(value: "initial"))
+        let exp = XCTestExpectation(description: #function)
+        let sut = EmptyView().padding().onChange(of: val) { oldValue, newValue in
+            XCTAssertEqual(oldValue, Inspector.TestValue(value: "initial"))
+            XCTAssertEqual(newValue, Inspector.TestValue(value: "expected"))
+            exp.fulfill()
+        }.padding()
+        try sut.inspect().emptyView()
+            .callOnChange(oldValue: val, newValue: Inspector.TestValue(value: "expected"))
+        wait(for: [exp], timeout: 0.1)
+    }
+
     func testMultipleOnChangeModifiersSameTypeCallFirst() throws {
         guard #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
