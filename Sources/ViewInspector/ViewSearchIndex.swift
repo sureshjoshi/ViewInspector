@@ -180,9 +180,9 @@ internal extension ViewSearch {
 
     struct ViewIdentity {
         
-        typealias ChildrenBuilder = (UnwrappedView) throws -> LazyGroup<UnwrappedView>
-        typealias SupplementaryBuilder = (UnwrappedView) throws -> LazyGroup<SupplementaryView>
-        
+        typealias ChildrenBuilder = @MainActor (UnwrappedView) throws -> LazyGroup<UnwrappedView>
+        typealias SupplementaryBuilder = @MainActor (UnwrappedView) throws -> LazyGroup<SupplementaryView>
+
         let viewType: KnownViewType.Type
         let builder: (Content, UnwrappedView?, Int?) throws -> UnwrappedView
         let children: ChildrenBuilder
@@ -396,7 +396,8 @@ internal extension ViewSearch {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension Content {
-    
+
+    @MainActor
     func modifierDescendants(parent: UnwrappedView) -> LazyGroup<UnwrappedView> {
         let modifierNames = modifiersMatching({ _ in true })
                 .map { $0.modifierType }
@@ -426,7 +427,8 @@ internal extension Content {
                 content, parent: parent, call: call, index: index)
         })
     }
-    
+
+    @MainActor
     private func sheetModifierDescendants(parent: UnwrappedView) -> LazyGroup<UnwrappedView> {
         let sheetModifiers = sheetsForSearch()
         let alertModifiers = alertsForSearch()

@@ -39,7 +39,8 @@ internal extension Content {
             || $0.modifierType.contains("AlertTransformModifier")
         }, call: name.firstLetterLowercased)
     }
-    
+
+    @MainActor
     func actionSheetsForSearch() -> [ViewSearch.ModifierIdentity] {
         let count = medium.viewModifiers
             .filter(isActionSheetBuilder(modifier:))
@@ -50,7 +51,8 @@ internal extension Content {
             })
         }
     }
-    
+
+    @MainActor
     private func isActionSheetBuilder(modifier: Any) -> Bool {
         let modifier = try? Inspector.attribute(
             label: "modifier", value: modifier, type: BasePopupPresenter.self)
@@ -81,7 +83,8 @@ public extension InspectableView where View == ViewType.ActionSheet {
         return try allViews.element(at: index + 2)
             .asInspectableView(ofType: ViewType.AlertButton.self)
     }
-    
+
+    @MainActor
     func dismiss() throws {
         let container = try Inspector.cast(
             value: content.view, type: ViewType.PopupContainer<ViewType.ActionSheet>.self)

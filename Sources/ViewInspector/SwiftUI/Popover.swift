@@ -78,7 +78,8 @@ internal extension Content {
             })
         }
     }
-    
+
+    @MainActor
     private func isPopoverBuilder(modifier: Any) -> Bool {
         let modifier = try? Inspector.attribute(
             label: "modifier", value: modifier, type: BasePopupPresenter.self)
@@ -92,14 +93,16 @@ internal extension Content {
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
 public extension InspectableView where View == ViewType.Popover {
-    
+
+    @MainActor
     func arrowEdge() throws -> Edge {
         let popover = try Inspector.cast(value: content.view, type: ViewType.PopupContainer<ViewType.Popover>.self)
         let modifier = try popover.presenter.content().standardPopoverModifier()
         return try Inspector.attribute(
             label: "arrowEdge", value: modifier, type: Edge.self)
     }
-    
+
+    @MainActor
     func attachmentAnchor() throws -> PopoverAttachmentAnchor {
         let popover = try Inspector.cast(value: content.view, type: ViewType.PopupContainer<ViewType.Popover>.self)
         let modifier = try popover.presenter.content().standardPopoverModifier()
@@ -112,7 +115,8 @@ public extension InspectableView where View == ViewType.Popover {
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
 public extension InspectableView where View == ViewType.Popover {
-    
+
+    @MainActor
     func dismiss() throws {
         let container = try Inspector.cast(value: content.view, type: ViewType.PopupContainer<ViewType.Popover>.self)
         container.presenter.dismissPopup()

@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public protocol BasePopupPresenter {
     func buildPopup() throws -> Any
@@ -11,6 +12,7 @@ public protocol BasePopupPresenter {
     var isSheetPresenter: Bool { get }
 }
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public protocol PopupPresenter: BasePopupPresenter {
     associatedtype Popup
@@ -19,6 +21,7 @@ public protocol PopupPresenter: BasePopupPresenter {
     var onDismiss: (() -> Void)? { get }
 }
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public protocol ItemPopupPresenter: BasePopupPresenter {
     associatedtype Popup
@@ -99,7 +102,6 @@ public extension ItemPopupPresenter where Popup == ActionSheet {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension ViewModifier where Self: BasePopupPresenter {
-    @MainActor
     func content() throws -> ViewInspector.Content {
         let view = body(content: _ViewModifier_Content())
         return try view.inspect().implicitAnyView().viewModifierContent().content
@@ -179,7 +181,7 @@ internal extension Content {
                 https://github.com/nalexn/ViewInspector/blob/master/guide_popups.md#\(name.lowercased())
                 """)
         }
-        let popup: Any = try {
+        let popup: Any = try MainActor.assumeIsolated {
             do {
                 return try popupPresenter.buildPopup()
             } catch {
@@ -188,7 +190,7 @@ internal extension Content {
                 }
                 throw error
             }
-        }()
+        }
         let container = ViewType.PopupContainer<Popup>(popup: popup, presenter: popupPresenter)
         let medium = self.medium.resettingViewModifiers()
         let content = Content(container, medium: medium)

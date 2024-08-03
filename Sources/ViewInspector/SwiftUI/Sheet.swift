@@ -72,7 +72,8 @@ internal extension Content {
             || $0.modifierType.contains("SheetPresentationModifier")
         }, call: name.firstLetterLowercased)
     }
-    
+
+    @MainActor
     func sheetsForSearch() -> [ViewSearch.ModifierIdentity] {
         let count = medium.viewModifiers
             .filter(isSheetBuilder(modifier:))
@@ -83,7 +84,8 @@ internal extension Content {
             })
         }
     }
-    
+
+    @MainActor
     private func isSheetBuilder(modifier: Any) -> Bool {
         let presenter = try? Inspector.attribute(
             label: "modifier", value: modifier, type: BasePopupPresenter.self)
@@ -95,12 +97,13 @@ internal extension Content {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension InspectableView where View == ViewType.Sheet {
-
+    @MainActor
     func dismiss() throws {
         let container = try Inspector.cast(value: content.view, type: ViewType.PopupContainer<ViewType.Sheet>.self)
         container.presenter.dismissPopup()
     }
-    
+
+    @MainActor
     @available(*, deprecated, renamed: "dismiss")
     func callOnDismiss() throws {
         try dismiss()

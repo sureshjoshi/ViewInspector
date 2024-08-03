@@ -51,7 +51,8 @@ internal extension Content {
             || $0.modifierType.contains("AlertTransformModifier")
         }, call: name.firstLetterLowercased)
     }
-    
+
+    @MainActor
     func alertsForSearch() -> [ViewSearch.ModifierIdentity] {
         let count = medium.viewModifiers
             .filter { modifier in
@@ -65,7 +66,8 @@ internal extension Content {
             })
         }
     }
-    
+
+    @MainActor
     private func isDeprecatedAlertPresenter(modifier: Any) -> Bool {
         let modifier = try? Inspector.attribute(
             label: "modifier", value: modifier, type: BasePopupPresenter.self)
@@ -127,7 +129,8 @@ public extension InspectableView where View == ViewType.Alert {
         return try View.supplementaryChildren(self).element(at: 3)
             .asInspectableView(ofType: ViewType.AlertButton.self)
     }
-    
+
+    @MainActor
     func dismiss() throws {
         do {
             let container = try Inspector.cast(
@@ -267,7 +270,9 @@ public extension InspectableView where View == ViewType.AlertButton {
                 label: "presenter", value: container,
                 type: BasePopupPresenter.self)
         else { throw InspectionError.parentViewNotFound(view: "Alert.Button") }
-        presenter.dismissPopup()
+        MainActor.assumeIsolated {
+            presenter.dismissPopup()
+        }
         typealias Callback = () -> Void
         let callback = try Inspector
             .attribute(label: "action", value: content.view, type: Callback.self)
