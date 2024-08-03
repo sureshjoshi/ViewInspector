@@ -114,7 +114,7 @@ public extension ViewType.Text.Attributes {
                 .attribute(path: "lineStyle|some|active", value: child, type: Bool.self) {
                 return active
             }
-            return (try? Inspector.attribute(path: "lineStyle|some|nsUnderlineStyle", value: child)) != nil
+            return extractUnderlineStyle(from: child) != nil
         }
     }
     
@@ -134,8 +134,7 @@ public extension ViewType.Text.Attributes {
         return try commonTrait(name: "strikethrough") { modifier -> NSUnderlineStyle? in
             guard let child = try? Inspector.attribute(label: "anyTextModifier", value: modifier),
                 Inspector.typeName(value: child) == "StrikethroughTextModifier",
-                let value = try? Inspector
-                    .attribute(path: "lineStyle|some|nsUnderlineStyle", value: child, type: NSUnderlineStyle.self)
+                  let value = extractUnderlineStyle(from: child)
                 else { return nil }
             return value
         }
@@ -150,7 +149,7 @@ public extension ViewType.Text.Attributes {
                 .attribute(path: "lineStyle|some|active", value: child, type: Bool.self) {
                 return active
             }
-            return (try? Inspector.attribute(path: "lineStyle|some|nsUnderlineStyle", value: child)) != nil
+            return extractUnderlineStyle(from: child) != nil
         }
     }
     
@@ -170,8 +169,7 @@ public extension ViewType.Text.Attributes {
         return try commonTrait(name: "underline") { modifier -> NSUnderlineStyle? in
             guard let child = try? Inspector.attribute(label: "anyTextModifier", value: modifier),
                 Inspector.typeName(value: child) == "UnderlineTextModifier",
-                let value = try? Inspector
-                    .attribute(path: "lineStyle|some|nsUnderlineStyle", value: child, type: NSUnderlineStyle.self)
+                  let value = extractUnderlineStyle(from: child)
                 else { return nil }
             return value
         }
@@ -202,6 +200,15 @@ public extension ViewType.Text.Attributes {
                 else { return nil }
             return kerning
         }
+    }
+
+    private func extractUnderlineStyle(from value: Any) -> NSUnderlineStyle? {
+        if let value = try? Inspector
+            .attribute(path: "lineStyle|some|nsUnderlineStyleValue", value: value, type: Int.self) {
+            return NSUnderlineStyle(rawValue: value)
+        }
+        return try? Inspector
+            .attribute(path: "lineStyle|some|nsUnderlineStyle", value: value, type: NSUnderlineStyle.self)
     }
 }
 

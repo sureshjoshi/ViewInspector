@@ -110,7 +110,7 @@ private extension ViewType.Text {
             return verbatim
         }
         let textStorage = try Inspector.attribute(path: "anyTextStorage", value: storage)
-        let storageType = Inspector.typeName(value: textStorage)
+        let storageType = Inspector.typeName(value: textStorage, generics: .remove)
         switch storageType {
         case "ConcatenatedTextStorage":
             return try extractString(concatenatedTextStorage: textStorage, locale)
