@@ -85,9 +85,9 @@ internal extension Content {
     }
     
     private func isSheetBuilder(modifier: Any) -> Bool {
-        let modifier = try? Inspector.attribute(
+        let presenter = try? Inspector.attribute(
             label: "modifier", value: modifier, type: BasePopupPresenter.self)
-        return modifier?.isSheetPresenter == true
+        return presenter?.isSheetPresenter == true
     }
 }
 
