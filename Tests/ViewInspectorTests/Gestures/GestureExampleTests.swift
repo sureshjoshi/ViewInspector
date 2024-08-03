@@ -115,7 +115,7 @@ final class GestureExampleTests: XCTestCase {
     #if os(macOS)
     func testGestureModifiers() throws {
         let sut = TestGestureView8()
-        let gesture = try sut.inspect().shape(0).gesture(TapGesture.self)
+        let gesture = try sut.inspect().implicitAnyView().shape(0).gesture(TapGesture.self)
         XCTAssertEqual(try gesture.gestureModifiers(), [.shift, .control])
     }
     #endif

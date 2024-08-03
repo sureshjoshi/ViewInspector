@@ -10,6 +10,7 @@ import UIKit
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ViewHostingTests: XCTestCase {
 
+    @MainActor
     func testNSViewUpdate() throws {
         let exp = XCTestExpectation(description: "updateNSView")
         exp.expectedFulfillmentCount = 2
@@ -24,7 +25,8 @@ final class ViewHostingTests: XCTestCase {
         ViewHosting.host(view: sut)
         wait(for: [exp], timeout: 0.1)
     }
-    
+
+    @MainActor
     func testNSViewExtraction() throws {
         let exp = XCTestExpectation(description: "extractNSView")
         let flag = Binding(wrappedValue: false)
@@ -40,13 +42,14 @@ final class ViewHostingTests: XCTestCase {
         ViewHosting.host(view: sut)
         wait(for: [exp], timeout: 0.2)
     }
-    
+
+    @MainActor
     func testNSViewExtractionAfterStateUpdate() throws {
         let exp = XCTestExpectation(description: "extractNSView")
         var sut = NSTestView.WrapperView(flag: false, didUpdate: { })
         sut.didAppear = { wrapper in
             wrapper.inspect { wrapper in
-                let view = try wrapper.view(NSTestView.self)
+                let view = try wrapper.implicitAnyView().view(NSTestView.self)
                 XCTAssertThrows(
                     try view.actualView().nsView(),
                     "View for NSTestView is absent")
