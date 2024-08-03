@@ -53,8 +53,8 @@ final class PickerTests: XCTestCase {
     func testResetsModifiers() throws {
         let binding = Binding<Int?>(wrappedValue: nil)
         let view = Picker(selection: binding, label: Text("Title")) {
-            Text("First Option").tag(0)
-            Text("Second Option").tag(1)
+            Text("First Option").offset()
+            Text("Second Option").offset()
         }.padding().padding()
         let sut = try view.inspect().picker().text(0)
         XCTAssertEqual(sut.content.medium.viewModifiers.count, 1)

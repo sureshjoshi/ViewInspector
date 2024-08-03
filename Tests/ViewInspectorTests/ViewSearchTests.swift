@@ -96,6 +96,7 @@ final class ViewSearchTests: XCTestCase {
         let testView = Test.MainView()
         XCTAssertEqual(try testView.inspect().find(text: "123").pathToRoot,
         "view(MainView.self).anyView().group().text(1)")
+        #if compiler(<6)
         XCTAssertEqual(try testView.inspect().find(text: "Test_en").pathToRoot,
         """
         view(MainView.self).anyView().group().emptyView(0).overlay().hStack()\
@@ -106,6 +107,18 @@ final class ViewSearchTests: XCTestCase {
         view(MainView.self).anyView().group().emptyView(0).overlay().hStack()\
         .view(InnerView.self, 1).button().labelView().hStack().text(0)
         """)
+        #else
+        XCTAssertEqual(try testView.inspect().find(text: "Test_en").pathToRoot,
+        """
+        view(MainView.self).anyView().group().emptyView(0).overlay().hStack()\
+        .view(InnerView.self, 1).anyView().button().mask().group().text(0)
+        """)
+        XCTAssertEqual(try testView.inspect().find(text: "Btn").pathToRoot,
+        """
+        view(MainView.self).anyView().group().emptyView(0).overlay().hStack()\
+        .view(InnerView.self, 1).anyView().button().labelView().hStack().text(0)
+        """)
+        #endif
         XCTAssertEqual(try testView.inspect().find(text: "xyz").pathToRoot,
         "view(MainView.self).anyView().group().text(1).background().button().labelView().text()")
         XCTAssertEqual(try testView.inspect().find(text: "modifier_0").pathToRoot,
@@ -215,12 +228,21 @@ final class ViewSearchTests: XCTestCase {
         else { throw XCTSkip() }
         let style = Test.ConflictingViewTypeNamesStyle()
         let sut = try style.inspect(isPressed: true)
+        #if compiler(<6)
         XCTAssertEqual(try sut.find(text: "empty").pathToRoot,
                        "group().view(EmptyView.self, 0).text()")
         XCTAssertEqual(try sut.find(ViewType.Label.self).pathToRoot,
                        "group().label(1)")
         XCTAssertEqual(try sut.find(ViewType.StyleConfiguration.Label.self).pathToRoot,
                        "group().styleConfigurationLabel(2)")
+        #else
+        XCTAssertEqual(try sut.find(text: "empty").pathToRoot,
+                       "anyView().group().view(EmptyView.self, 0).anyView().text()")
+        XCTAssertEqual(try sut.find(ViewType.Label.self).pathToRoot,
+                       "anyView().group().label(1)")
+        XCTAssertEqual(try sut.find(ViewType.StyleConfiguration.Label.self).pathToRoot,
+                       "anyView().group().styleConfigurationLabel(2)")
+        #endif
     }
     
     @MainActor
@@ -263,8 +285,13 @@ extension ViewSearchTests {
         guard #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
         let sut = Test.AccessibleView()
+        #if compiler(<6)
         XCTAssertEqual(try sut.inspect().find(viewWithAccessibilityLabel: "text1_access").pathToRoot,
                        "view(AccessibleView.self).button().labelView().hStack().text(0)")
+        #else
+        XCTAssertEqual(try sut.inspect().find(viewWithAccessibilityLabel: "text1_access").pathToRoot,
+                       "view(AccessibleView.self).anyView().button().labelView().hStack().text(0)")
+        #endif
         XCTAssertThrows(
             try sut.inspect().find(viewWithAccessibilityLabel: "abc"),
             "Search did not find a match"
@@ -275,8 +302,13 @@ extension ViewSearchTests {
         guard #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
         let sut = Test.AccessibleView()
+        #if compiler(<6)
         XCTAssertEqual(try sut.inspect().find(viewWithAccessibilityIdentifier: "text2_access").pathToRoot,
                        "view(AccessibleView.self).button().mask().group().text(0)")
+        #else
+        XCTAssertEqual(try sut.inspect().find(viewWithAccessibilityIdentifier: "text2_access").pathToRoot,
+                       "view(AccessibleView.self).anyView().button().mask().group().text(0)")
+        #endif
         XCTAssertThrows(
             try sut.inspect().find(viewWithAccessibilityIdentifier: "abc"),
             "Search did not find a match"

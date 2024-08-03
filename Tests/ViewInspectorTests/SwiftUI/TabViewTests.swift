@@ -16,8 +16,8 @@ final class TabViewTests: XCTestCase {
     
     func testResetsModifiers() throws {
         let view = TabView {
-            Text("First View").tabItem({ Text("First") }).tag(0)
-            Text("Second View").tabItem({ Text("Second") }).tag(1)
+            Text("First View").tabItem({ Text("First") }).offset()
+            Text("Second View").tabItem({ Text("Second") }).offset()
         }.padding().padding().padding()
         let sut = try view.inspect().tabView().text(0)
         XCTAssertEqual(sut.content.medium.viewModifiers.count, 2)
@@ -61,7 +61,7 @@ final class TabViewTests: XCTestCase {
         let exp = sut.inspection.inspect { view in
             XCTAssertEqual(try view.actualView().selectedTab, 1)
             XCTAssertNoThrow(try view.find(text: "tab_1"))
-            XCTAssertThrows(try view.tabView(1).text(2),
+            XCTAssertThrows(try view.implicitAnyView().tabView(1).text(2),
                             "View for tab with tag 3 is absent")
             XCTAssertThrows(try view.find(text: "tab_2"), viewNotFound)
             XCTAssertThrows(try view.find(text: "tab_3"), viewNotFound)
