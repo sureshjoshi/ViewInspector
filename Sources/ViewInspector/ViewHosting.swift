@@ -15,14 +15,15 @@ public extension ViewHosting {
         var key: String { function }
     }
 
+    @MainActor
     static func host<V>(_ view: V, size: CGSize? = nil,
                         function: String = #function,
-                        whileHosted: (V) async throws -> Void
+                        whileHosted: @MainActor (V) async throws -> Void
     ) async throws where V: View {
         let viewId = ViewId(function: function)
-        await host(view: view, size: size, viewId: viewId)
+        host(view: view, size: size, viewId: viewId)
         try await whileHosted(view)
-        await expel(viewId: viewId)
+        expel(viewId: viewId)
     }
 
     static func host<V>(view: V, size: CGSize? = nil, function: String = #function) where V: View {

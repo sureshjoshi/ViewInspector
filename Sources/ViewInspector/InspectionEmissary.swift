@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 import XCTest
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public protocol InspectionEmissary: AnyObject {
     
