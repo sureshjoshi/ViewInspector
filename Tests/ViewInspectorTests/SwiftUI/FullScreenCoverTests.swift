@@ -153,7 +153,7 @@ final class FullScreenCoverTests: XCTestCase {
         #if compiler(<6)
         XCTAssertEqual(title2.pathToRoot,
             "view(FullScreenCoverFindTestView.self).hStack().emptyView(0).fullScreenCover(1).text(0)")
-        XCTAssertEqual(try sut.inspect().find(ViewType.FullScreenCover.self, ski).text(0).string(), "title_1")
+        XCTAssertEqual(try sut.inspect().find(ViewType.FullScreenCover.self).text(0).string(), "title_1")
         #else
         XCTAssertEqual(title2.pathToRoot,
             "view(FullScreenCoverFindTestView.self).anyView().hStack().anyView(0).anyView().fullScreenCover().text(0)")
