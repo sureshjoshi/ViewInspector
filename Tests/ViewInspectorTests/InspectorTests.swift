@@ -232,7 +232,7 @@ final class InspectableViewModifiersTests: XCTestCase {
                 })
            })
         let sut = try view.inspect().anyView().group().emptyView(1).overlay()
-            .hStack().view(TestPrintView.self, 1).text()
+            .hStack().view(TestPrintView.self, 1).implicitAnyView().text().parent()
         // Cannot use `XCTAssertThrows` because test target changes name
         // between ViewInspectorTests and ViewInspector_Unit_Tests under cocoapods tests
         // ViewInspectorTests.TestPrintView vs ViewInspector_Unit_Tests.TestPrintView
@@ -266,10 +266,17 @@ final class InspectableViewModifiersTests: XCTestCase {
         let view2 = TestPrintView()
         let sut3 = try view2.inspect()
         XCTAssertEqual(sut3.pathToRoot, "")
+        #if compiler(<6)
         let sut4 = try view2.inspect().text()
         XCTAssertEqual(sut4.pathToRoot, "view(TestPrintView.self).text()")
         let sut5 = try view2.inspect().text(0)
         XCTAssertEqual(sut5.pathToRoot, "view(TestPrintView.self).text(0)")
+        #else
+        let sut4 = try view2.inspect().implicitAnyView().text()
+        XCTAssertEqual(sut4.pathToRoot, "view(TestPrintView.self).anyView().text()")
+        let sut5 = try view2.inspect().implicitAnyView().text(0)
+        XCTAssertEqual(sut5.pathToRoot, "view(TestPrintView.self).anyView().text(0)")
+        #endif
     }
     
     func testPathToRootComplexHierarchy() throws {
@@ -282,10 +289,18 @@ final class InspectableViewModifiersTests: XCTestCase {
                     TestPrintView().padding()
                 })
            })
+        #if compiler(<6)
         let sut1 = try view1.inspect().anyView().group().emptyView(1).overlay()
             .hStack().view(TestPrintView.self, 1).text()
         XCTAssertEqual(sut1.pathToRoot,
         "anyView().group().emptyView(1).overlay().hStack().view(TestPrintView.self, 1).text()")
+        #else
+        let sut0 = try view1.inspect().anyView().group().emptyView(1).overlay()
+            .hStack().view(TestPrintView.self, 1).anyView().text()
+        XCTAssertEqual(sut0.pathToRoot,
+        "anyView().group().emptyView(1).overlay().hStack().view(TestPrintView.self, 1).anyView().text()")
+        let sut1 = try sut0.parent()
+        #endif
         XCTAssertEqual(try sut1.parent().pathToRoot,
         "anyView().group().emptyView(1).overlay().hStack().view(TestPrintView.self, 1)")
         XCTAssertEqual(try sut1.parent().parent().pathToRoot,

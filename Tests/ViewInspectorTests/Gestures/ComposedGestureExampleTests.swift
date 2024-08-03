@@ -13,6 +13,7 @@ final class ComposedGestureExampleTests: XCTestCase {
         let sut = TestGestureView10()
         let exp1 = sut.inspection.inspect { view in
             let simultaneousGesture = try view
+                .implicitAnyView()
                 .vStack()
                 .image(0)
                 .gesture(SimultaneousGesture<MagnificationGesture, RotationGesture>.self)
@@ -36,6 +37,7 @@ final class ComposedGestureExampleTests: XCTestCase {
         let sut = TestGestureView10()
         let exp1 = sut.inspection.inspect { view in
             let simultaneousGesture = try view
+                .implicitAnyView()
                 .vStack()
                 .image(0)
                 .gesture(SimultaneousGesture<MagnificationGesture, RotationGesture>.self)
@@ -59,6 +61,7 @@ final class ComposedGestureExampleTests: XCTestCase {
         let sut = TestGestureView11()
         let exp1 = sut.inspection.inspect { view in
             let simultaneousGesture = try view
+                .implicitAnyView()
                 .vStack()
                 .image(0)
                 .gesture(SimultaneousGesture<MagnificationGesture, RotationGesture>.self)
@@ -80,7 +83,7 @@ final class ComposedGestureExampleTests: XCTestCase {
     func testNotAComposedGestureError() throws {
         guard #available(iOS 14.0, tvOS 16.0, *) else { throw XCTSkip() }
         let sut = TestGestureView1()
-        let rectangle = try sut.inspect().shape()
+        let rectangle = try sut.inspect().implicitAnyView().shape()
         let tapGesture = try rectangle.gesture(TapGesture.self)
         XCTAssertThrows(try tapGesture.first(MagnificationGesture.self),
             "Type mismatch: TapGesture is not ExclusiveGesture, SequenceGesture, or SimultaneousGesture")
@@ -91,6 +94,7 @@ final class ComposedGestureExampleTests: XCTestCase {
         let sut = TestGestureView12()
         let exp = sut.inspection.inspect { view in
             let outerSimultaneousGesture = try view
+                .implicitAnyView()
                 .vStack()
                 .image(0)
                 .gesture(

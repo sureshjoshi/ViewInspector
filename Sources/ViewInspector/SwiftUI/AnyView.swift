@@ -20,6 +20,16 @@ extension ViewType.AnyView: SingleViewContent {
     }
 }
 
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+extension ViewType.AnyView: MultipleViewContent {
+
+    public static func children(_ content: Content) throws -> LazyGroup<Content> {
+        let view = try Inspector.attribute(path: "storage|view", value: content.view)
+        let medium = content.medium.resettingViewModifiers()
+        return try Inspector.viewsInContainer(view: view, medium: medium)
+    }
+}
+
 // MARK: - Extraction from SingleViewContent parent
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)

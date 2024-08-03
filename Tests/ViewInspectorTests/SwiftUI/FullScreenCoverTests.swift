@@ -39,7 +39,7 @@ final class FullScreenCoverTests: XCTestCase {
         else { throw XCTSkip() }
         let binding = Binding(wrappedValue: false)
         let sut = EmptyView().fullScreenCover2(isPresented: binding) { Text("") }
-        XCTAssertThrows(try sut.inspect().emptyView().fullScreenCover(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().fullScreenCover(),
                         "View for FullScreenCover is absent")
     }
 
@@ -49,7 +49,7 @@ final class FullScreenCoverTests: XCTestCase {
         else { throw XCTSkip() }
         let binding = Binding<Int?>(wrappedValue: nil)
         let sut = EmptyView().fullScreenCover2(item: binding) { Text("\($0)") }
-        XCTAssertThrows(try sut.inspect().emptyView().fullScreenCover(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().fullScreenCover(),
                         "View for FullScreenCover is absent")
     }
 
@@ -61,7 +61,7 @@ final class FullScreenCoverTests: XCTestCase {
         let sut = EmptyView().fullScreenCover2(isPresented: binding) {
             Text("abc")
         }
-        let title = try sut.inspect().emptyView().fullScreenCover().text()
+        let title = try sut.inspect().implicitAnyView().emptyView().fullScreenCover().text()
         XCTAssertEqual(try title.string(), "abc")
         XCTAssertEqual(title.pathToRoot, "emptyView().fullScreenCover().text()")
     }
@@ -75,7 +75,7 @@ final class FullScreenCoverTests: XCTestCase {
             Text("abc")
             Button("xyz", action: { binding.wrappedValue = false })
         }
-        let button = try sut.inspect().emptyView().fullScreenCover().button(1)
+        let button = try sut.inspect().implicitAnyView().emptyView().fullScreenCover().button(1)
         try button.tap()
         XCTAssertFalse(binding.wrappedValue)
         XCTAssertEqual(button.pathToRoot, "emptyView().fullScreenCover().button(1)")
@@ -91,9 +91,9 @@ final class FullScreenCoverTests: XCTestCase {
             exp.fulfill()
         }, content: { Text("") })
         XCTAssertTrue(binding.wrappedValue)
-        try sut.inspect().fullScreenCover().dismiss()
+        try sut.inspect().implicitAnyView().fullScreenCover().dismiss()
         XCTAssertFalse(binding.wrappedValue)
-        XCTAssertThrows(try sut.inspect().fullScreenCover(), "View for FullScreenCover is absent")
+        XCTAssertThrows(try sut.inspect().implicitAnyView().fullScreenCover(), "View for FullScreenCover is absent")
         wait(for: [exp], timeout: 0.1)
     }
 
@@ -103,12 +103,12 @@ final class FullScreenCoverTests: XCTestCase {
         else { throw XCTSkip() }
         let binding = Binding<Int?>(wrappedValue: 6)
         let sut = EmptyView().fullScreenCover2(item: binding) { Text("\($0)") }
-        let fullScreenCover = try sut.inspect().fullScreenCover()
+        let fullScreenCover = try sut.inspect().implicitAnyView().emptyView().fullScreenCover()
         XCTAssertEqual(try fullScreenCover.text().string(), "6")
         XCTAssertEqual(binding.wrappedValue, 6)
         try fullScreenCover.dismiss()
         XCTAssertNil(binding.wrappedValue)
-        XCTAssertThrows(try sut.inspect().fullScreenCover(), "View for FullScreenCover is absent")
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().fullScreenCover(), "View for FullScreenCover is absent")
     }
 
     @MainActor
@@ -120,10 +120,17 @@ final class FullScreenCoverTests: XCTestCase {
         let binding3 = Binding(wrappedValue: true)
         let sut = FullScreenCoverFindTestView(
             fullScreenCover1: binding1, fullScreenCover2: binding2, fullScreenCover3: binding3)
+        #if compiler(<6)
         let title1 = try sut.inspect().hStack().emptyView(0).fullScreenCover().text(0)
         XCTAssertEqual(try title1.string(), "title_1")
         XCTAssertEqual(title1.pathToRoot,
             "view(FullScreenCoverFindTestView.self).hStack().emptyView(0).fullScreenCover().text(0)")
+        #else
+        let title1 = try sut.inspect().hStack().anyView(0).anyView().emptyView().fullScreenCover().text(0)
+        XCTAssertEqual(try title1.string(), "title_1")
+        XCTAssertEqual(title1.pathToRoot,
+            "view(FullScreenCoverFindTestView.self).hStack().anyView(0).anyView().emptyView().fullScreenCover().text(0)")
+        #endif
         let title2 = try sut.inspect().hStack().emptyView(0).fullScreenCover(1).text(0)
         XCTAssertEqual(try title2.string(), "title_3")
         XCTAssertEqual(title2.pathToRoot,

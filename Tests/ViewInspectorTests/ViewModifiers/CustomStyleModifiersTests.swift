@@ -10,27 +10,31 @@ final class CustomStyleModifiersTests: XCTestCase {
     @MainActor
     func testHelloWorldStyle() throws {
         let sut = EmptyView().helloWorldStyle(RedOutlineHelloWorldStyle())
-        XCTAssertNoThrow(try sut.inspect().emptyView())
+        XCTAssertNoThrow(try sut.inspect().implicitAnyView().emptyView())
         print(type(of: sut))
     }
     
     @MainActor
     func testHelloWorldStyleInspection() throws {
         let sut = EmptyView().helloWorldStyle(RedOutlineHelloWorldStyle())
+        #if compiler(<6)
         XCTAssertTrue(try sut.inspect().customStyle("helloWorldStyle") is RedOutlineHelloWorldStyle)
+        #else
+        XCTAssertTrue(try sut.inspect().implicitAnyView().emptyView().customStyle("helloWorldStyle") is RedOutlineHelloWorldStyle)
+        #endif
     }
     
     func testHelloWorldStyleExtraction() throws {
         let style = DefaultHelloWorldStyle()
-        XCTAssertNoThrow(try style.inspect().zStack())
+        XCTAssertNoThrow(try style.inspect().implicitAnyView().zStack())
     }
     
     @MainActor
     func testHelloWorldStyleAsyncInspection() throws {
         let style = RedOutlineHelloWorldStyle()
-        var body = try style.inspect().view(RedOutlineHelloWorldStyle.StyleBody.self).actualView()
+        var body = try style.inspect().implicitAnyView().view(RedOutlineHelloWorldStyle.StyleBody.self).actualView()
         let expectation = body.on(\.didAppear) { inspectedBody in
-            let zStack = try inspectedBody.zStack()
+            let zStack = try inspectedBody.implicitAnyView().zStack()
             let rectangle = try zStack.shape(0)
             XCTAssertEqual(try rectangle.fillShapeStyle(Color.self), Color.red)
             XCTAssertEqual(try rectangle.strokeStyle().lineWidth, 1)

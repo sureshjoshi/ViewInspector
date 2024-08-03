@@ -32,7 +32,7 @@ final class ActionSheetTests: XCTestCase {
     func testInspectionErrorSheetNotPresented() throws {
         let binding = Binding(wrappedValue: false)
         let sut = EmptyView().actionSheet2(isPresented: binding) { ActionSheet(title: Text("abc")) }
-        XCTAssertThrows(try sut.inspect().emptyView().actionSheet(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().actionSheet(),
                         "View for ActionSheet is absent")
     }
     
@@ -42,7 +42,7 @@ final class ActionSheetTests: XCTestCase {
         let sut = EmptyView().actionSheet2(item: binding) { value in
             ActionSheet(title: Text("\(value)"))
         }
-        XCTAssertThrows(try sut.inspect().emptyView().actionSheet(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().actionSheet(),
                         "View for ActionSheet is absent")
     }
 
@@ -52,9 +52,15 @@ final class ActionSheetTests: XCTestCase {
         let sut = EmptyView().actionSheet2(isPresented: binding) {
             ActionSheet(title: Text("abc"))
         }
+        #if compiler(<6)
         let title = try sut.inspect().emptyView().actionSheet().title()
         XCTAssertEqual(try title.string(), "abc")
         XCTAssertEqual(title.pathToRoot, "emptyView().actionSheet().title()")
+        #else
+        let title = try sut.inspect().implicitAnyView().emptyView().actionSheet().title()
+        XCTAssertEqual(try title.string(), "abc")
+        XCTAssertEqual(title.pathToRoot, "anyView().emptyView().actionSheet().title()")
+        #endif
     }
     
     @MainActor
@@ -63,9 +69,15 @@ final class ActionSheetTests: XCTestCase {
         let sut = EmptyView().actionSheet2(isPresented: binding) {
             ActionSheet(title: Text("abc"), message: Text("123"))
         }
+        #if compiler(<6)
         let message = try sut.inspect().emptyView().actionSheet().message()
         XCTAssertEqual(try message.string(), "123")
         XCTAssertEqual(message.pathToRoot, "emptyView().actionSheet().message()")
+        #else
+        let message = try sut.inspect().implicitAnyView().emptyView().actionSheet().message()
+        XCTAssertEqual(try message.string(), "123")
+        XCTAssertEqual(message.pathToRoot, "anyView().emptyView().actionSheet().message()")
+        #endif
     }
     
     @MainActor
@@ -74,7 +86,7 @@ final class ActionSheetTests: XCTestCase {
         let sut = EmptyView().actionSheet2(isPresented: binding) {
             ActionSheet(title: Text("abc"))
         }
-        XCTAssertThrows(try sut.inspect().emptyView().actionSheet().message(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().actionSheet().message(),
                         "View for message is absent")
     }
     
@@ -87,19 +99,25 @@ final class ActionSheetTests: XCTestCase {
                                   .destructive(Text("b2")),
                                   .cancel(Text("b3"))])
         }
-        let btn1 = try sut.inspect().emptyView().actionSheet().button(0)
-        let btn2 = try sut.inspect().emptyView().actionSheet().button(1)
-        let btn3 = try sut.inspect().emptyView().actionSheet().button(2)
+        let btn1 = try sut.inspect().implicitAnyView().emptyView().actionSheet().button(0)
+        let btn2 = try sut.inspect().implicitAnyView().emptyView().actionSheet().button(1)
+        let btn3 = try sut.inspect().implicitAnyView().emptyView().actionSheet().button(2)
         XCTAssertEqual(try btn1.labelView().string(), "b1")
         XCTAssertEqual(try btn2.labelView().string(), "b2")
         XCTAssertEqual(try btn3.labelView().string(), "b3")
+        #if compiler(<6)
         XCTAssertEqual(try btn1.labelView().pathToRoot, "emptyView().actionSheet().button(0).labelView()")
         XCTAssertEqual(try btn2.labelView().pathToRoot, "emptyView().actionSheet().button(1).labelView()")
         XCTAssertEqual(try btn3.labelView().pathToRoot, "emptyView().actionSheet().button(2).labelView()")
+        #else
+        XCTAssertEqual(try btn1.labelView().pathToRoot, "anyView().emptyView().actionSheet().button(0).labelView()")
+        XCTAssertEqual(try btn2.labelView().pathToRoot, "anyView().emptyView().actionSheet().button(1).labelView()")
+        XCTAssertEqual(try btn3.labelView().pathToRoot, "anyView().emptyView().actionSheet().button(2).labelView()")
+        #endif
         XCTAssertEqual(try btn1.style(), .default)
         XCTAssertEqual(try btn2.style(), .destructive)
         XCTAssertEqual(try btn3.style(), .cancel)
-        XCTAssertThrows(try sut.inspect().emptyView().actionSheet().button(3),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().actionSheet().button(3),
             "View for button at index 3 is absent")
     }
     
@@ -111,7 +129,7 @@ final class ActionSheetTests: XCTestCase {
                         buttons: [.default(Text("xyz"))])
         }
         XCTAssertTrue(binding.wrappedValue)
-        try sut.inspect().emptyView().actionSheet().button(0).tap()
+        try sut.inspect().implicitAnyView().emptyView().actionSheet().button(0).tap()
         XCTAssertFalse(binding.wrappedValue)
     }
     
@@ -126,7 +144,7 @@ final class ActionSheetTests: XCTestCase {
                   })])
         }
         XCTAssertTrue(binding.wrappedValue)
-        try sut.inspect().emptyView().actionSheet().button(0).tap()
+        try sut.inspect().implicitAnyView().emptyView().actionSheet().button(0).tap()
         XCTAssertFalse(binding.wrappedValue)
         wait(for: [exp], timeout: 0.1)
     }
@@ -137,9 +155,9 @@ final class ActionSheetTests: XCTestCase {
         let sut = EmptyView().actionSheet2(item: binding) { value in
             ActionSheet(title: Text("\(value)"))
         }
-        XCTAssertEqual(try sut.inspect().emptyView().actionSheet().title().string(), "6")
+        XCTAssertEqual(try sut.inspect().implicitAnyView().emptyView().actionSheet().title().string(), "6")
         XCTAssertEqual(binding.wrappedValue, 6)
-        try sut.inspect().emptyView().actionSheet().button(0).tap()
+        try sut.inspect().implicitAnyView().emptyView().actionSheet().button(0).tap()
         XCTAssertNil(binding.wrappedValue)
     }
     
@@ -150,9 +168,9 @@ final class ActionSheetTests: XCTestCase {
             ActionSheet(title: Text("abc"))
         }
         XCTAssertTrue(binding.wrappedValue)
-        try sut.inspect().actionSheet().dismiss()
+        try sut.inspect().implicitAnyView().emptyView().actionSheet().dismiss()
         XCTAssertFalse(binding.wrappedValue)
-        XCTAssertThrows(try sut.inspect().actionSheet(), "View for ActionSheet is absent")
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().actionSheet(), "View for ActionSheet is absent")
     }
     
     @MainActor
@@ -161,9 +179,9 @@ final class ActionSheetTests: XCTestCase {
         let sut = EmptyView().actionSheet2(item: binding) { value in
             ActionSheet(title: Text("\(value)"))
         }
-        try sut.inspect().emptyView().actionSheet().dismiss()
+        try sut.inspect().implicitAnyView().emptyView().actionSheet().dismiss()
         XCTAssertNil(binding.wrappedValue)
-        XCTAssertThrows(try sut.inspect().actionSheet(), "View for ActionSheet is absent")
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().actionSheet(), "View for ActionSheet is absent")
     }
     
     @MainActor
@@ -172,6 +190,8 @@ final class ActionSheetTests: XCTestCase {
         let binding2 = Binding(wrappedValue: true)
         let binding3 = Binding(wrappedValue: true)
         let sut = ActionSheetFindTestView(sheet1: binding1, sheet2: binding2, sheet3: binding3)
+
+        #if compiler(<6)
         let title1 = try sut.inspect().hStack().emptyView(0).actionSheet().title()
         XCTAssertEqual(try title1.string(), "title_1")
         XCTAssertEqual(title1.pathToRoot,
@@ -183,6 +203,21 @@ final class ActionSheetTests: XCTestCase {
         
         XCTAssertEqual(try sut.inspect().find(ViewType.ActionSheet.self)
                         .title().string(), "title_1")
+        #else
+
+        let title1 = try sut.inspect().anyView().hStack().anyView(0).anyView().emptyView().actionSheet().title()
+        XCTAssertEqual(try title1.string(), "title_1")
+        XCTAssertEqual(title1.pathToRoot,
+            "view(ActionSheetFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().actionSheet().title()")
+
+        let title2 = try sut.inspect().anyView().hStack().anyView(0).anyView().actionSheet().title()
+        XCTAssertEqual(try title2.string(), "title_3")
+        XCTAssertEqual(title2.pathToRoot,
+            "view(ActionSheetFindTestView.self).anyView().hStack().anyView(0).anyView().actionSheet().title()")
+        XCTAssertEqual(try sut.inspect().find(ViewType.ActionSheet.self, skipFound: 1)
+                        .title().string(), "title_1")
+        #endif
+
         binding1.wrappedValue = false
         XCTAssertEqual(try sut.inspect().find(ViewType.ActionSheet.self)
                         .title().string(), "title_3")
@@ -197,6 +232,7 @@ final class ActionSheetTests: XCTestCase {
         let sut = ActionSheetFindTestView(sheet1: binding, sheet2: binding, sheet3: binding)
         
         // 1
+        #if compiler(<6)
         XCTAssertEqual(try sut.inspect().find(text: "title_1").pathToRoot,
             "view(ActionSheetFindTestView.self).hStack().emptyView(0).actionSheet().title()")
         XCTAssertEqual(try sut.inspect().find(text: "message_1").pathToRoot,
@@ -205,6 +241,16 @@ final class ActionSheetTests: XCTestCase {
             "view(ActionSheetFindTestView.self).hStack().emptyView(0).actionSheet().button(0).labelView()")
         XCTAssertEqual(try sut.inspect().find(text: "button_1_1").pathToRoot,
             "view(ActionSheetFindTestView.self).hStack().emptyView(0).actionSheet().button(1).labelView()")
+        #else
+        XCTAssertEqual(try sut.inspect().find(text: "title_1").pathToRoot,
+            "view(ActionSheetFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().actionSheet().title()")
+        XCTAssertEqual(try sut.inspect().find(text: "message_1").pathToRoot,
+            "view(ActionSheetFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().actionSheet().message()")
+        XCTAssertEqual(try sut.inspect().find(text: "button_1_0").pathToRoot,
+            "view(ActionSheetFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().actionSheet().button(0).labelView()")
+        XCTAssertEqual(try sut.inspect().find(text: "button_1_1").pathToRoot,
+            "view(ActionSheetFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().actionSheet().button(1).labelView()")
+        #endif
         // 2
         let noMatchMessage: String
         if #available(iOS 13.2, tvOS 13.2, macOS 10.17, *) {
@@ -215,17 +261,31 @@ final class ActionSheetTests: XCTestCase {
         XCTAssertThrows(try sut.inspect().find(text: "title_2").pathToRoot, noMatchMessage)
         
         // 3
+        #if compiler(<6)
         XCTAssertEqual(try sut.inspect().find(text: "title_3").pathToRoot,
             "view(ActionSheetFindTestView.self).hStack().emptyView(0).actionSheet(1).title()")
         
         XCTAssertThrows(try sut.inspect().find(text: "message_3").pathToRoot, noMatchMessage)
         XCTAssertEqual(try sut.inspect().find(text: "button_3_0").pathToRoot,
             "view(ActionSheetFindTestView.self).hStack().emptyView(0).actionSheet(1).button(0).labelView()")
+        #else
+        XCTAssertEqual(try sut.inspect().find(text: "title_3").pathToRoot,
+            "view(ActionSheetFindTestView.self).anyView().hStack().anyView(0).anyView().actionSheet().title()")
+
+        XCTAssertThrows(try sut.inspect().find(text: "message_3").pathToRoot, noMatchMessage)
+        XCTAssertEqual(try sut.inspect().find(text: "button_3_0").pathToRoot,
+            "view(ActionSheetFindTestView.self).anyView().hStack().anyView(0).anyView().actionSheet().button(0).labelView()")
+        #endif
     }
     
     func testAlertVsActionSheetMessage() throws {
+        #if compiler(<6)
         let sut = try PopupMixTestView().inspect().emptyView()
         let alert = try sut.alert()
+        #else
+        let sut = try PopupMixTestView().inspect().anyView().anyView()
+        let alert = try sut.emptyView().alert()
+        #endif
         let sheet = try sut.actionSheet()
         XCTAssertEqual(try alert.message().text().string(), "Alert Message")
         XCTAssertEqual(try sheet.message().string(), "Sheet Message")
