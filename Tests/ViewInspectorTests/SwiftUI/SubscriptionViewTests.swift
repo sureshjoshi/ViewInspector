@@ -10,7 +10,7 @@ final class SubscriptionViewTests: XCTestCase {
     func testEnclosedView() throws {
         let subject = PassthroughSubject<Void, Never>()
         let view = SubscriptionTestView(publisher: subject.eraseToAnyPublisher())
-        let string = try view.inspect().text().string()
+        let string = try view.inspect().implicitAnyView().text().string()
         XCTAssertEqual(string, "XYZ")
     }
     

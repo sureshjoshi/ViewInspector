@@ -92,9 +92,9 @@ final class DeprecatedAlertTests: XCTestCase {
         let label = try sut.inspect().implicitAnyView().emptyView().alert().primaryButton().labelView()
         XCTAssertEqual(try label.string(), "xyz")
         #if compiler(<6)
-        XCTAssertEqual(label.pathToRoot, "anyView().emptyView().alert().primaryButton().labelView()")
-        #else
         XCTAssertEqual(label.pathToRoot, "emptyView().alert().primaryButton().labelView()")
+        #else
+        XCTAssertEqual(label.pathToRoot, "anyView().emptyView().alert().primaryButton().labelView()")
         #endif
     }
     

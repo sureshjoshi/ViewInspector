@@ -118,7 +118,7 @@ private extension ViewType.Text {
             return try extractString(localizedTextStorage: textStorage, locale)
         case "AttachmentTextStorage":
             return try extractString(attachmentTextStorage: textStorage)
-        case "DateTextStorage":
+        case "DateTextStorage", "TimeDataFormattingStorage":
             return try extractString(dateTextStorage: textStorage)
         case "FormatStyleStorage":
             return try extractString(formatStyleStorage: textStorage)

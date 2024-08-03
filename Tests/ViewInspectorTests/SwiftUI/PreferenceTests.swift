@@ -68,7 +68,7 @@ final class PreferenceTests: XCTestCase {
     }
     
     func testDifferentOverlayUseCases() throws {
-        let sut = try ManyOverlaysView().inspect().emptyView()
+        let sut = try ManyOverlaysView().inspect().implicitAnyView().emptyView()
         let prefValue = try sut.overlayPreferenceValue().text().string()
         XCTAssertEqual(prefValue, Key.defaultValue)
         let border = try sut.border(Color.self)
@@ -79,7 +79,7 @@ final class PreferenceTests: XCTestCase {
     func testDifferentOverlayUseCasesIOS15() throws {
         guard #available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
         else { throw XCTSkip() }
-        let sut = try ManyOverlaysViewIOS15().inspect().emptyView()
+        let sut = try ManyOverlaysViewIOS15().inspect().implicitAnyView().emptyView()
         let prefValue = try sut.overlayPreferenceValue().text().string()
         XCTAssertEqual(prefValue, Key.defaultValue)
         let border = try sut.border(Color.self)
@@ -89,7 +89,7 @@ final class PreferenceTests: XCTestCase {
     }
     
     func testDifferentBackgroundOverlayUseCases() throws {
-        let sut = try ManyBGOverlaysView().inspect().emptyView()
+        let sut = try ManyBGOverlaysView().inspect().implicitAnyView().emptyView()
         let prefValue = try sut.backgroundPreferenceValue().text().string()
         XCTAssertEqual(prefValue, Key.defaultValue)
         XCTAssertNoThrow(try sut.background(1).spacer())
@@ -97,6 +97,7 @@ final class PreferenceTests: XCTestCase {
     
     func testOverlaySearch() throws {
         let sut1 = try ManyOverlaysView().inspect()
+        #if compiler(<6)
         XCTAssertEqual(try sut1.find(text: "Test").pathToRoot,
             "view(ManyOverlaysView.self).emptyView().overlay().anyView().text()")
         XCTAssertEqual(try sut1.find(text: Key.defaultValue).pathToRoot,
@@ -106,6 +107,17 @@ final class PreferenceTests: XCTestCase {
             "view(ManyBGOverlaysView.self).emptyView().background().anyView().text()")
         XCTAssertEqual(try sut2.find(text: Key.defaultValue).pathToRoot,
             "view(ManyBGOverlaysView.self).emptyView().backgroundPreferenceValue().text()")
+        #else
+        XCTAssertEqual(try sut1.find(text: "Test").pathToRoot,
+            "view(ManyOverlaysView.self).anyView().emptyView().overlay().anyView().text()")
+        XCTAssertEqual(try sut1.find(text: Key.defaultValue).pathToRoot,
+            "view(ManyOverlaysView.self).anyView().emptyView().overlayPreferenceValue().text()")
+        let sut2 = try ManyBGOverlaysView().inspect()
+        XCTAssertEqual(try sut2.find(text: "Test").pathToRoot,
+            "view(ManyBGOverlaysView.self).anyView().emptyView().background().anyView().text()")
+        XCTAssertEqual(try sut2.find(text: Key.defaultValue).pathToRoot,
+            "view(ManyBGOverlaysView.self).anyView().emptyView().backgroundPreferenceValue().text()")
+        #endif
     }
 }
 

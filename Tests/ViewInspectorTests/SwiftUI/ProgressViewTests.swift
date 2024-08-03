@@ -96,21 +96,28 @@ final class ProgressViewTests: XCTestCase {
         guard #available(iOS 14, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
         let sut = TestProgressViewStyle()
-        XCTAssertEqual(try sut.inspect(fractionCompleted: nil)
+        XCTAssertEqual(try sut.inspect(fractionCompleted: nil).implicitAnyView()
                         .vStack().styleConfigurationLabel(0).brightness(), 3)
-        XCTAssertEqual(try sut.inspect(fractionCompleted: nil)
+        XCTAssertEqual(try sut.inspect(fractionCompleted: nil).implicitAnyView()
                         .vStack().styleConfigurationCurrentValueLabel(1).blur().radius, 5)
         XCTAssertThrows(try EmptyView().inspect().styleConfigurationCurrentValueLabel(),
         """
         styleConfigurationCurrentValueLabel() found EmptyView instead \
         of ProgressViewStyleConfiguration.CurrentValueLabel
         """)
-        XCTAssertEqual(try sut.inspect(fractionCompleted: 0.42)
+        XCTAssertEqual(try sut.inspect(fractionCompleted: 0.42).implicitAnyView()
                         .vStack().text(2).string(), "Completed: 42%")
+        #if compiler(<6)
         XCTAssertEqual(try sut.inspect().find(ViewType.StyleConfiguration.Label.self).pathToRoot,
                        "vStack().styleConfigurationLabel(0)")
         XCTAssertEqual(try sut.inspect().find(ViewType.StyleConfiguration.CurrentValueLabel.self).pathToRoot,
                        "vStack().styleConfigurationCurrentValueLabel(1)")
+        #else
+        XCTAssertEqual(try sut.inspect().find(ViewType.StyleConfiguration.Label.self).pathToRoot,
+                       "anyView().vStack().styleConfigurationLabel(0)")
+        XCTAssertEqual(try sut.inspect().find(ViewType.StyleConfiguration.CurrentValueLabel.self).pathToRoot,
+                       "anyView().vStack().styleConfigurationCurrentValueLabel(1)")
+        #endif
     }
 }
 

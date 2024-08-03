@@ -120,7 +120,7 @@ final class ViewHostingTests: XCTestCase {
         var sut = UITestView.WrapperView(flag: false, didUpdate: { })
         sut.didAppear = { wrapper in
             wrapper.inspect { wrapper in
-                let view = try wrapper.view(UITestView.self)
+                let view = try wrapper.implicitAnyView().view(UITestView.self)
                 XCTAssertThrows(
                     try view.actualView().uiView(),
                     "View for UITestView is absent")

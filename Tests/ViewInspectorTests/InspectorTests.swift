@@ -74,6 +74,7 @@ final class InspectorTests: XCTestCase {
     
     func testPrintValue() {
         let sut = TestPrintView()
+        #if compiler(<6)
         let str = """
                 TestPrintView
                   body: Text
@@ -85,6 +86,21 @@ final class InspectorTests: XCTestCase {
                     [1] = def
 
                 """
+        #else
+        let str = """
+                TestPrintView
+                  body: AnyView
+                    storage: AnyViewStorage<Text>
+                      view: Text
+                        modifiers: Array<Modifier> = []
+                        storage: Storage
+                          verbatim: String = abc
+                  str: Array<String>
+                    [0] = abc
+                    [1] = def
+
+                """
+        #endif
         XCTAssertEqual(Inspector.print(sut), str)
     }
     
@@ -128,13 +144,24 @@ final class InspectorTests: XCTestCase {
     
     func testPrintTypeReference() {
         let sut = ViewWithTypeReference()
+        #if compiler(<6)
         XCTAssertEqual(Inspector.print(sut), """
             ViewWithTypeReference
               body: EmptyView = EmptyView()
               ref: Any.Type
-            
+
             """)
-        XCTAssertNoThrow(try sut.inspect().emptyView())
+        #else
+        XCTAssertEqual(Inspector.print(sut), """
+            ViewWithTypeReference
+              body: AnyView
+                storage: AnyViewStorage<EmptyView>
+                  view: EmptyView = EmptyView()
+              ref: Any.Type
+
+            """)
+        #endif
+        XCTAssertNoThrow(try sut.inspect().implicitAnyView().emptyView())
     }
     
     func testTupleView() throws {
