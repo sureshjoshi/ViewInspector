@@ -131,7 +131,7 @@ public extension InspectableView where View: CustomViewType {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension NSViewRepresentable {
     func nsView() throws -> NSViewType {
-        return try MainActor.syncRun {
+        return try MainActor.assumeIsolated {
             try ViewHosting.lookup(Self.self)
         }
     }
@@ -140,7 +140,7 @@ public extension NSViewRepresentable {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension NSViewControllerRepresentable {
     func viewController() throws -> NSViewControllerType {
-        return try MainActor.syncRun {
+        return try MainActor.assumeIsolated {
             try ViewHosting.lookup(Self.self)
         }
     }
@@ -150,7 +150,7 @@ public extension NSViewControllerRepresentable {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension UIViewRepresentable {
     func uiView() throws -> UIViewType {
-        return try MainActor.syncRun {
+        return try MainActor.assumeIsolated {
             try ViewHosting.lookup(Self.self)
         }
     }
@@ -159,7 +159,7 @@ public extension UIViewRepresentable {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension UIViewControllerRepresentable {
     func viewController() throws -> UIViewControllerType {
-        return try MainActor.syncRun {
+        return try MainActor.assumeIsolated {
             try ViewHosting.lookup(Self.self)
         }
     }
@@ -169,7 +169,7 @@ public extension UIViewControllerRepresentable {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 7.0, *)
 public extension WKInterfaceObjectRepresentable {
     func interfaceObject() throws -> WKInterfaceObjectType {
-        return try MainActor.syncRun {
+        return try MainActor.assumeIsolated {
             try ViewHosting.lookup(Self.self)
         }
     }

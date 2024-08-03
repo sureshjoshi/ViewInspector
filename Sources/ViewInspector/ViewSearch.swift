@@ -269,7 +269,7 @@ public extension InspectableView {
               where condition: ViewSearch.Condition
     ) throws -> InspectableView<ViewType.ClassifiedView> {
         precondition(skipFound >= 0)
-        return try MainActor.syncRun {
+        return try MainActor.assumeIsolated {
             try isolatedFind(relation: relation, traversal: traversal, skipFound: skipFound, where: condition)
         }
     }
@@ -335,7 +335,7 @@ public extension InspectableView {
       - Returns: An array of all matching views or an empty array if none are found.
      */
     func findAll(where condition: ViewSearch.Condition) -> [InspectableView<ViewType.ClassifiedView>] {
-        return MainActor.syncRun {
+        return MainActor.assumeIsolated {
             isolatedFindAll(where: condition)
         }
     }

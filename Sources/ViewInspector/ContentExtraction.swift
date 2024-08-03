@@ -9,7 +9,7 @@ internal struct ContentExtractor {
 
     internal func extractContent(environmentObjects: [AnyObject]) throws -> Any {
         try validateSourceBeforeExtraction()
-        return try MainActor.syncRun { [contentSource] in
+        return try MainActor.assumeIsolated { [contentSource] in
             switch contentSource {
             case .view(let view):
                 return try view.extractContent(environmentObjects: environmentObjects)

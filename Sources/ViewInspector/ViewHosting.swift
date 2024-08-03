@@ -28,7 +28,7 @@ public extension ViewHosting {
 
     static func host<V>(view: V, size: CGSize? = nil, function: String = #function) where V: View {
         let viewId = ViewId(function: function)
-        MainActor.syncRun {
+        MainActor.assumeIsolated {
             host(view: view, size: size, viewId: viewId)
         }
     }
@@ -77,7 +77,7 @@ public extension ViewHosting {
 
     static func expel(function: String = #function) {
         let viewId = ViewId(function: function)
-        MainActor.syncRun {
+        MainActor.assumeIsolated {
             expel(viewId: viewId)
         }
     }
@@ -119,7 +119,7 @@ public extension ViewHosting {
 
     internal static func medium(function: String = #function) -> Content.Medium {
         let viewId = ViewHosting.ViewId(function: function)
-        return MainActor.syncRun {
+        return MainActor.assumeIsolated {
             hosted[viewId]?.medium ?? .empty
         }
     }
@@ -457,10 +457,3 @@ public extension ViewHosting {
     }
 }
 #endif
-
-@available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)
-internal extension MainActor {
-    static func syncRun<T>(action: @MainActor @Sendable () throws -> T) rethrows -> T {
-        return try assumeIsolated(action)
-    }
-}
