@@ -144,6 +144,9 @@ public extension ViewModifier {
             let resolved = envModifier.resolve(in: EnvironmentValues())
             return try resolved.extractContent(environmentObjects: environmentObjects)
         }
+        guard copy.hasBody else {
+            return "<Never>"
+        }
         return copy.body()
     }
 }

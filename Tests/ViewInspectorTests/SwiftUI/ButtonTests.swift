@@ -43,6 +43,7 @@ final class ButtonTests: XCTestCase {
                        "group().button(0).labelView().anyView().text()")
     }
 
+    @MainActor
     func testWhenButtonDoesNotHaveTheDisabledModifier_InvokesCallback() throws {
         let exp = XCTestExpectation(description: "Callback")
         let button = Button(action: {
@@ -52,6 +53,7 @@ final class ButtonTests: XCTestCase {
         wait(for: [exp], timeout: 0.5)
     }
 
+    @MainActor
     func testTap() throws {
         let exp = XCTestExpectation(description: "Callback")
         let button = Button(action: {
@@ -61,6 +63,7 @@ final class ButtonTests: XCTestCase {
         wait(for: [exp], timeout: 0.5)
     }
 
+    @MainActor
     func testTapWhenDisabled() throws {
         let exp = XCTestExpectation(description: "Callback")
         exp.isInverted = true
@@ -130,8 +133,8 @@ final class ButtonStyleInspectionTests: XCTestCase {
         let style = TestButtonStyle()
         let sut1 = try style.inspect(isPressed: false)
         let sut2 = try style.inspect(isPressed: true)
-        XCTAssertEqual(try sut1.group().styleConfigurationLabel(0).blur().radius, 0)
-        XCTAssertEqual(try sut2.group().styleConfigurationLabel(0).blur().radius, 5)
+        XCTAssertEqual(try sut1.implicitAnyView().group().styleConfigurationLabel(0).blur().radius, 0)
+        XCTAssertEqual(try sut2.implicitAnyView().group().styleConfigurationLabel(0).blur().radius, 5)
     }
     
     #if !os(tvOS)
@@ -140,8 +143,8 @@ final class ButtonStyleInspectionTests: XCTestCase {
         guard #available(iOS 13.1, macOS 10.16, tvOS 13.1, *)
         else { throw XCTSkip() }
         let style = TestPrimitiveButtonStyle()
-        let button = try style.inspect().group().view(TestPrimitiveButtonStyle.TestButton.self, 0)
-        XCTAssertNoThrow(try button.anyView().styleConfigurationLabel().blur())
+        let button = try style.inspect().implicitAnyView().group().view(TestPrimitiveButtonStyle.TestButton.self, 0)
+        XCTAssertNoThrow(try button.implicitAnyView().anyView().styleConfigurationLabel().blur())
     }
     
     @MainActor
@@ -154,10 +157,10 @@ final class ButtonStyleInspectionTests: XCTestCase {
         })
         let view = TestPrimitiveButtonStyle.TestButton(configuration: config)
         let exp = view.inspection.inspect { view in
-            let label = try view.anyView().styleConfigurationLabel()
+            let label = try view.implicitAnyView().anyView().styleConfigurationLabel()
             XCTAssertEqual(try label.blur().radius, 0)
             try label.callOnTapGesture()
-            let updatedLabel = try view.anyView().styleConfigurationLabel()
+            let updatedLabel = try view.implicitAnyView().anyView().styleConfigurationLabel()
             XCTAssertEqual(try updatedLabel.blur().radius, 5)
         }
         ViewHosting.host(view: view)

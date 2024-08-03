@@ -110,7 +110,7 @@ private extension ViewType.Text {
             return verbatim
         }
         let textStorage = try Inspector.attribute(path: "anyTextStorage", value: storage)
-        let storageType = Inspector.typeName(value: textStorage)
+        let storageType = Inspector.typeName(value: textStorage, generics: .remove)
         switch storageType {
         case "ConcatenatedTextStorage":
             return try extractString(concatenatedTextStorage: textStorage, locale)
@@ -118,7 +118,7 @@ private extension ViewType.Text {
             return try extractString(localizedTextStorage: textStorage, locale)
         case "AttachmentTextStorage":
             return try extractString(attachmentTextStorage: textStorage)
-        case "DateTextStorage":
+        case "DateTextStorage", "TimeDataFormattingStorage":
             return try extractString(dateTextStorage: textStorage)
         case "FormatStyleStorage":
             return try extractString(formatStyleStorage: textStorage)
@@ -267,7 +267,9 @@ extension IntegerFormatStyle.Currency: CurrencyFormatter {
 
     func format(value: Any) throws -> String {
         guard let input = value as? Value else {
-            throw InspectionError.typeMismatch(factual: Inspector.typeName(value: value), expected: Inspector.typeName(type: Value.self))
+            throw InspectionError.typeMismatch(
+                factual: Inspector.typeName(value: value),
+                expected: Inspector.typeName(type: Value.self))
         }
         return self.format(input)
     }

@@ -46,6 +46,10 @@ public extension InspectableView where View == ViewType.TextEditor {
     }
     
     private func inputBinding() throws -> Binding<String> {
+        if let binding = try? Inspector.attribute(
+            label: "text", value: content.view, type: Binding<String>.self) {
+            return binding
+        }
         return try Inspector.attribute(
             label: "_text", value: content.view, type: Binding<String>.self)
     }

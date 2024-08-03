@@ -31,7 +31,7 @@ final class SheetTests: XCTestCase {
     func testInspectionErrorSheetNotPresented() throws {
         let binding = Binding(wrappedValue: false)
         let sut = EmptyView().sheet2(isPresented: binding) { Text("") }
-        XCTAssertThrows(try sut.inspect().emptyView().sheet(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().sheet(),
                         "View for Sheet is absent")
     }
     
@@ -39,7 +39,7 @@ final class SheetTests: XCTestCase {
     func testInspectionErrorSheetWithItemNotPresented() throws {
         let binding = Binding<Int?>(wrappedValue: nil)
         let sut = EmptyView().sheet2(item: binding) { Text("\($0)") }
-        XCTAssertThrows(try sut.inspect().emptyView().sheet(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().sheet(),
                         "View for Sheet is absent")
     }
     
@@ -49,9 +49,13 @@ final class SheetTests: XCTestCase {
         let sut = EmptyView().sheet2(isPresented: binding) {
             Text("abc")
         }
-        let title = try sut.inspect().emptyView().sheet().text()
+        let title = try sut.inspect().implicitAnyView().emptyView().sheet().text()
         XCTAssertEqual(try title.string(), "abc")
+        #if compiler(<6)
         XCTAssertEqual(title.pathToRoot, "emptyView().sheet().text()")
+        #else
+        XCTAssertEqual(title.pathToRoot, "anyView().emptyView().sheet().text()")
+        #endif
     }
     
     @MainActor
@@ -61,10 +65,14 @@ final class SheetTests: XCTestCase {
             Text("abc")
             Button("xyz", action: { binding.wrappedValue = false })
         }
-        let button = try sut.inspect().emptyView().sheet().button(1)
+        let button = try sut.inspect().implicitAnyView().emptyView().sheet().button(1)
         try button.tap()
         XCTAssertFalse(binding.wrappedValue)
+        #if compiler(<6)
         XCTAssertEqual(button.pathToRoot, "emptyView().sheet().button(1)")
+        #else
+        XCTAssertEqual(button.pathToRoot, "anyView().emptyView().sheet().button(1)")
+        #endif
     }
     
     @MainActor
@@ -75,9 +83,15 @@ final class SheetTests: XCTestCase {
             exp.fulfill()
         }, content: { Text("") })
         XCTAssertTrue(binding.wrappedValue)
+        #if compiler(<6)
         try sut.inspect().sheet().dismiss()
         XCTAssertFalse(binding.wrappedValue)
         XCTAssertThrows(try sut.inspect().sheet(), "View for Sheet is absent")
+        #else
+        try sut.inspect().implicitAnyView().emptyView().sheet().dismiss()
+        XCTAssertFalse(binding.wrappedValue)
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().sheet(), "View for Sheet is absent")
+        #endif
         wait(for: [exp], timeout: 0.1)
     }
     
@@ -85,12 +99,12 @@ final class SheetTests: XCTestCase {
     func testDismissForItemVersion() throws {
         let binding = Binding<Int?>(wrappedValue: 6)
         let sut = EmptyView().sheet2(item: binding) { Text("\($0)") }
-        let sheet = try sut.inspect().emptyView().sheet()
+        let sheet = try sut.inspect().implicitAnyView().emptyView().sheet()
         XCTAssertEqual(try sheet.text().string(), "6")
         XCTAssertEqual(binding.wrappedValue, 6)
         try sheet.dismiss()
         XCTAssertNil(binding.wrappedValue)
-        XCTAssertThrows(try sut.inspect().sheet(), "View for Sheet is absent")
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().sheet(), "View for Sheet is absent")
     }
     
     @MainActor
@@ -99,6 +113,7 @@ final class SheetTests: XCTestCase {
         let binding2 = Binding(wrappedValue: true)
         let binding3 = Binding(wrappedValue: true)
         let sut = SheetFindTestView(sheet1: binding1, sheet2: binding2, sheet3: binding3)
+        #if compiler(<6)
         let title1 = try sut.inspect().hStack().emptyView(0).sheet().text(0)
         XCTAssertEqual(try title1.string(), "title_1")
         XCTAssertEqual(title1.pathToRoot,
@@ -107,8 +122,18 @@ final class SheetTests: XCTestCase {
         XCTAssertEqual(try title2.string(), "title_3")
         XCTAssertEqual(title2.pathToRoot,
             "view(SheetFindTestView.self).hStack().emptyView(0).sheet(1).text(0)")
-        
         XCTAssertEqual(try sut.inspect().find(ViewType.Sheet.self).text(0).string(), "title_1")
+        #else
+        let title1 = try sut.inspect().implicitAnyView().hStack().anyView(0).anyView().emptyView(0).sheet().text(0)
+        XCTAssertEqual(try title1.string(), "title_1")
+        XCTAssertEqual(title1.pathToRoot,
+            "view(SheetFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView(0).sheet().text(0)")
+        let title2 = try sut.inspect().implicitAnyView().hStack().anyView(0).anyView().sheet().text(0)
+        XCTAssertEqual(try title2.string(), "title_3")
+        XCTAssertEqual(title2.pathToRoot,
+            "view(SheetFindTestView.self).anyView().hStack().anyView(0).anyView().sheet().text(0)")
+        XCTAssertEqual(try sut.inspect().find(ViewType.Sheet.self, skipFound: 1).text(0).string(), "title_1")
+        #endif
         binding1.wrappedValue = false
         XCTAssertEqual(try sut.inspect().find(ViewType.Sheet.self).text(0).string(), "title_3")
         binding3.wrappedValue = false
@@ -122,22 +147,38 @@ final class SheetTests: XCTestCase {
         let sut = SheetFindTestView(sheet1: binding, sheet2: binding, sheet3: binding)
         
         // 1
+        #if compiler(<6)
         XCTAssertEqual(try sut.inspect().find(text: "title_1").pathToRoot,
             "view(SheetFindTestView.self).hStack().emptyView(0).sheet().text(0)")
         XCTAssertEqual(try sut.inspect().find(text: "button_1").pathToRoot,
             "view(SheetFindTestView.self).hStack().emptyView(0).sheet().button(1).labelView().text()")
+        #else
+        XCTAssertEqual(try sut.inspect().find(text: "title_1").pathToRoot,
+            "view(SheetFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().sheet().text(0)")
+        XCTAssertEqual(try sut.inspect().find(text: "button_1").pathToRoot,
+            """
+            view(SheetFindTestView.self).anyView().hStack().anyView(0).anyView()\
+            .emptyView().sheet().button(1).labelView().text()
+            """)
+        #endif
         // 2
         XCTAssertThrows(try sut.inspect().find(text: "title_2").pathToRoot,
             "Search did not find a match")
         
         // 3
-        XCTAssertEqual(try sut.inspect().find(text: "title_3").pathToRoot,
-            "view(SheetFindTestView.self).hStack().emptyView(0).sheet(1).text(0)")
-        
         XCTAssertThrows(try sut.inspect().find(text: "message_3").pathToRoot,
             "Search did not find a match")
+        #if compiler(<6)
+        XCTAssertEqual(try sut.inspect().find(text: "title_3").pathToRoot,
+            "view(SheetFindTestView.self).hStack().emptyView(0).sheet(1).text(0)")
         XCTAssertEqual(try sut.inspect().find(text: "button_3").pathToRoot,
             "view(SheetFindTestView.self).hStack().emptyView(0).sheet(1).button(1).labelView().text()")
+        #else
+        XCTAssertEqual(try sut.inspect().find(text: "title_3").pathToRoot,
+            "view(SheetFindTestView.self).anyView().hStack().anyView(0).anyView().sheet().text(0)")
+        XCTAssertEqual(try sut.inspect().find(text: "button_3").pathToRoot,
+            "view(SheetFindTestView.self).anyView().hStack().anyView(0).anyView().sheet().button(1).labelView().text()")
+        #endif
     }
 }
 

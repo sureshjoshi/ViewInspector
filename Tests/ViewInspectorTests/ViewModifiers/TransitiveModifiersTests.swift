@@ -4,22 +4,34 @@ import SwiftUI
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 9.0, *)
 final class TransitiveModifiersTests: XCTestCase {
-    
+
+    @MainActor
     func testHiddenTransitivity() throws {
         let sut = try HittenTestView().inspect()
         XCTAssertFalse(try sut.find(text: "abc").isHidden())
         XCTAssertTrue(try sut.find(text: "123").isHidden())
+        #if compiler(<6)
         XCTAssertThrows(try sut.find(button: "123").tap(),
             "Button is unresponsive: view(HittenTestView.self).vStack().hStack(1) is hidden")
+        #else
+        XCTAssertThrows(try sut.find(button: "123").tap(),
+            "Button is unresponsive: view(HittenTestView.self).anyView().vStack().hStack(1) is hidden")
+        #endif
     }
-    
+
+    @MainActor
     func testDisabledStateInheritance() throws {
         let sut = try TestDisabledView().inspect()
         XCTAssertFalse(try sut.find(button: "1").isDisabled())
         XCTAssertFalse(try sut.find(button: "2").isDisabled())
         XCTAssertTrue(try sut.find(button: "3").isDisabled())
+        #if compiler(<6)
         XCTAssertThrows(try sut.find(button: "3").tap(),
             "Button is unresponsive: view(TestDisabledView.self).vStack().vStack(1).vStack(1) is disabled")
+        #else
+        XCTAssertThrows(try sut.find(button: "3").tap(),
+            "Button is unresponsive: view(TestDisabledView.self).anyView().vStack().vStack(1).vStack(1) is disabled")
+        #endif
     }
     
     @available(tvOS, unavailable)
@@ -50,18 +62,27 @@ final class TransitiveModifiersTests: XCTestCase {
         XCTAssertEqual(try text3.colorScheme(), .dark)
         XCTAssertEqual(try text4.colorScheme(), .light)
     }
-    
+
+    @MainActor
     func testAllowsHitTestingInheritance() throws {
         guard #available(macOS 11.0, *) else { throw XCTSkip() }
         let sut = try AllowsHitTestingTestView().inspect()
         XCTAssertTrue(try sut.find(button: "1").allowsHitTesting())
         XCTAssertTrue(try sut.find(button: "2").allowsHitTesting())
         XCTAssertFalse(try sut.find(button: "3").allowsHitTesting())
+        #if compiler(<6)
         XCTAssertThrows(try sut.find(button: "3").tap(),
             """
             Button is unresponsive: view(AllowsHitTestingTestView.self).vStack()\
             .vStack(1).vStack(1) has allowsHitTesting set to false
             """)
+        #else
+        XCTAssertThrows(try sut.find(button: "3").tap(),
+            """
+            Button is unresponsive: view(AllowsHitTestingTestView.self).anyView().vStack()\
+            .vStack(1).vStack(1) has allowsHitTesting set to false
+            """)
+        #endif
     }
     
     @available(tvOS, unavailable)

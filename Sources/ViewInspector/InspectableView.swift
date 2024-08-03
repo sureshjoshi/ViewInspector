@@ -158,6 +158,22 @@ public extension InspectableView {
     }
 }
 
+#if compiler(<6)
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+public extension InspectableView where View: SingleViewContent {
+    func implicitAnyView() throws -> InspectableView<View> {
+        return self
+    }
+}
+#else
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+public extension InspectableView where View: SingleViewContent {
+    func implicitAnyView() throws -> InspectableView<ViewType.AnyView> {
+        return try anyView()
+    }
+}
+#endif
+
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension InspectableView where View: SingleViewContent {
     func child() throws -> Content {

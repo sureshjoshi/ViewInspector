@@ -12,7 +12,7 @@ final class InspectionEmissaryTests: XCTestCase {
         var sut = TestView(flag: false)
         let exp = sut.on(\.didAppear) { view in
             XCTAssertFalse(try view.actualView().flag)
-            try view.button().tap()
+            try view.implicitAnyView().button().tap()
             XCTAssertTrue(try view.actualView().flag)
         }
         ViewHosting.host(view: sut)
@@ -25,7 +25,7 @@ final class InspectionEmissaryTests: XCTestCase {
         var sut = TestViewModifier(flag: binding)
         let exp = sut.on(\.didAppear) { view in
             XCTAssertFalse(try view.actualView().flag)
-            try view.hStack().button(1).tap()
+            try view.implicitAnyView().hStack().button(1).tap()
             XCTAssertTrue(try view.actualView().flag)
         }
         let view = EmptyView()
@@ -39,12 +39,12 @@ final class InspectionEmissaryTests: XCTestCase {
     func testViewInspectAfter() throws {
         let sut = TestView(flag: false)
         let exp1 = sut.inspection.inspect { view in
-            let text = try view.button().labelView().text().string()
+            let text = try view.implicitAnyView().button().labelView().text().string()
             XCTAssertEqual(text, "false")
             sut.publisher.send(true)
         }
         let exp2 = sut.inspection.inspect(after: 0.1) { view in
-            let text = try view.button().labelView().text().string()
+            let text = try view.implicitAnyView().button().labelView().text().string()
             XCTAssertEqual(text, "true")
         }
         ViewHosting.host(view: sut)
@@ -56,14 +56,14 @@ final class InspectionEmissaryTests: XCTestCase {
         let binding = Binding(wrappedValue: false)
         let sut = TestViewModifier(flag: binding)
         let exp1 = sut.inspection.inspect { view in
-            let text = try view.hStack().button(1).labelView().text().string()
+            let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
             XCTAssertEqual(text, "false")
             sut.publisher.send(true)
         }
         let exp2 = sut.inspection.inspect(after: 0.1) { view in
             let texts = view.findAll(ViewType.Text.self)
             XCTAssertEqual(texts.count, 2)
-            let text = try view.hStack().button(1).labelView().text().string()
+            let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
             XCTAssertEqual(text, "true")
         }
         let view = EmptyView()
@@ -77,17 +77,17 @@ final class InspectionEmissaryTests: XCTestCase {
     func testViewInspectOnReceive() throws {
         let sut = TestView(flag: false)
         let exp1 = sut.inspection.inspect { view in
-            let text = try view.button().labelView().text().string()
+            let text = try view.implicitAnyView().button().labelView().text().string()
             XCTAssertEqual(text, "false")
             sut.publisher.send(true)
         }
         let exp2 = sut.inspection.inspect(onReceive: sut.publisher) { view in
-            let text = try view.button().labelView().text().string()
+            let text = try view.implicitAnyView().button().labelView().text().string()
             XCTAssertEqual(text, "true")
             sut.publisher.send(false)
         }
         let exp3 = sut.inspection.inspect(onReceive: sut.publisher.dropFirst()) { view in
-            let text = try view.button().labelView().text().string()
+            let text = try view.implicitAnyView().button().labelView().text().string()
             XCTAssertEqual(text, "false")
         }
         ViewHosting.host(view: sut)
@@ -98,17 +98,17 @@ final class InspectionEmissaryTests: XCTestCase {
     func testViewInspectOnReceiveAfter() throws {
         let sut = TestView(flag: false)
         let exp1 = sut.inspection.inspect { view in
-            let text = try view.button().labelView().text().string()
+            let text = try view.implicitAnyView().button().labelView().text().string()
             XCTAssertEqual(text, "false")
             sut.publisher.send(true)
         }
         let exp2 = sut.inspection.inspect(onReceive: sut.publisher, after: 0.1) { view in
-            let text = try view.button().labelView().text().string()
+            let text = try view.implicitAnyView().button().labelView().text().string()
             XCTAssertEqual(text, "true")
             sut.publisher.send(false)
         }
         let exp3 = sut.inspection.inspect(onReceive: sut.publisher.dropFirst()) { view in
-            let text = try view.button().labelView().text().string()
+            let text = try view.implicitAnyView().button().labelView().text().string()
             XCTAssertEqual(text, "false")
         }
         ViewHosting.host(view: sut)
@@ -120,17 +120,17 @@ final class InspectionEmissaryTests: XCTestCase {
         let binding = Binding(wrappedValue: false)
         let sut = TestViewModifier(flag: binding)
         let exp1 = sut.inspection.inspect { view in
-            let text = try view.hStack().button(1).labelView().text().string()
+            let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
             XCTAssertEqual(text, "false")
             sut.publisher.send(true)
         }
         let exp2 = sut.inspection.inspect(onReceive: sut.publisher) { view in
-            let text = try view.hStack().button(1).labelView().text().string()
+            let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
             XCTAssertEqual(text, "true")
             sut.publisher.send(false)
         }
         let exp3 = sut.inspection.inspect(onReceive: sut.publisher.dropFirst()) { view in
-            let text = try view.hStack().button(1).labelView().text().string()
+            let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
             XCTAssertEqual(text, "false")
         }
         let view = EmptyView()
@@ -145,17 +145,17 @@ final class InspectionEmissaryTests: XCTestCase {
         let binding = Binding(wrappedValue: false)
         let sut = TestViewModifier(flag: binding)
         let exp1 = sut.inspection.inspect { view in
-            let text = try view.hStack().button(1).labelView().text().string()
+            let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
             XCTAssertEqual(text, "false")
             sut.publisher.send(true)
         }
         let exp2 = sut.inspection.inspect(onReceive: sut.publisher, after: 0.1) { view in
-            let text = try view.hStack().button(1).labelView().text().string()
+            let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
             XCTAssertEqual(text, "true")
             sut.publisher.send(false)
         }
         let exp3 = sut.inspection.inspect(onReceive: sut.publisher.dropFirst()) { view in
-            let text = try view.hStack().button(1).labelView().text().string()
+            let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
             XCTAssertEqual(text, "false")
         }
         let view = EmptyView()
@@ -171,12 +171,12 @@ final class InspectionEmissaryTests: XCTestCase {
         let sut = TestView(flag: false)
         try await ViewHosting.host(sut) {
             try await $0.inspection.inspect { view in
-                let text = try view.button().labelView().text().string()
+                let text = try view.implicitAnyView().button().labelView().text().string()
                 XCTAssertEqual(text, "false")
                 sut.publisher.send(true)
             }
             try await $0.inspection.inspect(after: .seconds(0.1)) { view in
-                let text = try view.button().labelView().text().string()
+                let text = try view.implicitAnyView().button().labelView().text().string()
                 XCTAssertEqual(text, "true")
             }
         }
@@ -192,14 +192,14 @@ final class InspectionEmissaryTests: XCTestCase {
             .environmentObject(ExternalState())
         try await ViewHosting.host(view) { _ in
             try await sut.inspection.inspect { view in
-                let text = try view.hStack().button(1).labelView().text().string()
+                let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
                 XCTAssertEqual(text, "false")
                 sut.publisher.send(true)
             }
             try await sut.inspection.inspect(after: .seconds(0.1)) { view in
                 let texts = view.findAll(ViewType.Text.self)
                 XCTAssertEqual(texts.count, 2)
-                let text = try view.hStack().button(1).labelView().text().string()
+                let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
                 XCTAssertEqual(text, "true")
             }
         }
@@ -213,7 +213,7 @@ final class InspectionEmissaryTests: XCTestCase {
             try await withThrowingDiscardingTaskGroup { group in
                 group.addTask {
                     try await sut.inspection.inspect { view in
-                        let text = try view.button().labelView().text().string()
+                        let text = try view.implicitAnyView().button().labelView().text().string()
                         XCTAssertEqual(text, "false")
                         sut.publisher.send(true)
                     }
@@ -221,7 +221,7 @@ final class InspectionEmissaryTests: XCTestCase {
                 
                 group.addTask {
                     try await sut.inspection.inspect(onReceive: sut.publisher) { view in
-                        let text = try view.button().labelView().text().string()
+                        let text = try view.implicitAnyView().button().labelView().text().string()
                         XCTAssertEqual(text, "true")
                         sut.publisher.send(false)
                     }
@@ -229,7 +229,7 @@ final class InspectionEmissaryTests: XCTestCase {
                 
                 group.addTask {
                     try await sut.inspection.inspect(onReceive: sut.publisher.dropFirst()) { view in
-                        let text = try view.button().labelView().text().string()
+                        let text = try view.implicitAnyView().button().labelView().text().string()
                         XCTAssertEqual(text, "false")
                     }
                 }
@@ -245,7 +245,7 @@ final class InspectionEmissaryTests: XCTestCase {
             try await withThrowingDiscardingTaskGroup { group in
                 group.addTask {
                     try await sut.inspection.inspect { view in
-                        let text = try view.button().labelView().text().string()
+                        let text = try view.implicitAnyView().button().labelView().text().string()
                         XCTAssertEqual(text, "false")
                         sut.publisher.send(true)
                     }
@@ -253,7 +253,7 @@ final class InspectionEmissaryTests: XCTestCase {
                 
                 group.addTask {
                     try await sut.inspection.inspect(onReceive: sut.publisher, after: .seconds(0.1)) { view in
-                        let text = try view.button().labelView().text().string()
+                        let text = try view.implicitAnyView().button().labelView().text().string()
                         XCTAssertEqual(text, "true")
                         sut.publisher.send(false)
                     }
@@ -261,7 +261,7 @@ final class InspectionEmissaryTests: XCTestCase {
                 
                 group.addTask {
                     try await sut.inspection.inspect(onReceive: sut.publisher.dropFirst()) { view in
-                        let text = try view.button().labelView().text().string()
+                        let text = try view.implicitAnyView().button().labelView().text().string()
                         XCTAssertEqual(text, "false")
                     }
                 }
@@ -281,7 +281,7 @@ final class InspectionEmissaryTests: XCTestCase {
             try await withThrowingDiscardingTaskGroup { group in
                 group.addTask {
                     try await sut.inspection.inspect { view in
-                        let text = try view.hStack().button(1).labelView().text().string()
+                        let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
                         XCTAssertEqual(text, "false")
                         sut.publisher.send(true)
                     }
@@ -289,7 +289,7 @@ final class InspectionEmissaryTests: XCTestCase {
                 
                 group.addTask {
                     try await sut.inspection.inspect(onReceive: sut.publisher) { view in
-                        let text = try view.hStack().button(1).labelView().text().string()
+                        let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
                         XCTAssertEqual(text, "true")
                         sut.publisher.send(false)
                     }
@@ -297,7 +297,7 @@ final class InspectionEmissaryTests: XCTestCase {
                 
                 group.addTask {
                     try await sut.inspection.inspect(onReceive: sut.publisher.dropFirst()) { view in
-                        let text = try view.hStack().button(1).labelView().text().string()
+                        let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
                         XCTAssertEqual(text, "false")
                     }
                 }
@@ -317,7 +317,7 @@ final class InspectionEmissaryTests: XCTestCase {
             try await withThrowingDiscardingTaskGroup { group in
                 group.addTask {
                     try await sut.inspection.inspect { view in
-                        let text = try view.hStack().button(1).labelView().text().string()
+                        let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
                         XCTAssertEqual(text, "false")
                         sut.publisher.send(true)
                     }
@@ -325,7 +325,7 @@ final class InspectionEmissaryTests: XCTestCase {
                 
                 group.addTask {
                     try await sut.inspection.inspect(onReceive: sut.publisher, after: .seconds(0.1)) { view in
-                        let text = try view.hStack().button(1).labelView().text().string()
+                        let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
                         XCTAssertEqual(text, "true")
                         sut.publisher.send(false)
                     }
@@ -333,7 +333,7 @@ final class InspectionEmissaryTests: XCTestCase {
                 
                 group.addTask {
                     try await sut.inspection.inspect(onReceive: sut.publisher.dropFirst()) { view in
-                        let text = try view.hStack().button(1).labelView().text().string()
+                        let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
                         XCTAssertEqual(text, "false")
                     }
                 }

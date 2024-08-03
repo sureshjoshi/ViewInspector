@@ -31,7 +31,7 @@ final class DeprecatedAlertTests: XCTestCase {
     func testInspectionErrorAlertNotPresented() throws {
         let binding = Binding(wrappedValue: false)
         let sut = EmptyView().alert2(isPresented: binding) { Alert(title: Text("abc")) }
-        XCTAssertThrows(try sut.inspect().emptyView().alert(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().alert(),
                         "View for Alert is absent")
         XCTAssertThrows(try sut.inspect().find(text: "abc"), "Search did not find a match")
     }
@@ -42,7 +42,7 @@ final class DeprecatedAlertTests: XCTestCase {
         let sut = EmptyView().alert2(item: binding) { value in
             Alert(title: Text("\(value)"))
         }
-        XCTAssertThrows(try sut.inspect().emptyView().alert(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().alert(),
                         "View for Alert is absent")
     }
     
@@ -50,9 +50,13 @@ final class DeprecatedAlertTests: XCTestCase {
     func testTitleInspection() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().alert2(isPresented: binding) { Alert(title: Text("abc")) }
-        let title = try sut.inspect().emptyView().alert().title()
+        let title = try sut.inspect().implicitAnyView().emptyView().alert().title()
         XCTAssertEqual(try title.string(), "abc")
+        #if compiler(<6)
         XCTAssertEqual(title.pathToRoot, "emptyView().alert().title()")
+        #else
+        XCTAssertEqual(title.pathToRoot, "anyView().emptyView().alert().title()")
+        #endif
     }
     
     @MainActor
@@ -61,16 +65,20 @@ final class DeprecatedAlertTests: XCTestCase {
         let sut = EmptyView().alert2(isPresented: binding) {
             Alert(title: Text("abc"), message: Text("123"), dismissButton: nil)
         }
-        let message = try sut.inspect().emptyView().alert().message()
+        let message = try sut.inspect().implicitAnyView().emptyView().alert().message()
         XCTAssertEqual(try message.text().string(), "123")
+        #if compiler(<6)
         XCTAssertEqual(message.pathToRoot, "emptyView().alert().message()")
+        #else
+        XCTAssertEqual(message.pathToRoot, "anyView().emptyView().alert().message()")
+        #endif
     }
     
     @MainActor
     func testNoMessageError() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().alert2(isPresented: binding) { Alert(title: Text("abc")) }
-        XCTAssertThrows(try sut.inspect().emptyView().alert().message(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().alert().message(),
                         "View for message is absent")
     }
     
@@ -81,9 +89,13 @@ final class DeprecatedAlertTests: XCTestCase {
             Alert(title: Text("abc"), message: Text("123"),
                   dismissButton: .default(Text("xyz")))
         }
-        let label = try sut.inspect().emptyView().alert().primaryButton().labelView()
+        let label = try sut.inspect().implicitAnyView().emptyView().alert().primaryButton().labelView()
         XCTAssertEqual(try label.string(), "xyz")
+        #if compiler(<6)
         XCTAssertEqual(label.pathToRoot, "emptyView().alert().primaryButton().labelView()")
+        #else
+        XCTAssertEqual(label.pathToRoot, "anyView().emptyView().alert().primaryButton().labelView()")
+        #endif
     }
     
     @MainActor
@@ -93,16 +105,20 @@ final class DeprecatedAlertTests: XCTestCase {
             Alert(title: Text(""), primaryButton: .cancel(),
                   secondaryButton: .default(Text("xyz")))
         }
-        let label = try sut.inspect().emptyView().alert().secondaryButton().labelView()
+        let label = try sut.inspect().implicitAnyView().emptyView().alert().secondaryButton().labelView()
         XCTAssertEqual(try label.string(), "xyz")
+        #if compiler(<6)
         XCTAssertEqual(label.pathToRoot, "emptyView().alert().secondaryButton().labelView()")
+        #else
+        XCTAssertEqual(label.pathToRoot, "anyView().emptyView().alert().secondaryButton().labelView()")
+        #endif
     }
     
     @MainActor
     func testNoSecondaryButtonError() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().alert2(isPresented: binding) { Alert(title: Text("abc")) }
-        XCTAssertThrows(try sut.inspect().emptyView().alert().secondaryButton(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().alert().secondaryButton(),
                         "View for secondaryButton is absent")
     }
     
@@ -114,7 +130,7 @@ final class DeprecatedAlertTests: XCTestCase {
                   dismissButton: .default(Text("xyz")))
         }
         XCTAssertTrue(binding.wrappedValue)
-        try sut.inspect().emptyView().alert().primaryButton().tap()
+        try sut.inspect().implicitAnyView().emptyView().alert().primaryButton().tap()
         XCTAssertFalse(binding.wrappedValue)
     }
     
@@ -129,7 +145,7 @@ final class DeprecatedAlertTests: XCTestCase {
                   }))
         }
         XCTAssertTrue(binding.wrappedValue)
-        try sut.inspect().emptyView().alert().primaryButton().tap()
+        try sut.inspect().implicitAnyView().emptyView().alert().primaryButton().tap()
         XCTAssertFalse(binding.wrappedValue)
         wait(for: [exp], timeout: 0.1)
     }
@@ -142,7 +158,7 @@ final class DeprecatedAlertTests: XCTestCase {
                   secondaryButton: .default(Text("123")))
         }
         XCTAssertTrue(binding.wrappedValue)
-        try sut.inspect().emptyView().alert().secondaryButton().tap()
+        try sut.inspect().implicitAnyView().emptyView().alert().secondaryButton().tap()
         XCTAssertFalse(binding.wrappedValue)
     }
     
@@ -157,7 +173,7 @@ final class DeprecatedAlertTests: XCTestCase {
                   }))
         }
         XCTAssertTrue(binding.wrappedValue)
-        try sut.inspect().emptyView().alert().secondaryButton().tap()
+        try sut.inspect().implicitAnyView().emptyView().alert().secondaryButton().tap()
         XCTAssertFalse(binding.wrappedValue)
         wait(for: [exp], timeout: 0.1)
     }
@@ -172,12 +188,21 @@ final class DeprecatedAlertTests: XCTestCase {
         let sut2 = EmptyView().alert2(isPresented: binding) {
             Alert(title: Text(""), message: nil, dismissButton: .destructive(Text("")))
         }
+        #if compiler(<6)
         XCTAssertEqual(
             try sut1.inspect().emptyView().alert().primaryButton().style(), .default)
         XCTAssertEqual(
             try sut1.inspect().emptyView().alert().secondaryButton().style(), .cancel)
         XCTAssertEqual(
             try sut2.inspect().emptyView().alert().primaryButton().style(), .destructive)
+        #else
+        XCTAssertEqual(
+            try sut1.inspect().anyView().emptyView().alert().primaryButton().style(), .default)
+        XCTAssertEqual(
+            try sut1.inspect().anyView().emptyView().alert().secondaryButton().style(), .cancel)
+        XCTAssertEqual(
+            try sut2.inspect().anyView().emptyView().alert().primaryButton().style(), .destructive)
+        #endif
     }
     
     @MainActor
@@ -186,9 +211,9 @@ final class DeprecatedAlertTests: XCTestCase {
         let sut = EmptyView().alert2(item: binding) { value in
             Alert(title: Text("\(value)"))
         }
-        XCTAssertEqual(try sut.inspect().emptyView().alert().title().string(), "6")
+        XCTAssertEqual(try sut.inspect().implicitAnyView().emptyView().alert().title().string(), "6")
         XCTAssertEqual(binding.wrappedValue, 6)
-        try sut.inspect().emptyView().alert().primaryButton().tap()
+        try sut.inspect().implicitAnyView().emptyView().alert().primaryButton().tap()
         XCTAssertNil(binding.wrappedValue)
     }
     
@@ -199,9 +224,9 @@ final class DeprecatedAlertTests: XCTestCase {
             Alert(title: Text("abc"))
         }
         XCTAssertTrue(binding.wrappedValue)
-        try sut.inspect().alert().dismiss()
+        try sut.inspect().implicitAnyView().emptyView().alert().dismiss()
         XCTAssertFalse(binding.wrappedValue)
-        XCTAssertThrows(try sut.inspect().alert(), "View for Alert is absent")
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().alert(), "View for Alert is absent")
     }
     
     @MainActor
@@ -210,9 +235,9 @@ final class DeprecatedAlertTests: XCTestCase {
         let sut = EmptyView().alert2(item: binding) { value in
             Alert(title: Text("\(value)"))
         }
-        try sut.inspect().emptyView().alert().dismiss()
+        try sut.inspect().implicitAnyView().emptyView().alert().dismiss()
         XCTAssertNil(binding.wrappedValue)
-        XCTAssertThrows(try sut.inspect().alert(), "View for Alert is absent")
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().alert(), "View for Alert is absent")
     }
     
     @MainActor
@@ -221,6 +246,7 @@ final class DeprecatedAlertTests: XCTestCase {
         let binding2 = Binding(wrappedValue: true)
         let binding3 = Binding(wrappedValue: true)
         let sut = AlertFindTestView(alert1: binding1, alert2: binding2, alert3: binding3)
+        #if compiler(<6)
         let title1 = try sut.inspect().hStack().emptyView(0).alert().title()
         XCTAssertEqual(try title1.string(), "title_1")
         XCTAssertEqual(title1.pathToRoot,
@@ -231,6 +257,18 @@ final class DeprecatedAlertTests: XCTestCase {
             "view(AlertFindTestView.self).hStack().emptyView(0).alert(1).title()")
         
         XCTAssertEqual(try sut.inspect().find(ViewType.Alert.self).title().string(), "title_1")
+        #else
+        let title1 = try sut.inspect().anyView().hStack().anyView(0).anyView().emptyView(0).alert().title()
+        XCTAssertEqual(try title1.string(), "title_1")
+        XCTAssertEqual(title1.pathToRoot,
+            "view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView(0).alert().title()")
+        let title2 = try sut.inspect().anyView().hStack().anyView(0).anyView().alert().title()
+        XCTAssertEqual(try title2.string(), "title_3")
+        XCTAssertEqual(title2.pathToRoot,
+            "view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView().alert().title()")
+
+        XCTAssertEqual(try sut.inspect().find(ViewType.Alert.self, skipFound: 1).title().string(), "title_1")
+        #endif
         binding1.wrappedValue = false
         XCTAssertEqual(try sut.inspect().find(ViewType.Alert.self).title().string(), "title_3")
         binding3.wrappedValue = false
@@ -243,6 +281,7 @@ final class DeprecatedAlertTests: XCTestCase {
         let sut = AlertFindTestView(alert1: binding, alert2: binding, alert3: binding)
         
         // 1
+        #if compiler(<6)
         XCTAssertEqual(try sut.inspect().find(text: "title_1").pathToRoot,
             "view(AlertFindTestView.self).hStack().emptyView(0).alert().title()")
         XCTAssertEqual(try sut.inspect().find(text: "message_1").pathToRoot,
@@ -251,6 +290,22 @@ final class DeprecatedAlertTests: XCTestCase {
             "view(AlertFindTestView.self).hStack().emptyView(0).alert().primaryButton().labelView()")
         XCTAssertEqual(try sut.inspect().find(text: "secondary_1").pathToRoot,
             "view(AlertFindTestView.self).hStack().emptyView(0).alert().secondaryButton().labelView()")
+        #else
+        XCTAssertEqual(try sut.inspect().find(text: "title_1").pathToRoot,
+            "view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().alert().title()")
+        XCTAssertEqual(try sut.inspect().find(text: "message_1").pathToRoot,
+            "view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().alert().message().text()")
+        XCTAssertEqual(try sut.inspect().find(text: "primary_1").pathToRoot,
+            """
+            view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView()\
+            .emptyView().alert().primaryButton().labelView()
+            """)
+        XCTAssertEqual(try sut.inspect().find(text: "secondary_1").pathToRoot,
+            """
+            view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView()\
+            .emptyView().alert().secondaryButton().labelView()
+            """)
+        #endif
         // 2
         let noMatchMessage: String
         if #available(iOS 13.2, tvOS 13.2, macOS 10.17, *) {
@@ -261,11 +316,19 @@ final class DeprecatedAlertTests: XCTestCase {
         XCTAssertThrows(try sut.inspect().find(text: "title_2").pathToRoot, noMatchMessage)
         
         // 3
+        #if compiler(<6)
         XCTAssertEqual(try sut.inspect().find(text: "title_3").pathToRoot,
             "view(AlertFindTestView.self).hStack().emptyView(0).alert(1).title()")
         XCTAssertThrows(try sut.inspect().find(text: "message_3").pathToRoot, noMatchMessage)
         XCTAssertEqual(try sut.inspect().find(text: "primary_3").pathToRoot,
             "view(AlertFindTestView.self).hStack().emptyView(0).alert(1).primaryButton().labelView()")
+        #else
+        XCTAssertEqual(try sut.inspect().find(text: "title_3").pathToRoot,
+            "view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView().alert().title()")
+        XCTAssertThrows(try sut.inspect().find(text: "message_3").pathToRoot, noMatchMessage)
+        XCTAssertEqual(try sut.inspect().find(text: "primary_3").pathToRoot,
+            "view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView().alert().primaryButton().labelView()")
+        #endif
     }
 }
  
@@ -289,10 +352,11 @@ final class AlertIOS15Tests: XCTestCase {
         else { throw XCTSkip() }
         let binding = Binding(wrappedValue: true)
         let sut = sutIOS15(binding: binding)
-        let alert = try sut.inspect().alert()
+        let alert = try sut.inspect().implicitAnyView().emptyView().alert()
         XCTAssertEqual(try alert.title().string(), "Title")
         let message = try alert.message().hStack().text(0)
         XCTAssertEqual(try message.string(), "Message: abc")
+        #if compiler(<6)
         XCTAssertEqual(message.pathToRoot,
                        "alert().message().hStack().text(0)")
         let secondButtonLabel = try alert.actions().button(1).labelView().text()
@@ -302,6 +366,17 @@ final class AlertIOS15Tests: XCTestCase {
         let searchLabel = try sut.inspect().find(button: "Second")
         XCTAssertEqual(searchLabel.pathToRoot,
                        "emptyView().alert().actions().button(1)")
+        #else
+        XCTAssertEqual(message.pathToRoot,
+                       "anyView().emptyView().alert().message().hStack().text(0)")
+        let secondButtonLabel = try alert.actions().button(1).labelView().text()
+        XCTAssertEqual(try secondButtonLabel.string(), "Second")
+        XCTAssertEqual(secondButtonLabel.pathToRoot,
+                       "anyView().emptyView().alert().actions().button(1).labelView().text()")
+        let searchLabel = try sut.inspect().find(button: "Second")
+        XCTAssertEqual(searchLabel.pathToRoot,
+                       "anyView().emptyView().alert().actions().button(1)")
+        #endif
     }
 }
 

@@ -102,7 +102,7 @@ public extension ViewModifier where Self: BasePopupPresenter {
     @MainActor
     func content() throws -> ViewInspector.Content {
         let view = body(content: _ViewModifier_Content())
-        return try view.inspect().viewModifierContent().content
+        return try view.inspect().implicitAnyView().viewModifierContent().content
     }
 }
 

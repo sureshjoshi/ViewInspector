@@ -112,9 +112,13 @@ private extension Content {
     }
     
     private func isActiveBinding() throws -> Binding<Bool> {
-        if #available(iOS 14, tvOS 14, macOS 10.16, *) {
-            return try Inspector
-                .attribute(path: "_isActive|binding", value: view, type: Binding<Bool>.self)
+        if let binding = try? Inspector
+            .attribute(path: "_deprecated_isActive|binding", value: view, type: Binding<Bool>.self) {
+            return binding
+        }
+        if let binding = try? Inspector
+            .attribute(path: "_isActive|binding", value: view, type: Binding<Bool>.self) {
+            return binding
         }
         return try Inspector
             .attribute(label: "_externalIsActive", value: view, type: Binding<Bool>.self)

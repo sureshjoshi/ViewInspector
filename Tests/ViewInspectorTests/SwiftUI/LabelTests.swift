@@ -92,18 +92,25 @@ final class GlobalModifiersForLabel: XCTestCase {
         guard #available(iOS 14, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
         let sut = TestLabelStyle()
-        let title = try sut.inspect().vStack().styleConfigurationTitle(0)
-        let icon = try sut.inspect().vStack().styleConfigurationIcon(1)
+        let title = try sut.inspect().implicitAnyView().vStack().styleConfigurationTitle(0)
+        let icon = try sut.inspect().implicitAnyView().vStack().styleConfigurationIcon(1)
         XCTAssertEqual(try title.blur().radius, 3)
         XCTAssertEqual(try icon.padding(), EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
         XCTAssertThrows(try EmptyView().inspect().styleConfigurationTitle(),
             "styleConfigurationTitle() found EmptyView instead of LabelStyleConfiguration.Title")
         XCTAssertThrows(try EmptyView().inspect().styleConfigurationIcon(),
             "styleConfigurationIcon() found EmptyView instead of LabelStyleConfiguration.Icon")
+        #if compiler(<6)
         XCTAssertEqual(try sut.inspect().find(ViewType.StyleConfiguration.Title.self).pathToRoot,
                        "vStack().styleConfigurationTitle(0)")
         XCTAssertEqual(try sut.inspect().find(ViewType.StyleConfiguration.Icon.self).pathToRoot,
                        "vStack().styleConfigurationIcon(1)")
+        #else
+        XCTAssertEqual(try sut.inspect().find(ViewType.StyleConfiguration.Title.self).pathToRoot,
+                       "anyView().vStack().styleConfigurationTitle(0)")
+        XCTAssertEqual(try sut.inspect().find(ViewType.StyleConfiguration.Icon.self).pathToRoot,
+                       "anyView().vStack().styleConfigurationIcon(1)")
+        #endif
     }
 }
 

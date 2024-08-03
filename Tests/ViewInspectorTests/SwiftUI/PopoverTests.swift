@@ -35,7 +35,7 @@ final class PopoverTests: XCTestCase {
     func testInspectionErrorPopoverNotPresented() throws {
         let binding = Binding(wrappedValue: false)
         let sut = EmptyView().popover2(isPresented: binding) { Text("") }
-        XCTAssertThrows(try sut.inspect().emptyView().popover(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().popover(),
                         "View for Popover is absent")
     }
     
@@ -43,7 +43,7 @@ final class PopoverTests: XCTestCase {
     func testInspectionErrorPopoverWithItemNotPresented() throws {
         let binding = Binding<Int?>(wrappedValue: nil)
         let sut = EmptyView().popover2(item: binding) { Text("\($0)") }
-        XCTAssertThrows(try sut.inspect().emptyView().popover(),
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().popover(),
                         "View for Popover is absent")
     }
     
@@ -53,9 +53,13 @@ final class PopoverTests: XCTestCase {
         let sut = EmptyView().popover2(isPresented: binding) {
             Text("abc")
         }
-        let title = try sut.inspect().emptyView().popover().text()
+        let title = try sut.inspect().implicitAnyView().emptyView().popover().text()
         XCTAssertEqual(try title.string(), "abc")
+        #if compiler(<6)
         XCTAssertEqual(title.pathToRoot, "emptyView().popover().text()")
+        #else
+        XCTAssertEqual(title.pathToRoot, "anyView().emptyView().popover().text()")
+        #endif
     }
     
     @MainActor
@@ -65,10 +69,14 @@ final class PopoverTests: XCTestCase {
             Text("abc")
             Button("xyz", action: { binding.wrappedValue = false })
         }
-        let button = try sut.inspect().emptyView().popover().button(1)
+        let button = try sut.inspect().implicitAnyView().emptyView().popover().button(1)
         try button.tap()
         XCTAssertFalse(binding.wrappedValue)
+        #if compiler(<6)
         XCTAssertEqual(button.pathToRoot, "emptyView().popover().button(1)")
+        #else
+        XCTAssertEqual(button.pathToRoot, "anyView().emptyView().popover().button(1)")
+        #endif
     }
     
     @MainActor
@@ -76,21 +84,31 @@ final class PopoverTests: XCTestCase {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().popover2(isPresented: binding, content: { Text("") })
         XCTAssertTrue(binding.wrappedValue)
+        #if compiler(<6)
         try sut.inspect().popover().dismiss()
         XCTAssertFalse(binding.wrappedValue)
         XCTAssertThrows(try sut.inspect().popover(), "View for Popover is absent")
+        #else
+        try sut.inspect().implicitAnyView().emptyView().popover().dismiss()
+        XCTAssertFalse(binding.wrappedValue)
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().popover(), "View for Popover is absent")
+        #endif
     }
     
     @MainActor
     func testDismissForItemVersion() throws {
         let binding = Binding<Int?>(wrappedValue: 6)
         let sut = EmptyView().popover2(item: binding) { Text("\($0)") }
-        let popover = try sut.inspect().emptyView().popover()
+        let popover = try sut.inspect().implicitAnyView().emptyView().popover()
         XCTAssertEqual(try popover.text().string(), "6")
         XCTAssertEqual(binding.wrappedValue, 6)
         try popover.dismiss()
         XCTAssertNil(binding.wrappedValue)
+        #if compiler(<6)
         XCTAssertThrows(try sut.inspect().popover(), "View for Popover is absent")
+        #else
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().popover(), "View for Popover is absent")
+        #endif
     }
     
     @MainActor
@@ -99,6 +117,7 @@ final class PopoverTests: XCTestCase {
         let binding2 = Binding(wrappedValue: true)
         let binding3 = Binding(wrappedValue: true)
         let sut = PopoverFindTestView(popover1: binding1, popover2: binding2, popover3: binding3)
+        #if compiler(<6)
         let title1 = try sut.inspect().hStack().emptyView(0).popover().text(0)
         XCTAssertEqual(try title1.string(), "title_1")
         XCTAssertEqual(title1.pathToRoot,
@@ -107,8 +126,20 @@ final class PopoverTests: XCTestCase {
         XCTAssertEqual(try title2.string(), "title_3")
         XCTAssertEqual(title2.pathToRoot,
             "view(PopoverFindTestView.self).hStack().emptyView(0).popover(1).text(0)")
-        
+
         XCTAssertEqual(try sut.inspect().find(ViewType.Popover.self).text(0).string(), "title_1")
+        #else
+        let title1 = try sut.inspect().implicitAnyView().hStack().anyView(0).anyView().emptyView().popover().text(0)
+        XCTAssertEqual(try title1.string(), "title_1")
+        XCTAssertEqual(title1.pathToRoot,
+            "view(PopoverFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().popover().text(0)")
+        let title2 = try sut.inspect().implicitAnyView().hStack().anyView(0).anyView().popover().text(0)
+        XCTAssertEqual(try title2.string(), "title_3")
+        XCTAssertEqual(title2.pathToRoot,
+            "view(PopoverFindTestView.self).anyView().hStack().anyView(0).anyView().popover().text(0)")
+
+        XCTAssertEqual(try sut.inspect().find(ViewType.Popover.self, skipFound: 2).text(0).string(), "title_1")
+        #endif
         binding1.wrappedValue = false
         XCTAssertEqual(try sut.inspect().find(ViewType.Popover.self).text(0).string(), "title_3")
         binding3.wrappedValue = false
@@ -122,22 +153,39 @@ final class PopoverTests: XCTestCase {
         let sut = PopoverFindTestView(popover1: binding, popover2: binding, popover3: binding)
         
         // 1
+        #if compiler(<6)
         XCTAssertEqual(try sut.inspect().find(text: "title_1").pathToRoot,
             "view(PopoverFindTestView.self).hStack().emptyView(0).popover().text(0)")
         XCTAssertEqual(try sut.inspect().find(text: "button_1").pathToRoot,
             "view(PopoverFindTestView.self).hStack().emptyView(0).popover().button(1).labelView().text()")
+        #else
+        XCTAssertEqual(try sut.inspect().find(text: "title_1").pathToRoot,
+            "view(PopoverFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().popover().text(0)")
+        XCTAssertEqual(try sut.inspect().find(text: "button_1").pathToRoot,
+            """
+            view(PopoverFindTestView.self).anyView().hStack().anyView(0).anyView()\
+            .emptyView().popover().button(1).labelView().text()
+            """)
+        #endif
         // 2
         XCTAssertThrows(try sut.inspect().find(text: "title_2").pathToRoot,
             "Search did not find a match")
         
         // 3
-        XCTAssertEqual(try sut.inspect().find(text: "title_3").pathToRoot,
-            "view(PopoverFindTestView.self).hStack().emptyView(0).popover(1).text(0)")
-        
         XCTAssertThrows(try sut.inspect().find(text: "message_3").pathToRoot,
             "Search did not find a match")
+
+        #if compiler(<6)
+        XCTAssertEqual(try sut.inspect().find(text: "title_3").pathToRoot,
+            "view(PopoverFindTestView.self).hStack().emptyView(0).popover(1).text(0)")
         XCTAssertEqual(try sut.inspect().find(text: "button_3").pathToRoot,
             "view(PopoverFindTestView.self).hStack().emptyView(0).popover(1).button(1).labelView().text()")
+        #else
+        XCTAssertEqual(try sut.inspect().find(text: "title_3").pathToRoot,
+            "view(PopoverFindTestView.self).anyView().hStack().anyView(0).anyView().popover().text(0)")
+        XCTAssertEqual(try sut.inspect().find(text: "button_3").pathToRoot,
+            "view(PopoverFindTestView.self).anyView().hStack().anyView(0).anyView().popover().button(1).labelView().text()")
+        #endif
     }
     
     @MainActor
@@ -146,7 +194,7 @@ final class PopoverTests: XCTestCase {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView()
             .popover2(isPresented: binding, arrowEdge: .trailing) { Text("") }
-        let value = try sut.inspect().emptyView().popover().arrowEdge()
+        let value = try sut.inspect().implicitAnyView().emptyView().popover().arrowEdge()
         XCTAssertEqual(value, .trailing)
     }
     
@@ -158,7 +206,7 @@ final class PopoverTests: XCTestCase {
         let sut = EmptyView()
             .popover2(isPresented: binding,
                       attachmentAnchor: anchor) { Text("") }
-        let value = try sut.inspect().emptyView().popover().attachmentAnchor()
+        let value = try sut.inspect().implicitAnyView().emptyView().popover().attachmentAnchor()
         XCTAssertEqual(value, anchor)
     }
 }
@@ -188,7 +236,7 @@ final class PopoverDeprecatedTests: XCTestCase {
     func testContentView() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().popover2(isPresented: binding) { Text("") }
-        let popover = try sut.inspect().emptyView().popover()
+        let popover = try sut.inspect().implicitAnyView().emptyView().popover()
         XCTAssertNoThrow(try popover.contentView().text())
         XCTAssertNoThrow(try popover.contentView(Text.self).text())
     }
@@ -198,9 +246,9 @@ final class PopoverDeprecatedTests: XCTestCase {
     func testIsPresentedAndDismiss() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().popover2(isPresented: binding) { Text("") }
-        XCTAssertTrue(try sut.inspect().emptyView().popover().isPresented())
-        try sut.inspect().emptyView().popover().dismiss()
-        XCTAssertThrows(try sut.inspect().emptyView().popover(),
+        XCTAssertTrue(try sut.inspect().implicitAnyView().emptyView().popover().isPresented())
+        try sut.inspect().implicitAnyView().emptyView().popover().dismiss()
+        XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().popover(),
                         "View for Popover is absent")
     }
 }

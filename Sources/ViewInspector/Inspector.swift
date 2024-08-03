@@ -358,6 +358,8 @@ internal extension Inspector {
             return try ViewType.TreeView.child(content)
         case "IDView":
             return try ViewType.IDView.child(content)
+        case "StaticIf":
+            return try ViewType.StaticIf.child(content)
         case "Optional":
             return try ViewType.OptionalContent.child(content)
         case "EquatableView":

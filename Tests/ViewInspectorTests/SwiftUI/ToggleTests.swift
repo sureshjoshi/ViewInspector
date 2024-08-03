@@ -94,8 +94,8 @@ final class GlobalModifiersForToggle: XCTestCase {
     @MainActor
     func testCustomMenuStyleInspection() throws {
         let sut = TestToggleStyle()
-        XCTAssertEqual(try sut.inspect(isOn: true).vStack().styleConfigurationLabel(0).blur().radius, 5)
-        XCTAssertEqual(try sut.inspect(isOn: false).vStack().styleConfigurationLabel(0).blur().radius, 0)
+        XCTAssertEqual(try sut.inspect(isOn: true).implicitAnyView().vStack().styleConfigurationLabel(0).blur().radius, 5)
+        XCTAssertEqual(try sut.inspect(isOn: false).implicitAnyView().vStack().styleConfigurationLabel(0).blur().radius, 0)
     }
 }
 

@@ -101,8 +101,8 @@ final class GroupBoxTests: XCTestCase {
     func testCustomGroupBoxStyleInspection() throws {
         guard #available(iOS 14, macOS 11.0, *) else { throw XCTSkip() }
         let sut = TestGroupBoxStyle()
-        XCTAssertEqual(try sut.inspect().vStack().styleConfigurationContent(0).blur().radius, 5)
-        XCTAssertEqual(try sut.inspect().vStack().styleConfigurationLabel(1).brightness(), 3)
+        XCTAssertEqual(try sut.inspect().implicitAnyView().vStack().styleConfigurationContent(0).blur().radius, 5)
+        XCTAssertEqual(try sut.inspect().implicitAnyView().vStack().styleConfigurationLabel(1).brightness(), 3)
         XCTAssertThrows(try EmptyView().inspect().styleConfigurationContent(),
         """
         styleConfigurationContent() found EmptyView instead of \

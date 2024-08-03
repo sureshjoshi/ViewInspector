@@ -65,10 +65,15 @@ final class ModifiedContentTests: XCTestCase {
     func testSingleModifierInspection() throws {
         let view = EmptyView().modifier(TestModifier())
         let sut = try view.inspect().emptyView().modifier(TestModifier.self)
-        let content = try sut.viewModifierContent()
+        let content = try sut.implicitAnyView().viewModifierContent()
         XCTAssertNoThrow(try content.callOnAppear())
+        #if compiler(<6)
         XCTAssertEqual(content.pathToRoot,
                        "emptyView().modifier(TestModifier.self).viewModifierContent()")
+        #else
+        XCTAssertEqual(content.pathToRoot,
+                       "emptyView().modifier(TestModifier.self).anyView().viewModifierContent()")
+        #endif
     }
     
     @MainActor
@@ -82,20 +87,33 @@ final class ModifiedContentTests: XCTestCase {
             .modifier(TestModifier(tag: 2))
         let sut1 = try view.inspect().emptyView().modifier(TestModifier.self)
         XCTAssertEqual(try sut1.actualView().tag, 1)
-        let content1 = try sut1.viewModifierContent()
+        let content1 = try sut1.implicitAnyView().viewModifierContent()
+        #if compiler(<6)
         XCTAssertEqual(content1.pathToRoot,
             "emptyView().modifier(TestModifier.self).viewModifierContent()")
-        
+        #else
+        XCTAssertEqual(content1.pathToRoot,
+            "emptyView().modifier(TestModifier.self).anyView().viewModifierContent()")
+        #endif
         let sut2 = try view.inspect().emptyView().modifier(TestModifier2.self)
         let content2 = try sut2.find(ViewType.ViewModifierContent.self)
+        #if compiler(<6)
         XCTAssertEqual(content2.pathToRoot,
             "emptyView().modifier(TestModifier2.self).hStack().viewModifierContent(1)")
-        
+        #else
+        XCTAssertEqual(content2.pathToRoot,
+            "emptyView().modifier(TestModifier2.self).anyView().hStack().viewModifierContent(1)")
+        #endif
         let sut3 = try view.inspect().emptyView().modifier(TestModifier.self, 1)
         XCTAssertEqual(try sut3.actualView().tag, 2)
-        let content3 = try sut3.viewModifierContent()
+        let content3 = try sut3.implicitAnyView().viewModifierContent()
+        #if compiler(<6)
         XCTAssertEqual(content3.pathToRoot,
             "emptyView().modifier(TestModifier.self, 1).viewModifierContent()")
+        #else
+        XCTAssertEqual(content3.pathToRoot,
+            "emptyView().modifier(TestModifier.self, 1).anyView().viewModifierContent()")
+        #endif
     }
     
     @MainActor
@@ -105,9 +123,9 @@ final class ModifiedContentTests: XCTestCase {
         let exp = XCTestExpectation(description: #function)
         sut.didAppear = { rawModifier in
             rawModifier.inspect { modifier in
-                XCTAssertEqual(try modifier.hStack().viewModifierContent(1).padding().top, 15)
-                try modifier.hStack().button(0).tap()
-                XCTAssertEqual(try modifier.hStack().viewModifierContent(1).padding().top, 10)
+                XCTAssertEqual(try modifier.implicitAnyView().hStack().viewModifierContent(1).padding().top, 15)
+                try modifier.implicitAnyView().hStack().button(0).tap()
+                XCTAssertEqual(try modifier.implicitAnyView().hStack().viewModifierContent(1).padding().top, 10)
             }
             ViewHosting.expel()
             exp.fulfill()
@@ -122,9 +140,9 @@ final class ModifiedContentTests: XCTestCase {
         let binding = Binding(wrappedValue: false)
         var sut = TestModifier2(value: binding)
         let exp = sut.on(\.didAppear) { modifier in
-            XCTAssertEqual(try modifier.hStack().viewModifierContent(1).padding().top, 15)
-            try modifier.hStack().button(0).tap()
-            XCTAssertEqual(try modifier.hStack().viewModifierContent(1).padding().top, 10)
+            XCTAssertEqual(try modifier.implicitAnyView().hStack().viewModifierContent(1).padding().top, 15)
+            try modifier.implicitAnyView().hStack().button(0).tap()
+            XCTAssertEqual(try modifier.implicitAnyView().hStack().viewModifierContent(1).padding().top, 10)
         }
         let view = EmptyView().modifier(sut)
         ViewHosting.host(view: view)
@@ -143,14 +161,23 @@ final class ModifiedContentTests: XCTestCase {
         """)
         
         let sut2 = EmptyView().modifier(TestModifier3()).environmentObject(ExternalState())
-        let content = try sut2.inspect().emptyView().modifier(TestModifier3.self).group().viewModifierContent(0)
+        let content = try sut2.inspect().emptyView().modifier(TestModifier3.self).implicitAnyView().group().viewModifierContent(0)
+        let text = try sut2.inspect().emptyView().modifier(TestModifier3.self).implicitAnyView().group().text(1)
+        #if compiler(<6)
         XCTAssertEqual(content.pathToRoot,
             "emptyView().modifier(TestModifier3.self).group().viewModifierContent(0)")
-        let text = try sut2.inspect().emptyView().modifier(TestModifier3.self).group().text(1)
         XCTAssertEqual(text.pathToRoot,
             "emptyView().modifier(TestModifier3.self).group().text(1)")
         XCTAssertEqual(try sut2.inspect().find(text: "obj1").pathToRoot,
             "emptyView().modifier(TestModifier3.self).group().text(1)")
+        #else
+        XCTAssertEqual(content.pathToRoot,
+            "emptyView().modifier(TestModifier3.self).anyView().group().viewModifierContent(0)")
+        XCTAssertEqual(text.pathToRoot,
+            "emptyView().modifier(TestModifier3.self).anyView().group().text(1)")
+        XCTAssertEqual(try sut2.inspect().find(text: "obj1").pathToRoot,
+            "emptyView().modifier(TestModifier3.self).anyView().group().text(1)")
+        #endif
     }
     
     @MainActor
@@ -167,7 +194,7 @@ final class ModifiedContentTests: XCTestCase {
         XCTAssertEqual(try view2.padding(), EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
         XCTAssertThrows(try view2.offset(), "ViewWithEnvObject does not have 'offset' modifier")
         XCTAssertFalse(view2.isHidden())
-        XCTAssertEqual(try view2.text().string(), "other")
+        XCTAssertEqual(try view2.implicitAnyView().text().string(), "other")
     }
 
     func testEnvironmentModifierWithNSObject() throws {

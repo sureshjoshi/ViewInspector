@@ -2,6 +2,7 @@ import SwiftUI
 import Combine
 import XCTest
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public protocol InspectionEmissary: AnyObject {
     
@@ -176,8 +177,8 @@ private extension InspectionEmissary {
                     inspection: @escaping SubjectInspection
     ) async throws where P: Publisher {
         async let setup: Void = try await setup(inspection: inspection, function: function, file: file, line: line)
+        _ = try await publisher.values.first { _ in true }
         Task { @MainActor [weak notice] in
-            _ = try await publisher.values.first { _ in true }
             let clock = SuspendingClock()
             try await clock.sleep(until: clock.now + delay)
             notice?.send(line)
