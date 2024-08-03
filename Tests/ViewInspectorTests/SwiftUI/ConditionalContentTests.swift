@@ -27,7 +27,8 @@ final class ConditionalContentTests: XCTestCase {
         let sut = ConditionalViewWithModifier(value: true)
         let text = try sut.inspect().implicitAnyView().anyView().text()
         XCTAssertEqual(try text.string(), "True")
-        XCTAssertEqual(try sut.inspect().implicitAnyView().anyView().padding(), EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
+        XCTAssertEqual(try sut.inspect().implicitAnyView().anyView().padding(),
+                       EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
     }
 }
 

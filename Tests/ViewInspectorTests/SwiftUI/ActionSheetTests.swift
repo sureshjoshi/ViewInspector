@@ -247,9 +247,15 @@ final class ActionSheetTests: XCTestCase {
         XCTAssertEqual(try sut.inspect().find(text: "message_1").pathToRoot,
             "view(ActionSheetFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().actionSheet().message()")
         XCTAssertEqual(try sut.inspect().find(text: "button_1_0").pathToRoot,
-            "view(ActionSheetFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().actionSheet().button(0).labelView()")
+            """
+            view(ActionSheetFindTestView.self).anyView().hStack().anyView(0)\
+            .anyView().emptyView().actionSheet().button(0).labelView()
+            """)
         XCTAssertEqual(try sut.inspect().find(text: "button_1_1").pathToRoot,
-            "view(ActionSheetFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().actionSheet().button(1).labelView()")
+            """
+            view(ActionSheetFindTestView.self).anyView().hStack().anyView(0)\
+            .anyView().emptyView().actionSheet().button(1).labelView()
+            """)
         #endif
         // 2
         let noMatchMessage: String

@@ -296,9 +296,15 @@ final class DeprecatedAlertTests: XCTestCase {
         XCTAssertEqual(try sut.inspect().find(text: "message_1").pathToRoot,
             "view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().alert().message().text()")
         XCTAssertEqual(try sut.inspect().find(text: "primary_1").pathToRoot,
-            "view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().alert().primaryButton().labelView()")
+            """
+            view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView()\
+            .emptyView().alert().primaryButton().labelView()
+            """)
         XCTAssertEqual(try sut.inspect().find(text: "secondary_1").pathToRoot,
-            "view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView().emptyView().alert().secondaryButton().labelView()")
+            """
+            view(AlertFindTestView.self).anyView().hStack().anyView(0).anyView()\
+            .emptyView().alert().secondaryButton().labelView()
+            """)
         #endif
         // 2
         let noMatchMessage: String

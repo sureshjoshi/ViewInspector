@@ -267,7 +267,9 @@ extension IntegerFormatStyle.Currency: CurrencyFormatter {
 
     func format(value: Any) throws -> String {
         guard let input = value as? Value else {
-            throw InspectionError.typeMismatch(factual: Inspector.typeName(value: value), expected: Inspector.typeName(type: Value.self))
+            throw InspectionError.typeMismatch(
+                factual: Inspector.typeName(value: value),
+                expected: Inspector.typeName(type: Value.self))
         }
         return self.format(input)
     }

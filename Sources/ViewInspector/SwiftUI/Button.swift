@@ -51,14 +51,13 @@ public extension InspectableView where View == ViewType.Button {
             .asInspectableView(ofType: ViewType.ClassifiedView.self)
     }
 
-    @MainActor
     func tap() throws {
         try guardIsResponsive()
         if #available(iOS 18.0, macOS 15.0, tvOS 18.0, watchOS 11.0, visionOS 2.0, *) {
             typealias Callback = @MainActor () -> Void
             let callback = try Inspector
                 .attribute(path: "action|closure", value: content.view, type: Callback.self)
-            callback()
+            MainActor.assumeIsolated(callback)
             return
         }
         typealias Callback = () -> Void

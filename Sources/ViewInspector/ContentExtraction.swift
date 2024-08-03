@@ -144,16 +144,11 @@ public extension ViewModifier {
             let resolved = envModifier.resolve(in: EnvironmentValues())
             return try resolved.extractContent(environmentObjects: environmentObjects)
         }
-        guard copy.canCallBody else {
+        guard copy.hasBody else {
             return "<Never>"
         }
         return copy.body()
     }
-}
-
-@available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-private extension ViewModifier {
-    var canCallBody: Bool { Body.self != Never.self }
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
