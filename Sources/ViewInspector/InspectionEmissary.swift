@@ -144,9 +144,9 @@ private extension InspectionEmissary {
                  inspection: @escaping SubjectInspection
     ) async throws {
         async let setup: Void = try await setup(inspection: inspection, function: function, file: file, line: line)
+        let clock = SuspendingClock()
+        try await clock.sleep(until: clock.now + delay)
         Task { @MainActor [weak notice] in
-            let clock = SuspendingClock()
-            try await clock.sleep(until: clock.now + delay)
             notice?.send(line)
         }
         try await setup
@@ -178,9 +178,9 @@ private extension InspectionEmissary {
     ) async throws where P: Publisher {
         async let setup: Void = try await setup(inspection: inspection, function: function, file: file, line: line)
         _ = try await publisher.values.first { _ in true }
+        let clock = SuspendingClock()
+        try await clock.sleep(until: clock.now + delay)
         Task { @MainActor [weak notice] in
-            let clock = SuspendingClock()
-            try await clock.sleep(until: clock.now + delay)
             notice?.send(line)
         }
         try await setup
