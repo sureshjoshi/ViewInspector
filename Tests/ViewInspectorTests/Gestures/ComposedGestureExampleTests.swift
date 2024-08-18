@@ -3,6 +3,7 @@ import SwiftUI
 import Combine
 @testable import ViewInspector
 
+#if !os(watchOS) && !os(tvOS)
 @available(iOS 13.0, macOS 11, *)
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
@@ -204,3 +205,4 @@ struct TestGestureView12: View {
         .onReceive(publisher) { }
     }
 }
+#endif

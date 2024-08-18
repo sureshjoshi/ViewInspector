@@ -1,3 +1,5 @@
+#if !os(watchOS) && !os(tvOS)
+
 import XCTest
 import SwiftUI
 import Combine
@@ -142,3 +144,5 @@ final class RotationGestureTests: XCTestCase {
         XCTAssertEqual(value, rotationAngle!)
     }
 }
+
+#endif

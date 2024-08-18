@@ -1,3 +1,5 @@
+#if !os(watchOS) && !os(tvOS)
+
 import XCTest
 import SwiftUI
 import Combine
@@ -128,3 +130,5 @@ final class SequenceGestureChildrenTests: XCTestCase {
     }
     #endif
 }
+
+#endif
