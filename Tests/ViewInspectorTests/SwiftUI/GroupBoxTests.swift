@@ -1,3 +1,5 @@
+#if !os(watchOS) && !os(tvOS)
+
 import XCTest
 import SwiftUI
 @testable import ViewInspector
@@ -111,6 +113,8 @@ final class GroupBoxTests: XCTestCase {
     }
     #endif
 }
+
+#endif
 
 #if os(iOS) || os(macOS)
 @available(iOS 14.0, macOS 11.0, *)

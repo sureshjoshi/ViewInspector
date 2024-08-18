@@ -1,3 +1,5 @@
+#if !os(watchOS) && !os(tvOS)
+
 import XCTest
 import SwiftUI
 import Combine
@@ -138,3 +140,5 @@ final class ExclusiveGestureTests: XCTestCase {
         XCTAssertEqual(value, exclusiveGestureValue, file: file, line: line)
     }
 }
+
+#endif

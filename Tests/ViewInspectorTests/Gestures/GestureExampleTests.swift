@@ -1,3 +1,5 @@
+#if !os(tvOS)
+
 import XCTest
 import SwiftUI
 import Combine
@@ -306,3 +308,5 @@ struct TestGestureView9: View {
             .gesture(gesture, including: .gesture)
     }
 }
+
+#endif

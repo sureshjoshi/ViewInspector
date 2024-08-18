@@ -34,6 +34,7 @@ final class TransitiveModifiersTests: XCTestCase {
         #endif
     }
     
+    #if !os(tvOS)
     @available(tvOS, unavailable)
     func testFlipsRightToLeftInheritance() throws {
         let sut = try FlipsRightToLeftTestView().inspect()
@@ -45,7 +46,8 @@ final class TransitiveModifiersTests: XCTestCase {
         }
         XCTAssertTrue(try sut.find(text: "2").flipsForRightToLeftLayoutDirection())
     }
-    
+    #endif
+
     @available(macOS 11.0, *)
     func testColorSchemeInheritance() throws {
         let sut = try ColorSchemeTestView().inspect()
@@ -85,6 +87,7 @@ final class TransitiveModifiersTests: XCTestCase {
         #endif
     }
     
+    #if !os(watchOS) && !os(tvOS)
     @available(tvOS, unavailable)
     @available(watchOS, unavailable)
     func testLabelsHiddenInheritance() throws {
@@ -96,6 +99,7 @@ final class TransitiveModifiersTests: XCTestCase {
         XCTAssertTrue(text2.labelsHidden())
         XCTAssertTrue(text2.isHidden())
     }
+    #endif
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)

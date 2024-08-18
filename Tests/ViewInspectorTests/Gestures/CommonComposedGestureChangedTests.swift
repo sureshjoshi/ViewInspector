@@ -1,3 +1,5 @@
+#if !os(watchOS) && !os(tvOS)
+
 import XCTest
 import SwiftUI
 import Combine
@@ -156,3 +158,5 @@ final class CommonComposedGestureChangedTests<U: Gesture> {
         }
     }
 }
+
+#endif

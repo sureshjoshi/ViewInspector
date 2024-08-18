@@ -19,12 +19,12 @@ final class NavigationBarModifiersTests: XCTestCase {
     
     #if !os(macOS)
     func testNavigationBarHidden() throws {
-        let sut1 = try EmptyView().navigationBarHidden(false).inspect()
-        let sut2 = try EmptyView().navigationBarHidden(true).inspect()
-        let sut3 = try EmptyView().padding().inspect()
-        XCTAssertFalse(try sut1.navigationBarHidden())
-        XCTAssertTrue(try sut2.navigationBarHidden())
-        XCTAssertThrows(try sut3.navigationBarHidden(),
+        let sut1 = EmptyView().navigationBarHidden(false)
+        let sut2 = EmptyView().navigationBarHidden(true)
+        let sut3 = EmptyView().padding()
+        XCTAssertFalse(try sut1.inspect().navigationBarHidden())
+        XCTAssertTrue(try sut2.inspect().navigationBarHidden())
+        XCTAssertThrows(try sut3.inspect().navigationBarHidden(),
             "EmptyView does not have 'navigationBarHidden' modifier")
     }
     

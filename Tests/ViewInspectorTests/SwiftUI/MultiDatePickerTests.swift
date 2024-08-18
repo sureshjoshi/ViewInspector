@@ -1,3 +1,5 @@
+#if !os(watchOS) && !os(tvOS)
+
 import XCTest
 import SwiftUI
 @testable import ViewInspector
@@ -96,3 +98,5 @@ final class MultiDatePickerTests: XCTestCase {
         XCTAssertEqual(sut, maxDate)
     }
 }
+
+#endif

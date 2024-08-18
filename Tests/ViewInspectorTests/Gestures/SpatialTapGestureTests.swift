@@ -1,4 +1,4 @@
-#if !os(visionOS)
+#if !os(visionOS) && !os(tvOS)
 
 import XCTest
 import SwiftUI

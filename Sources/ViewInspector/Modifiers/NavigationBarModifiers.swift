@@ -1,11 +1,5 @@
 import SwiftUI
 
-#if (os(macOS) || targetEnvironment(macCatalyst)) && !MAC_OS_VERSION_13_0
-struct ToolbarPlacement {
-    static var navigationBar: ToolbarPlacement { .init() }
-}
-#endif
-
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension InspectableView {
     
