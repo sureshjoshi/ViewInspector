@@ -121,7 +121,7 @@ private extension ViewType.Text {
         case "DateTextStorage", "TimeDataFormattingStorage":
             return try extractString(dateTextStorage: textStorage)
         case "FormatStyleStorage":
-            return try extractString(formatStyleStorage: textStorage)
+            return try extractString(formatStyleStorage: textStorage, locale: locale)
         case "FormatterTextStorage":
             return try extractString(formatterTextStorage: textStorage)
         case "AttributedStringTextStorage":
@@ -152,13 +152,14 @@ private extension ViewType.Text {
 
     // MARK: - FormatStyleStorage
 
-    private static func extractString(formatStyleStorage: Any) throws -> String {
+    private static func extractString(formatStyleStorage: Any, locale: Locale) throws -> String {
         let input = try Inspector
             .attribute(path: "storage|input", value: formatStyleStorage)
         let formatter = try Inspector
             .attribute(path: "storage|format", value: formatStyleStorage)
-        if let currencyFormatter = formatter as? CurrencyFormatter {
-            return try currencyFormatter.format(value: input)
+        if #available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *),
+            let currencyFormatter = formatter as? any FormatStyle {
+            return try currencyFormatter.format(value: input, locale: locale)
         }
         throw InspectionError.notSupported("Unknown text formatter: \(Inspector.typeName(value: formatter))")
     }
@@ -258,20 +259,16 @@ extension FormatStyle {
     }
 }
 
-private protocol CurrencyFormatter {
-    func format(value: Any) throws -> String
-}
-
 @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
-extension IntegerFormatStyle.Currency: CurrencyFormatter {
+extension FormatStyle {
 
-    func format(value: Any) throws -> String {
-        guard let input = value as? Value else {
+    func format(value: Any, locale: Locale) throws -> String {
+        guard let input = value as? FormatInput else {
             throw InspectionError.typeMismatch(
                 factual: Inspector.typeName(value: value),
-                expected: Inspector.typeName(type: Value.self))
+                expected: Inspector.typeName(type: FormatInput.self))
         }
-        return self.format(input)
+        return String(describing: self.locale(locale).format(input))
     }
 }
 

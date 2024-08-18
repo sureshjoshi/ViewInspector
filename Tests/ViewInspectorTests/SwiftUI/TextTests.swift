@@ -237,8 +237,8 @@ final class TextTests: XCTestCase {
     func testFormatStyle() throws {
         guard #available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
         else { throw XCTSkip() }
-        let sut = Text("Test \(1234, format: .number) and \(0.5678, format: .percent)")
-        XCTAssertEqual(try sut.inspect().text().string(), "Test 1,234 and 56.78%")
+        let sut = Text("Test \(123, format: .number) and \(0.56, format: .percent)")
+        XCTAssertEqual(try sut.inspect().text().string(), "Test 123 and 56%")
     }
 
     func testFormatStyleWithLocale() throws {
@@ -247,6 +247,8 @@ final class TextTests: XCTestCase {
         let sut = Text("Test \(1234, format: .number) and \(0.5678, format: .percent)")
         XCTAssertEqual(try sut.inspect().text().string(locale: .init(identifier: "de_DE")),
                        "Test 1.234 and 56,78\u{a0}%")
+        XCTAssertEqual(try sut.inspect().text().string(locale: .init(identifier: "en_US")),
+                       "Test 1,234 and 56.78%")
     }
 
     func testCurrencyFormatStyle() throws {
