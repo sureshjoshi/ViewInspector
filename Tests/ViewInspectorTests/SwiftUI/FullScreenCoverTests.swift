@@ -225,6 +225,7 @@ final class FullScreenCoverTests: XCTestCase {
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
 @available(macOS, unavailable)
 private extension View {
+    @MainActor
     func fullScreenCover2<FullScreenCover>(isPresented: Binding<Bool>,
                                            onDismiss: (() -> Void)? = nil,
                                            @ViewBuilder content: @escaping () -> FullScreenCover
@@ -233,6 +234,7 @@ private extension View {
             isPresented: isPresented, onDismiss: onDismiss, popupBuilder: content))
     }
 
+    @MainActor
     func fullScreenCover2<Item, FullScreenCover>(item: Binding<Item?>,
                                                  onDismiss: (() -> Void)? = nil,
                                                  content: @escaping (Item) -> FullScreenCover

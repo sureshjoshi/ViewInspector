@@ -19,6 +19,7 @@ internal extension ViewSearch {
             ViewType.Color.self,
             ViewType.ColorPicker.self,
             ViewType.ConfirmationDialog.self,
+            ViewType.ContentUnavailableView.self,
             ViewType.ControlGroup.self,
             ViewType.DatePicker.self,
             ViewType.DisclosureGroup.self,

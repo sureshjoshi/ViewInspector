@@ -102,6 +102,7 @@ public extension ItemPopupPresenter where Popup == ActionSheet {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension ViewModifier where Self: BasePopupPresenter {
+    @MainActor
     func content() throws -> ViewInspector.Content {
         let view = body(content: _ViewModifier_Content())
         return try view.inspect().implicitAnyView().viewModifierContent().content
@@ -110,9 +111,11 @@ public extension ViewModifier where Self: BasePopupPresenter {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension ViewModifier where Self: PopupPresenter {
+    @MainActor
     var isPopoverPresenter: Bool {
         return (try? content().standardPopoverModifier()) != nil
     }
+    @MainActor
     var isSheetPresenter: Bool {
         return (try? content().standardSheetModifier()) != nil
     }
@@ -120,9 +123,11 @@ public extension ViewModifier where Self: PopupPresenter {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension ViewModifier where Self: ItemPopupPresenter {
+    @MainActor
     var isPopoverPresenter: Bool {
         return (try? content().standardPopoverModifier()) != nil
     }
+    @MainActor
     var isSheetPresenter: Bool {
         return (try? content().standardSheetModifier()) != nil
     }
