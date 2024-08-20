@@ -300,11 +300,13 @@ final class ActionSheetTests: XCTestCase {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 private extension View {
+    @MainActor
     func actionSheet2(isPresented: Binding<Bool>,
                       content: @escaping () -> ActionSheet) -> some View {
         return self.modifier(InspectableActionSheet(isPresented: isPresented, popupBuilder: content))
     }
     
+    @MainActor
     func actionSheet2<Item>(item: Binding<Item?>,
                             content: @escaping (Item) -> ActionSheet
     ) -> some View where Item: Identifiable {

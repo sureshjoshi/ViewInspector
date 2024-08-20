@@ -33,6 +33,7 @@ This document reflects the current status of the [ViewInspector](https://github.
 |:white_check_mark:| ControlGroup | |
 |:white_check_mark:| ConditionalContent | `contained view` |
 |:white_check_mark:| ConfirmationDialog | `title view`, `message view`, `actions view`, `titleVisibility: Visibility`, `dismiss()` |
+|:white_check_mark:| ContentUnavailableView | `label view`, `description view`, `actions view` |
 |:white_check_mark:| Custom View | `actualView: CustomView`, `viewBuilder container` |
 |:white_check_mark:| Custom ViewModifier | |
 |:white_check_mark:| Custom ViewModifier.Content | |

@@ -255,6 +255,7 @@ final class PopoverDeprecatedTests: XCTestCase {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 private extension View {
+    @MainActor
     func popover2<Popover>(isPresented: Binding<Bool>,
                            attachmentAnchor: PopoverAttachmentAnchor = .rect(.bounds),
                            arrowEdge: Edge = .top,
@@ -267,6 +268,7 @@ private extension View {
             popupBuilder: content))
     }
     
+    @MainActor
     func popover2<Item, Popover>(item: Binding<Item?>,
                                  attachmentAnchor: PopoverAttachmentAnchor = .rect(.bounds),
                                  arrowEdge: Edge = .top,

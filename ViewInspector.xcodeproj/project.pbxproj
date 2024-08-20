@@ -21,6 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1F5B24C02C73962300F884E7 /* ContentUnavailableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5B24BF2C73962300F884E7 /* ContentUnavailableView.swift */; };
+		1F5B24C32C73A06800F884E7 /* ContentUnavailableViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5B24C12C73A01F00F884E7 /* ContentUnavailableViewTests.swift */; };
 		1FA29F102AF0503000CCE6FA /* NavigationDestinationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA29F0F2AF0503000CCE6FA /* NavigationDestinationTests.swift */; };
 		1FA29F132AF051AD00CCE6FA /* NavigationDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FA29F112AF0515400CCE6FA /* NavigationDestination.swift */; };
 		1FFB701D2B0C21DC004975B3 /* SpatialTapGestureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FFB701C2B0C21DC004975B3 /* SpatialTapGestureTests.swift */; };
@@ -313,6 +315,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1F5B24BF2C73962300F884E7 /* ContentUnavailableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentUnavailableView.swift; sourceTree = "<group>"; };
+		1F5B24C12C73A01F00F884E7 /* ContentUnavailableViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentUnavailableViewTests.swift; sourceTree = "<group>"; };
 		1FA29F0F2AF0503000CCE6FA /* NavigationDestinationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationDestinationTests.swift; sourceTree = "<group>"; };
 		1FA29F112AF0515400CCE6FA /* NavigationDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationDestination.swift; sourceTree = "<group>"; };
 		1FFB701C2B0C21DC004975B3 /* SpatialTapGestureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpatialTapGestureTests.swift; sourceTree = "<group>"; };
@@ -696,6 +700,7 @@
 				F6FB7F5725476431006658EF /* ColorPicker.swift */,
 				F64057EC238DB1530029D9BA /* ConditionalContent.swift */,
 				52E24E9826E9378A00711987 /* ConfirmationDialog.swift */,
+				1F5B24BF2C73962300F884E7 /* ContentUnavailableView.swift */,
 				5220904B27763ABA001A899A /* ControlGroup.swift */,
 				F60EEBBE2382EED0007DB53A /* CustomView.swift */,
 				520F8C12266D0E600026BC57 /* CustomViewModifier.swift */,
@@ -824,6 +829,7 @@
 				F6FB7F6125476480006658EF /* ColorPickerTests.swift */,
 				F6F08E6723A2A67D001F04DF /* ConditionalContentTests.swift */,
 				52E24E9A26E93A4700711987 /* ConfirmationDialogTests.swift */,
+				1F5B24C12C73A01F00F884E7 /* ContentUnavailableViewTests.swift */,
 				5220904D27763ACF001A899A /* ControlGroupTests.swift */,
 				F60EEBEF2382F004007DB53A /* CustomViewTests.swift */,
 				F6B7D0092494E12F00ABB5E0 /* CustomViewBuilderTests.swift */,
@@ -1238,6 +1244,7 @@
 				F6C2E4D623AB214A00C7308F /* VisualEffectModifiers.swift in Sources */,
 				F60EEBDD2382EED0007DB53A /* Button.swift in Sources */,
 				F6C15AA3254DA270000240F1 /* ProgressView.swift in Sources */,
+				1F5B24C02C73962300F884E7 /* ContentUnavailableView.swift in Sources */,
 				F6ECF6CA23A66FE2000FC591 /* AnimationModifiers.swift in Sources */,
 				523E973D2A9B25FD002E8EB5 /* MultiDatePicker.swift in Sources */,
 				F66EDB5B23EDC19000A01B9F /* Spacer.swift in Sources */,
@@ -1290,6 +1297,7 @@
 				F6D933A12385B48100358E0E /* NavigationLinkTests.swift in Sources */,
 				F6C15A7B254B7555000240F1 /* OutlineGroupTests.swift in Sources */,
 				CDA844A1262B747000C56C98 /* CommonGestureTests.swift in Sources */,
+				1F5B24C32C73A06800F884E7 /* ContentUnavailableViewTests.swift in Sources */,
 				F64105CE257C3E1F0033D82D /* ViewSearchTests.swift in Sources */,
 				CDA844D4262B81AB00C56C98 /* SequenceGestureTests.swift in Sources */,
 				1FFB701D2B0C21DC004975B3 /* SpatialTapGestureTests.swift in Sources */,
