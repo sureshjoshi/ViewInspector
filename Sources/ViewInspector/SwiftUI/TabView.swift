@@ -118,7 +118,7 @@ internal extension Content {
 
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
 @available(macOS, unavailable)
-extension PageTabViewStyle: Equatable {
+extension PageTabViewStyle: @preconcurrency Equatable {
     
     public var indexDisplayMode: PageTabViewStyle.IndexDisplayMode {
         return (try? Inspector.attribute(label: "indexDisplayMode", value: self,
@@ -131,9 +131,12 @@ extension PageTabViewStyle: Equatable {
     }
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
 @available(macOS, unavailable)
-extension PageTabViewStyle.IndexDisplayMode: Equatable {
+extension PageTabViewStyle.IndexDisplayMode: @preconcurrency Equatable {
     public static func == (lhs: PageTabViewStyle.IndexDisplayMode, rhs: PageTabViewStyle.IndexDisplayMode) -> Bool {
         let lhsBacking = try? Inspector.attribute(label: "backing", value: lhs)
         let rhsBacking = try? Inspector.attribute(label: "backing", value: rhs)
@@ -147,7 +150,7 @@ internal protocol SelectionValueProvider {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 7.0, *)
-extension TabView: SelectionValueProvider {
+extension TabView: @preconcurrency SelectionValueProvider {
     func selectionValue() -> AnyHashable? {
         let binding = try? Inspector.attribute(label: "selection", value: self, type: Binding<SelectionValue>?.self)
         return binding?.wrappedValue

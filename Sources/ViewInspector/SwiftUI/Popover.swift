@@ -67,10 +67,11 @@ internal extension Content {
             modifierName: ViewType.Popover.standardModifierName, path: "modifier",
             type: Any.self, call: name.firstLetterLowercased)
     }
-    
+
+    @MainActor
     func popoversForSearch() -> [ViewSearch.ModifierIdentity] {
         let count = medium.viewModifiers
-            .filter(isPopoverBuilder(modifier:))
+            .filter { isPopoverBuilder(modifier: $0) }
             .count
         return Array(0..<count).map { _ in
             .init(name: "", builder: { parent, index in

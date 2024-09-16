@@ -204,6 +204,9 @@ public extension InspectableView {
 
 // MARK: - Private
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 private extension AccessibilityActionKind {
     func name() throws -> InspectableView<ViewType.Text> {
@@ -241,7 +244,10 @@ private struct AccessibilityProperty {
         self.keyPointerValue = key
         self.value = try Inspector.attribute(path: "typedValue", value: value)
     }
-    
+
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     static let noisePointerValues: Set<UInt64> = {
         let view1 = EmptyView().accessibility(label: Text(""))
         let view2 = EmptyView().accessibility(hint: Text(""))

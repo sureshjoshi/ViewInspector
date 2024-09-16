@@ -99,6 +99,9 @@ public extension InspectableView where View == ViewType.Text {
 
 // MARK: - String extraction
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 private extension ViewType.Text {
     
@@ -259,6 +262,9 @@ extension FormatStyle {
     }
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 extension FormatStyle {
 
@@ -274,6 +280,9 @@ extension FormatStyle {
 
 // MARK: - Image extraction
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 private extension ViewType.Text {
     
@@ -335,6 +344,9 @@ private extension ViewType.Text {
 
 // MARK: - AttributedString extraction
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
 private extension ViewType.Text {
     static func extractAttributedString(from view: InspectableView<ViewType.Text>) throws -> AttributedString {

@@ -167,6 +167,9 @@ internal extension ViewType.PopupContainer {
     }
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension Content {
     func popup<Popup: KnownViewType>(
@@ -186,21 +189,30 @@ internal extension Content {
                 https://github.com/nalexn/ViewInspector/blob/master/guide_popups.md#\(name.lowercased())
                 """)
         }
+        #if swift(>=6.0)
+        let popup = try build(popupPresenter: popupPresenter, name: name)
+        #else
         let popup: Any = try MainActor.assumeIsolated {
-            do {
-                return try popupPresenter.buildPopup()
-            } catch {
-                if case InspectionError.viewNotFound = error {
-                    throw InspectionError.viewNotFound(parent: name)
-                }
-                throw error
-            }
+            return try build(popupPresenter: popupPresenter, name: name)
         }
+        #endif
         let container = ViewType.PopupContainer<Popup>(popup: popup, presenter: popupPresenter)
         let medium = self.medium.resettingViewModifiers()
         let content = Content(container, medium: medium)
         let call = ViewType.inspectionCall(
             base: Popup.inspectionCall(typeName: name), index: index)
         return try .init(content, parent: parent, call: call, index: index)
+    }
+
+    @MainActor
+    private func build(popupPresenter: any BasePopupPresenter, name: String) throws -> Any {
+        do {
+            return try popupPresenter.buildPopup()
+        } catch {
+            if case InspectionError.viewNotFound = error {
+                throw InspectionError.viewNotFound(parent: name)
+            }
+            throw error
+        }
     }
 }

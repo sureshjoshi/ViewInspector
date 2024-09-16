@@ -124,6 +124,9 @@ private extension InspectableView where View == ViewType.Map {
     }
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 14.0, tvOS 14.0, macOS 11.0, *)
 internal protocol IdentifiableItemsContainer {
     func contains<T: Identifiable>(_ item: T) -> Bool

@@ -2,6 +2,9 @@ import SwiftUI
 import XCTest
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+#if swift(>=6.0)
+@MainActor
+#endif
 public struct InspectableView<View> where View: BaseViewType {
     
     internal let content: Content
@@ -87,6 +90,9 @@ extension UnwrappedView {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+#if swift(>=6.0)
+@MainActor
+#endif
 internal protocol UnwrappedView {
     var content: Content { get }
     var parentView: UnwrappedView? { get }
@@ -205,6 +211,29 @@ internal extension InspectableView where View: MultipleViewContent {
 
 // MARK: - Inspection of a Custom View
 
+#if swift(>=6.0)
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+@MainActor
+public extension View {
+
+    func inspect(function: String = #function) throws -> InspectableView<ViewType.ClassifiedView> {
+        let medium = ViewHosting.medium(function: function)
+        let content = try Inspector.unwrap(view: self, medium: medium)
+        return try .init(content, parent: nil, call: "")
+    }
+
+    func inspect(function: String = #function, file: StaticString = #file, line: UInt = #line,
+                 inspection: (InspectableView<ViewType.View<Self>>) throws -> Void) {
+        do {
+            let view = try inspect(function: function)
+                .asInspectableView(ofType: ViewType.View<Self>.self)
+            try inspection(view)
+        } catch {
+            XCTFail("\(error.localizedDescription)", file: file, line: line)
+        }
+    }
+}
+#else
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension View {
 
@@ -227,9 +256,31 @@ public extension View {
         }
     }
 }
+#endif
 
 // MARK: - Modifiers
 
+#if swift(>=6.0)
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+@MainActor
+public extension ViewModifier {
+
+    func inspect(function: String = #function) throws -> InspectableView<ViewType.ViewModifier<Self>> {
+        let medium = ViewHosting.medium(function: function)
+        let content = try Inspector.unwrap(view: self, medium: medium)
+        return try .init(content, parent: nil, call: "")
+    }
+
+    func inspect(function: String = #function, file: StaticString = #file, line: UInt = #line,
+                 inspection: (InspectableView<ViewType.ViewModifier<Self>>) throws -> Void) {
+        do {
+            try inspection(try inspect(function: function))
+        } catch {
+            XCTFail("\(error.localizedDescription)", file: file, line: line)
+        }
+    }
+}
+#else
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension ViewModifier {
 
@@ -239,7 +290,7 @@ public extension ViewModifier {
         let content = try Inspector.unwrap(view: self, medium: medium)
         return try .init(content, parent: nil, call: "")
     }
-    
+
     nonisolated
     func inspect(function: String = #function, file: StaticString = #file, line: UInt = #line,
                  inspection: (InspectableView<ViewType.ViewModifier<Self>>) throws -> Void) {
@@ -250,6 +301,7 @@ public extension ViewModifier {
         }
     }
 }
+#endif
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension InspectableView {

@@ -162,6 +162,9 @@ internal extension ViewType.Overlay.API {
         }
     }
 
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     func extractOverlayView(modifier: Any) throws -> Any {
         let value = try Inspector.attribute(path: rootViewPath, value: modifier)
         if let wrapper = value as? PreferenceProvider {
@@ -170,6 +173,9 @@ internal extension ViewType.Overlay.API {
         return value
     }
 
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     // swiftlint:disable:next cyclomatic_complexity
     func verifySignature(content: Any, modifier: Any, hasMultipleOverlays: Bool) throws {
         let reportFailure: () throws -> Void = {

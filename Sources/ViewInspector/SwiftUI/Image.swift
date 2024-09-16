@@ -76,6 +76,9 @@ public extension InspectableView where View == ViewType.Image {
 
 // MARK: - Image
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension SwiftUI.Image {
     
@@ -122,6 +125,9 @@ public extension SwiftUI.Image {
     }
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 private extension Inspector {
     static func unwrap(image: Image) throws -> Content {

@@ -18,11 +18,17 @@ public protocol CustomInspectable {
     var customInspectableContent: View { get }
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public protocol SingleViewContent {
     static func child(_ content: Content) throws -> Content
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public protocol MultipleViewContent {
     static func children(_ content: Content) throws -> LazyGroup<Content>
@@ -31,6 +37,9 @@ public protocol MultipleViewContent {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal typealias SupplementaryView = UnwrappedView
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal protocol SupplementaryChildren {
     static func supplementaryChildren(_ parent: UnwrappedView) throws -> LazyGroup<SupplementaryView>
@@ -134,6 +143,9 @@ internal extension ViewType {
 // MARK: - Content
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+#if swift(>=6.0)
+@MainActor
+#endif
 public struct Content {
     let view: Any
     let medium: Medium
@@ -214,6 +226,9 @@ internal extension Content {
 
 // MARK: - Binding helper
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension Binding {
     init(wrappedValue: Value) {
@@ -285,16 +300,25 @@ extension InspectionError: CustomStringConvertible, LocalizedError {
 
 // MARK: - ViewProvider
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal protocol SingleViewProvider {
     func view() throws -> Any
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal protocol MultipleViewProvider {
     func views() throws -> LazyGroup<Any>
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal protocol ElementViewProvider {
     func view(_ element: Any) throws -> Any
