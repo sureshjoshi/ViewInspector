@@ -4,6 +4,7 @@ import SwiftUI
 
 #if os(iOS) || os(macOS)
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
@@ -31,7 +32,6 @@ final class PopoverTests: XCTestCase {
             """)
     }
     
-    @MainActor
     func testInspectionErrorPopoverNotPresented() throws {
         let binding = Binding(wrappedValue: false)
         let sut = EmptyView().popover2(isPresented: binding) { Text("") }
@@ -39,7 +39,6 @@ final class PopoverTests: XCTestCase {
                         "View for Popover is absent")
     }
     
-    @MainActor
     func testInspectionErrorPopoverWithItemNotPresented() throws {
         let binding = Binding<Int?>(wrappedValue: nil)
         let sut = EmptyView().popover2(item: binding) { Text("\($0)") }
@@ -47,7 +46,6 @@ final class PopoverTests: XCTestCase {
                         "View for Popover is absent")
     }
     
-    @MainActor
     func testContentInspection() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().popover2(isPresented: binding) {
@@ -62,7 +60,6 @@ final class PopoverTests: XCTestCase {
         #endif
     }
     
-    @MainActor
     func testContentInteraction() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().popover2(isPresented: binding) {
@@ -79,7 +76,6 @@ final class PopoverTests: XCTestCase {
         #endif
     }
     
-    @MainActor
     func testDismiss() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().popover2(isPresented: binding, content: { Text("") })
@@ -95,7 +91,6 @@ final class PopoverTests: XCTestCase {
         #endif
     }
     
-    @MainActor
     func testDismissForItemVersion() throws {
         let binding = Binding<Int?>(wrappedValue: 6)
         let sut = EmptyView().popover2(item: binding) { Text("\($0)") }
@@ -111,7 +106,6 @@ final class PopoverTests: XCTestCase {
         #endif
     }
     
-    @MainActor
     func testMultiplePopoversInspection() throws {
         let binding1 = Binding(wrappedValue: true)
         let binding2 = Binding(wrappedValue: true)
@@ -147,7 +141,6 @@ final class PopoverTests: XCTestCase {
                         "Search did not find a match")
     }
     
-    @MainActor
     func testFindAndPathToRoots() throws {
         let binding = Binding(wrappedValue: true)
         let sut = PopoverFindTestView(popover1: binding, popover2: binding, popover3: binding)
@@ -188,7 +181,6 @@ final class PopoverTests: XCTestCase {
         #endif
     }
     
-    @MainActor
     func testArrowEdge() throws {
         guard #available(iOS 14.2, macOS 11.0, *) else { throw XCTSkip() }
         let binding = Binding(wrappedValue: true)
@@ -198,7 +190,6 @@ final class PopoverTests: XCTestCase {
         XCTAssertEqual(value, .trailing)
     }
     
-    @MainActor
     func testAttachmentAnchor() throws {
         guard #available(iOS 14.2, macOS 11.0, *) else { throw XCTSkip() }
         let binding = Binding(wrappedValue: true)
@@ -228,11 +219,11 @@ final class PopoverAttachmentAnchorTests: XCTestCase {
     }
 }
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class PopoverDeprecatedTests: XCTestCase {
     
     @available(*, deprecated)
-    @MainActor
     func testContentView() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().popover2(isPresented: binding) { Text("") }
@@ -242,7 +233,6 @@ final class PopoverDeprecatedTests: XCTestCase {
     }
     
     @available(*, deprecated)
-    @MainActor
     func testIsPresentedAndDismiss() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().popover2(isPresented: binding) { Text("") }

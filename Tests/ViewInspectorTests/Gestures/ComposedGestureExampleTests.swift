@@ -4,12 +4,12 @@ import Combine
 @testable import ViewInspector
 
 #if !os(watchOS) && !os(tvOS)
+@MainActor
 @available(iOS 13.0, macOS 11, *)
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
 final class ComposedGestureExampleTests: XCTestCase {
-    
-    @MainActor
+
     func testComposedGestureFirst() throws {
         let sut = TestGestureView10()
         let exp1 = sut.inspection.inspect { view in
@@ -33,7 +33,6 @@ final class ComposedGestureExampleTests: XCTestCase {
         wait(for: [exp1, exp2], timeout: 0.2)
     }
 
-    @MainActor
     func testComposedGestureSecond() throws {
         let sut = TestGestureView10()
         let exp1 = sut.inspection.inspect { view in
@@ -56,8 +55,7 @@ final class ComposedGestureExampleTests: XCTestCase {
         ViewHosting.host(view: sut)
         wait(for: [exp1, exp2], timeout: 0.2)
     }
-    
-    @MainActor
+
     func testComposedGestureAltFirst() throws {
         let sut = TestGestureView11()
         let exp1 = sut.inspection.inspect { view in
@@ -89,8 +87,7 @@ final class ComposedGestureExampleTests: XCTestCase {
         XCTAssertThrows(try tapGesture.first(MagnificationGesture.self),
             "Type mismatch: TapGesture is not ExclusiveGesture, SequenceGesture, or SimultaneousGesture")
     }
-    
-    @MainActor
+
     func testComposedGestureComplex() throws {
         let sut = TestGestureView12()
         let exp = sut.inspection.inspect { view in

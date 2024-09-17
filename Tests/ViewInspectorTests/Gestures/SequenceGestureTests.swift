@@ -7,6 +7,7 @@ import Combine
 
 // MARK: - Sequence Gesture Tests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, *)
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)

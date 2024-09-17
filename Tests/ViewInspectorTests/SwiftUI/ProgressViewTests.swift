@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ProgressViewTests: XCTestCase {
     
@@ -73,8 +74,7 @@ final class ProgressViewTests: XCTestCase {
         let sut = try view.inspect().progressView().currentValueLabelView().hStack(0).text(0).string()
         XCTAssertEqual(sut, "abc")
     }
-    
-    @MainActor
+
     func testProgressViewStyleInspection() throws {
         guard #available(iOS 14, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -90,8 +90,7 @@ final class ProgressViewTests: XCTestCase {
         let sut2 = ProgressViewStyleConfiguration(fractionCompleted: 0.9)
         XCTAssertEqual(sut2.fractionCompleted, 0.9)
     }
-    
-    @MainActor
+
     func testCustomProgressViewStyleInspection() throws {
         guard #available(iOS 14, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }

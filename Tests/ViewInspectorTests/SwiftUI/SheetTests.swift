@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class SheetTests: XCTestCase {
     
@@ -26,24 +27,21 @@ final class SheetTests: XCTestCase {
             https://github.com/nalexn/ViewInspector/blob/master/guide_popups.md#sheet
             """)
     }
-    
-    @MainActor
+
     func testInspectionErrorSheetNotPresented() throws {
         let binding = Binding(wrappedValue: false)
         let sut = EmptyView().sheet2(isPresented: binding) { Text("") }
         XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().sheet(),
                         "View for Sheet is absent")
     }
-    
-    @MainActor
+
     func testInspectionErrorSheetWithItemNotPresented() throws {
         let binding = Binding<Int?>(wrappedValue: nil)
         let sut = EmptyView().sheet2(item: binding) { Text("\($0)") }
         XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().sheet(),
                         "View for Sheet is absent")
     }
-    
-    @MainActor
+
     func testContentInspection() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().sheet2(isPresented: binding) {
@@ -57,8 +55,7 @@ final class SheetTests: XCTestCase {
         XCTAssertEqual(title.pathToRoot, "anyView().emptyView().sheet().text()")
         #endif
     }
-    
-    @MainActor
+
     func testContentInteraction() throws {
         let binding = Binding(wrappedValue: true)
         let sut = EmptyView().sheet2(isPresented: binding) {
@@ -74,8 +71,7 @@ final class SheetTests: XCTestCase {
         XCTAssertEqual(button.pathToRoot, "anyView().emptyView().sheet().button(1)")
         #endif
     }
-    
-    @MainActor
+
     func testDismiss() throws {
         let exp = XCTestExpectation(description: #function)
         let binding = Binding(wrappedValue: true)
@@ -94,8 +90,7 @@ final class SheetTests: XCTestCase {
         #endif
         wait(for: [exp], timeout: 0.1)
     }
-    
-    @MainActor
+
     func testDismissForItemVersion() throws {
         let binding = Binding<Int?>(wrappedValue: 6)
         let sut = EmptyView().sheet2(item: binding) { Text("\($0)") }
@@ -106,8 +101,7 @@ final class SheetTests: XCTestCase {
         XCTAssertNil(binding.wrappedValue)
         XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().sheet(), "View for Sheet is absent")
     }
-    
-    @MainActor
+
     func testMultipleSheetsInspection() throws {
         let binding1 = Binding(wrappedValue: true)
         let binding2 = Binding(wrappedValue: true)
@@ -140,8 +134,7 @@ final class SheetTests: XCTestCase {
         XCTAssertThrows(try sut.inspect().find(ViewType.Sheet.self),
                         "Search did not find a match")
     }
-    
-    @MainActor
+
     func testFindAndPathToRoots() throws {
         let binding = Binding(wrappedValue: true)
         let sut = SheetFindTestView(sheet1: binding, sheet2: binding, sheet3: binding)

@@ -5,6 +5,7 @@ import Combine
 
 // MARK: - InteractionTests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class InteractionTests: XCTestCase {
     
@@ -201,6 +202,7 @@ final class ViewHoverTests: XCTestCase {
 
 // MARK: - ViewDragDropTests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ViewDragDropTests: XCTestCase {
     

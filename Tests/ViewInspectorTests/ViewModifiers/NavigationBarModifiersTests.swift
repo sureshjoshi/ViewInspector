@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class NavigationBarModifiersTests: XCTestCase {
     
@@ -41,6 +42,7 @@ final class NavigationBarModifiersTests: XCTestCase {
 }
 
 #if os(iOS) || os(tvOS) || os(visionOS)
+@MainActor
 @available(iOS 13.0, tvOS 13.0, *)
 final class NavigationBarItemsTests: XCTestCase {
     
@@ -56,8 +58,7 @@ final class NavigationBarItemsTests: XCTestCase {
             .navigationBarItems(trailing: Text("abc"))
         XCTAssertNoThrow(try sut.inspect().emptyView())
     }
-    
-    @MainActor
+
     func testIncorrectUnwrap() throws {
         try skipForiOS15()
         let view = NavigationView {
@@ -68,8 +69,7 @@ final class NavigationBarItemsTests: XCTestCase {
             try view.inspect().navigationView().list(0).text(0),
             "Please insert '.navigationBarItems()' before list(0) for unwrapping the underlying view hierarchy.")
     }
-    
-    @MainActor
+
     func testUnknownHierarchyTypeUnwrap() throws {
         try skipForiOS15()
         let view = NavigationView {
@@ -80,8 +80,7 @@ final class NavigationBarItemsTests: XCTestCase {
             try view.inspect().navigationView().navigationBarItems().list(),
             "Please substitute 'List<Never, Text>.self' as the parameter for 'navigationBarItems()' inspection call")
     }
-    
-    @MainActor
+
     func testKnownHierarchyTypeUnwrap() throws {
         try skipForiOS15()
         let string = "abc"
@@ -126,8 +125,7 @@ final class NavigationBarItemsTests: XCTestCase {
             try sut.inspect().navigationBarItems(),
             "EmptyView does not have 'navigationBarItems' modifier")
     }
-    
-    @MainActor
+
     func testCustomViewUnwrapStepOne() throws {
         try skipForiOS15()
         let sut = TestView()
@@ -138,8 +136,7 @@ final class NavigationBarItemsTests: XCTestCase {
         ViewHosting.host(view: sut)
         wait(for: [exp], timeout: 1.0)
     }
-    
-    @MainActor
+
     func testCustomViewUnwrapStepTwo() throws {
         try skipForiOS15()
         let sut = TestView()
@@ -150,8 +147,7 @@ final class NavigationBarItemsTests: XCTestCase {
         ViewHosting.host(view: sut)
         wait(for: [exp], timeout: 1.0)
     }
-    
-    @MainActor
+
     func testCustomViewUnwrapStepThree() throws {
         try skipForiOS15()
         let sut = TestView()
@@ -184,6 +180,7 @@ private struct TestView: View {
 }
 #endif
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class StatusBarConfigurationTests: XCTestCase {
     

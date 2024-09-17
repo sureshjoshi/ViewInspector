@@ -78,6 +78,7 @@ private struct Test {
     }
 }
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ViewSearchTests: XCTestCase {
     
@@ -221,8 +222,7 @@ final class ViewSearchTests: XCTestCase {
         let values = try texts.map { try $0.string() }
         XCTAssertEqual(values, ["2", "3"])
     }
-    
-    @MainActor
+
     func testConflictingViewTypeNames() throws {
         guard #available(iOS 14.0, macOS 11.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -244,8 +244,7 @@ final class ViewSearchTests: XCTestCase {
                        "anyView().group().styleConfigurationLabel(2)")
         #endif
     }
-    
-    @MainActor
+
     func testShapesSearching() throws {
         let sut = Group {
             Circle().inset(by: 5)

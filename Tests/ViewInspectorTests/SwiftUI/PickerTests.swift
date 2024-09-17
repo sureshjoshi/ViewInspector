@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class PickerTests: XCTestCase {
     
@@ -112,6 +113,7 @@ final class PickerTests: XCTestCase {
 
 // MARK: - View Modifiers
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class GlobalModifiersForPicker: XCTestCase {
     

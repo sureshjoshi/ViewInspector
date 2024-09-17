@@ -3,10 +3,10 @@ import SwiftUI
 import Combine
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class SubscriptionViewTests: XCTestCase {
-    
-    @MainActor
+
     func testEnclosedView() throws {
         let subject = PassthroughSubject<Void, Never>()
         let view = SubscriptionTestView(publisher: subject.eraseToAnyPublisher())

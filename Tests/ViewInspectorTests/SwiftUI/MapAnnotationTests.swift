@@ -5,8 +5,9 @@ import XCTest
 
 @testable import ViewInspector
 
-class MapAnnotationTests: XCTestCase {
-    
+@MainActor
+final class MapAnnotationTests: XCTestCase {
+
     private let testCoordinate = CLLocationCoordinate2D(latitude: 1, longitude: 2)
     private let testAnchor = CGPoint(x: 3, y: 4)
 
@@ -39,8 +40,7 @@ class MapAnnotationTests: XCTestCase {
         XCTAssertEqual(try sut.coordinate(), testCoordinate)
         XCTAssertEqual(try sut.tintColor(), .blue)
     }
-    
-    @MainActor
+
     func testExtractionFromMap() throws {
         guard #available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
         else { throw XCTSkip() }

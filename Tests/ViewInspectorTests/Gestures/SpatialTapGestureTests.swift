@@ -7,6 +7,7 @@ import Combine
 
 // MARK: - Spatial Tap Gesture Tests
 
+@MainActor
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, *)
 @available(tvOS, unavailable)
 final class SpatialTapGestureTests: XCTestCase {

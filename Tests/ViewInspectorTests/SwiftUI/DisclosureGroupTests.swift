@@ -3,6 +3,7 @@ import SwiftUI
 @testable import ViewInspector
 
 #if os(iOS) || os(macOS)
+@MainActor
 @available(iOS 13.0, macOS 10.15, *)
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
@@ -53,8 +54,7 @@ final class DisclosureGroupTests: XCTestCase {
         let string = try sut.inspect().disclosureGroup().text(1).string()
         XCTAssertEqual(string, "abc")
     }
-    
-    @MainActor
+
     func testSearch() throws {
         guard #available(iOS 14, tvOS 14, macOS 11.0, *) else { throw XCTSkip() }
         let sut = DisclosureGroup(content: {
@@ -74,8 +74,7 @@ final class DisclosureGroupTests: XCTestCase {
         XCTAssertThrows(try sut.inspect().disclosureGroup().expand(),
                         "You need to enable programmatic expansion by using `DisclosureGroup(isExpanded:, content:, label:`")
     }
-    
-    @MainActor
+
     func testExpansionWithStateActivation() throws {
         guard #available(iOS 14, tvOS 14, macOS 11.0, *) else { throw XCTSkip() }
         let view = TestViewState()
@@ -86,8 +85,7 @@ final class DisclosureGroupTests: XCTestCase {
         try view.inspect().implicitAnyView().disclosureGroup().collapse()
         XCTAssertFalse(try view.inspect().implicitAnyView().disclosureGroup().isExpanded())
     }
-    
-    @MainActor
+
     func testExpansionWithBindingActivation() throws {
         guard #available(iOS 14, tvOS 14, macOS 11.0, *) else { throw XCTSkip() }
         let expanded = Binding<Bool>(wrappedValue: false)

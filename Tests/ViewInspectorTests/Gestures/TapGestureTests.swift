@@ -5,6 +5,7 @@ import Combine
 
 // MARK: - Tap Gesture Tests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 16.0, *)
 final class TapGestureTests: XCTestCase {
     

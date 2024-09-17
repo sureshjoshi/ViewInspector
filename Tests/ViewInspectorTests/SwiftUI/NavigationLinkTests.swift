@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class NavigationLinkTests: XCTestCase {
     
@@ -112,8 +113,7 @@ final class NavigationLinkTests: XCTestCase {
         XCTAssertThrows(try sut.activate(), errorMessage)
         XCTAssertThrows(try sut.deactivate(), errorMessage)
     }
-    
-    @MainActor
+
     @available(watchOS 7.0, *)
     func testNavigationWithStateActivation() throws {
         let view = TestViewState()
@@ -129,7 +129,6 @@ final class NavigationLinkTests: XCTestCase {
     }
     
     @available(watchOS 7.0, *)
-    @MainActor
     func testNavigationWithBindingActivation() throws {
         let selection = Binding<String?>(wrappedValue: nil)
         let view = TestViewBinding(selection: selection)
@@ -143,8 +142,7 @@ final class NavigationLinkTests: XCTestCase {
         XCTAssertTrue(try sut0.isActive())
         XCTAssertFalse(try sut1.isActive())
     }
-    
-    @MainActor
+
     @available(watchOS 7.0, *)
     func testNavigationWithStateDeactivation() throws {
         let view = TestViewState()
@@ -160,7 +158,6 @@ final class NavigationLinkTests: XCTestCase {
     }
     
     @available(watchOS 7.0, *)
-    @MainActor
     func testNavigationWithBindingDeactivation() throws {
         let selection = Binding<String?>(wrappedValue: nil)
         let view = TestViewBinding(selection: selection)
@@ -174,8 +171,7 @@ final class NavigationLinkTests: XCTestCase {
         XCTAssertFalse(try sut0.isActive())
         XCTAssertFalse(try sut1.isActive())
     }
-    
-    @MainActor
+
     @available(watchOS 7.0, *)
     func testNavigationWithStateReactivation() throws {
         let view = TestViewState()
@@ -190,7 +186,6 @@ final class NavigationLinkTests: XCTestCase {
     }
     
     @available(watchOS 7.0, *)
-    @MainActor
     func testNavigationWithBindingReactivation() throws {
         let selection = Binding<String?>(wrappedValue: nil)
         let view = TestViewBinding(selection: selection)
@@ -213,8 +208,7 @@ final class NavigationLinkTests: XCTestCase {
                         "Search did not find a match")
         XCTAssertNoThrow(try sut.find(text: "B to A"))
     }
-    
-    @MainActor
+
     @available(watchOS 7.0, *)
     func testRecursiveGenericReferenceView() throws {
         let view = TestRecursiveGenericView

@@ -4,6 +4,7 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, *)
 @available(tvOS, unavailable)
 @available(watchOS, unavailable)
@@ -92,14 +93,12 @@ final class GroupBoxTests: XCTestCase {
     }
     
     #if os(iOS) || os(macOS)
-    @MainActor
     func testGroupBoxStyleInspection() throws {
         guard #available(iOS 14, macOS 11.0, *) else { throw XCTSkip() }
         let sut = EmptyView().groupBoxStyle(DefaultGroupBoxStyle())
         XCTAssertTrue(try sut.inspect().groupBoxStyle() is DefaultGroupBoxStyle)
     }
-    
-    @MainActor
+
     func testCustomGroupBoxStyleInspection() throws {
         guard #available(iOS 14, macOS 11.0, *) else { throw XCTSkip() }
         let sut = TestGroupBoxStyle()

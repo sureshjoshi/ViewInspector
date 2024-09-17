@@ -5,6 +5,7 @@ import Combine
 
 // MARK: - ViewEventsTests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ViewEventsTests: XCTestCase {
     
@@ -191,8 +192,7 @@ final class ViewEventsTests: XCTestCase {
         let sut = EmptyView().task { }
         XCTAssertNoThrow(try sut.inspect().emptyView())
     }
-    
-    @MainActor
+
     func testTaskInspection() async throws {
         guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
         let exp = XCTestExpectation(description: #function)
@@ -203,7 +203,6 @@ final class ViewEventsTests: XCTestCase {
         await fulfillment(of: [exp], timeout: 0.1)
     }
 
-    @MainActor
     func testTaskIdInspection() async throws {
         guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
         let exp = XCTestExpectation(description: #function)
@@ -215,7 +214,6 @@ final class ViewEventsTests: XCTestCase {
         await fulfillment(of: [exp], timeout: 0.1)
     }
 
-    @MainActor
     func testTaskIdInspectionWithIndex() async throws {
         guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
         let exp1 = XCTestExpectation(description: "task1")
@@ -238,7 +236,6 @@ final class ViewEventsTests: XCTestCase {
         await fulfillment(of: [exp2], timeout: 0.1)
     }
 
-    @MainActor
     func testTaskIdInspectionMultipleDifferentTypes() async throws {
         guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
         struct CustomEquatableStruct: Equatable {
@@ -272,6 +269,7 @@ final class ViewEventsTests: XCTestCase {
 
 // MARK: - ViewPublisherEventsTests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ViewPublisherEventsTests: XCTestCase {
     

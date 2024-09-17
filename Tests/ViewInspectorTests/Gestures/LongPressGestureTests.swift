@@ -5,6 +5,7 @@ import Combine
 
 // MARK: - Long Press Gesture Tests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class LongPressGestureTests: XCTestCase {
     

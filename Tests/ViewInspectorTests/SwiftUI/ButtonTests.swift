@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ButtonTests: XCTestCase {
     
@@ -43,7 +44,6 @@ final class ButtonTests: XCTestCase {
                        "group().button(0).labelView().anyView().text()")
     }
 
-    @MainActor
     func testWhenButtonDoesNotHaveTheDisabledModifier_InvokesCallback() throws {
         let exp = XCTestExpectation(description: "Callback")
         let button = Button(action: {
@@ -53,7 +53,6 @@ final class ButtonTests: XCTestCase {
         wait(for: [exp], timeout: 0.5)
     }
 
-    @MainActor
     func testTap() throws {
         let exp = XCTestExpectation(description: "Callback")
         let button = Button(action: {
@@ -63,7 +62,6 @@ final class ButtonTests: XCTestCase {
         wait(for: [exp], timeout: 0.5)
     }
 
-    @MainActor
     func testTapWhenDisabled() throws {
         let exp = XCTestExpectation(description: "Callback")
         exp.isInverted = true
@@ -89,16 +87,15 @@ final class ButtonTests: XCTestCase {
 
 // MARK: - View Modifiers
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class GlobalModifiersForButton: XCTestCase {
     
-    @MainActor
     func testButtonStyle() throws {
         let sut = EmptyView().buttonStyle(PlainButtonStyle())
         XCTAssertNoThrow(try sut.inspect().emptyView())
     }
     
-    @MainActor
     func testButtonStyleInspection() throws {
         let sut1 = EmptyView().buttonStyle(PlainButtonStyle())
         let sut2 = EmptyView().buttonStyle(TestButtonStyle())
@@ -112,6 +109,7 @@ final class GlobalModifiersForButton: XCTestCase {
 
 // MARK: - ButtonStyle
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ButtonStyleInspectionTests: XCTestCase {
     
@@ -128,7 +126,6 @@ final class ButtonStyleInspectionTests: XCTestCase {
         })
     }
     
-    @MainActor
     func testButtonStyle() throws {
         let style = TestButtonStyle()
         let sut1 = try style.inspect(isPressed: false)
@@ -138,7 +135,6 @@ final class ButtonStyleInspectionTests: XCTestCase {
     }
     
     #if !os(tvOS)
-    @MainActor
     func testPrimitiveButtonStyleExtraction() throws {
         guard #available(iOS 13.1, macOS 10.16, tvOS 13.1, *)
         else { throw XCTSkip() }
@@ -147,7 +143,6 @@ final class ButtonStyleInspectionTests: XCTestCase {
         XCTAssertNoThrow(try button.implicitAnyView().anyView().styleConfigurationLabel().blur())
     }
     
-    @MainActor
     func testPrimitiveButtonStyleLabel() throws {
         let triggerExp = XCTestExpectation(description: "label.trigger()")
         triggerExp.expectedFulfillmentCount = 1
