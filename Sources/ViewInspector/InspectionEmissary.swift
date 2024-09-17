@@ -177,12 +177,8 @@ private extension InspectionEmissary {
                     inspection: @escaping SubjectInspection
     ) async throws where P: Publisher {
         async let setup: Void = try await setup(inspection: inspection, function: function, file: file, line: line)
-        _ = try await withCheckedThrowingContinuation { promise in
-            _ = publisher.first().sink(receiveCompletion: { _ in },
-                                       receiveValue: { _ in
-                promise.resume()
-            })
-        }
+        // This simply awaits for the first value from the publisher:
+        for try await _ in publisher.values.map({ _ in 0 }) { break }
         let clock = SuspendingClock()
         try await clock.sleep(until: clock.now + delay)
         Task { @MainActor [weak notice] in
