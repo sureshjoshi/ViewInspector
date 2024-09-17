@@ -148,13 +148,15 @@ final class FullScreenCoverTests: XCTestCase {
             .anyView().emptyView().fullScreenCover().text(0)
             """)
         #endif
-        let title2 = try sut.inspect().implicitAnyView().hStack().anyView(0).anyView().fullScreenCover().text(0)
-        XCTAssertEqual(try title2.string(), "title_3")
         #if compiler(<6)
+        let title2 = try sut.inspect().implicitAnyView().hStack().emptyView(0).fullScreenCover(1).text(0)
+        XCTAssertEqual(try title2.string(), "title_3")
         XCTAssertEqual(title2.pathToRoot,
             "view(FullScreenCoverFindTestView.self).hStack().emptyView(0).fullScreenCover(1).text(0)")
         XCTAssertEqual(try sut.inspect().find(ViewType.FullScreenCover.self).text(0).string(), "title_1")
         #else
+        let title2 = try sut.inspect().implicitAnyView().hStack().anyView(0).anyView().fullScreenCover().text(0)
+        XCTAssertEqual(try title2.string(), "title_3")
         XCTAssertEqual(title2.pathToRoot,
             "view(FullScreenCoverFindTestView.self).anyView().hStack().anyView(0).anyView().fullScreenCover().text(0)")
         XCTAssertEqual(try sut.inspect().find(ViewType.FullScreenCover.self, skipFound: 1).text(0).string(), "title_1")
