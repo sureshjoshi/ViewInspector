@@ -358,11 +358,11 @@ final class AlertIOS15Tests: XCTestCase {
         XCTAssertEqual(try message.string(), "Message: abc")
         #if compiler(<6)
         XCTAssertEqual(message.pathToRoot,
-                       "alert().message().hStack().text(0)")
+                       "emptyView().alert().message().hStack().text(0)")
         let secondButtonLabel = try alert.actions().button(1).labelView().text()
         XCTAssertEqual(try secondButtonLabel.string(), "Second")
         XCTAssertEqual(secondButtonLabel.pathToRoot,
-                       "alert().actions().button(1).labelView().text()")
+                       "emptyView().alert().actions().button(1).labelView().text()")
         let searchLabel = try sut.inspect().find(button: "Second")
         XCTAssertEqual(searchLabel.pathToRoot,
                        "emptyView().alert().actions().button(1)")

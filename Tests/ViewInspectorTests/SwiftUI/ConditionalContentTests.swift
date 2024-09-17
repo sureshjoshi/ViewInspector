@@ -25,10 +25,19 @@ final class ConditionalContentTests: XCTestCase {
     
     func testRetainsModifiers() throws {
         let sut = ConditionalViewWithModifier(value: true)
+        #if compiler(<6)
+        let text = try sut.inspect().text()
+        #else
         let text = try sut.inspect().implicitAnyView().anyView().text()
+        #endif
         XCTAssertEqual(try text.string(), "True")
+        #if compiler(<6)
+        XCTAssertEqual(try sut.inspect().text().padding(),
+                       EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
+        #else
         XCTAssertEqual(try sut.inspect().implicitAnyView().anyView().padding(),
                        EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))
+        #endif
     }
 }
 

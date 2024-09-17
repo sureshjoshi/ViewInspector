@@ -258,8 +258,13 @@ final class InspectableViewModifiersTests: XCTestCase {
                     TestPrintView().padding()
                 })
            })
+        #if compiler(<6)
+        let sut = try view.inspect().anyView().group().emptyView(1).overlay()
+            .hStack().view(TestPrintView.self, 1).text()
+        #else
         let sut = try view.inspect().anyView().group().emptyView(1).overlay()
             .hStack().view(TestPrintView.self, 1).implicitAnyView().text().parent()
+        #endif
         // Cannot use `XCTAssertThrows` because test target changes name
         // between ViewInspectorTests and ViewInspector_Unit_Tests under cocoapods tests
         // ViewInspectorTests.TestPrintView vs ViewInspector_Unit_Tests.TestPrintView
