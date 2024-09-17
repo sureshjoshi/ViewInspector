@@ -33,7 +33,7 @@ final class ContentViewTests: XCTestCase {
 
     func testStringValue() throws { // 2.
         let sut = ContentView()
-        let value = try sut.inspect().text().string() // 3.
+        let value = try sut.inspect().implicitAnyView().text().string() // 3.
         XCTAssertEqual(value, "Hello, world!")
     }
 }
@@ -45,6 +45,8 @@ So, you need to do the following:
 3. Start the inspection with `.inspect()` function
 
 After the `.inspect()` call you need to repeat the structure of the `body` by chaining corresponding functions named after the SwiftUI views.
+
+Note that Swift compiler v6, shipped as part of Xcode 16, began to insert implicit `AnyView` views in the view hierarchy. Although the logical structure of `CustomView` in the example doesn't have `AnyView`, after compilation it is there, so we need to unwrap it with `.anyView()`, or, if we want to express this isn't our `AnyView`, with `.implicitAnyView()` call.
 
 ```swift
 struct MyView: View {
@@ -67,7 +69,7 @@ In this case you can obtain access to the `Text("Ok")` with the following chain:
 
 ```swift
 let view = MyView()
-view.inspect().hStack().anyView(1).view(OtherView.self).text()
+view.inspect().implicitAnyView().hStack().anyView(1).view(OtherView.self).text()
 ```
 
 Note that after `.hStack()` you're required to provide the index of the view you're retrieving: `.anyView(1)`. For obtaining `Text("Hi")` you'd call `.text(0)`.
@@ -76,7 +78,7 @@ You can save the intermediate result in a variable and reuse it for further insp
 
 ```swift
 let view = MyView()
-let hStack = try view.inspect().hStack()
+let hStack = try view.inspect().implicitAnyView().hStack()
 let hiText = try hStack.text(0)
 let okText = try hStack.anyView(1).view(OtherView.self).text()
 ```
@@ -90,7 +92,7 @@ Alternatively to writing the full path to the target view you can use one of the
 `find` is fully compatible with the inspection call chain and can be triggered at any step:
 
 ```swift
-try sut.inspect().anyView().find(ViewType.HStack.self).text(1)
+try sut.inspect().implicitAnyView().anyView().find(ViewType.HStack.self).text(1)
 
 try sut.inspect().find(where: { ... }).zStack()
 ```
