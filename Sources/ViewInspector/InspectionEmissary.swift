@@ -4,8 +4,8 @@ import XCTest
 
 @MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-public protocol InspectionEmissary: AnyObject {
-    
+public protocol InspectionEmissary: AnyObject, Sendable {
+
     associatedtype V
     var notice: PassthroughSubject<UInt, Never> { get }
     var callbacks: [UInt: (V) -> Void] { get set }
@@ -169,7 +169,7 @@ private extension InspectionEmissary {
         }
         return exp
     }
-    
+
     @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
     func inspect<P>(onReceive publisher: P,
                     after delay: SuspendingClock.Duration,
@@ -177,7 +177,12 @@ private extension InspectionEmissary {
                     inspection: @escaping SubjectInspection
     ) async throws where P: Publisher {
         async let setup: Void = try await setup(inspection: inspection, function: function, file: file, line: line)
-        _ = try await publisher.values.first { _ in true }
+        _ = try await withCheckedThrowingContinuation { promise in
+            _ = publisher.first().sink(receiveCompletion: { _ in },
+                                       receiveValue: { _ in
+                promise.resume()
+            })
+        }
         let clock = SuspendingClock()
         try await clock.sleep(until: clock.now + delay)
         Task { @MainActor [weak notice] in
