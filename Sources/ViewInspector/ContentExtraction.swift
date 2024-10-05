@@ -1,5 +1,8 @@
 import SwiftUI
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal struct ContentExtractor {
 
@@ -8,19 +11,31 @@ internal struct ContentExtractor {
     }
 
     internal func extractContent(environmentObjects: [AnyObject]) throws -> Any {
+        #if swift(>=6.0)
+        return try isolatedExtractContent(environmentObjects: environmentObjects)
+        #else
+        return try MainActor.assumeIsolated {
+            try isolatedExtractContent(environmentObjects: environmentObjects)
+        }
+        #endif
+    }
+
+    @MainActor
+    private func isolatedExtractContent(environmentObjects: [AnyObject]) throws -> Any {
         try validateSourceBeforeExtraction()
-        return try MainActor.assumeIsolated { [contentSource] in
-            switch contentSource {
-            case .view(let view):
-                return try view.extractContent(environmentObjects: environmentObjects)
-            case .viewModifier(let viewModifier):
-                return try viewModifier.extractContent(environmentObjects: environmentObjects)
-            case .gesture(let gesture):
-                return try gesture.extractContent(environmentObjects: environmentObjects)
-            }
+        switch contentSource {
+        case .view(let view):
+            return try view.extractContent(environmentObjects: environmentObjects)
+        case .viewModifier(let viewModifier):
+            return try viewModifier.extractContent(environmentObjects: environmentObjects)
+        case .gesture(let gesture):
+            return try gesture.extractContent(environmentObjects: environmentObjects)
         }
     }
 
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     private static func contentSource(from source: Any) throws -> ContentSource {
         switch source {
         case let view as any View:

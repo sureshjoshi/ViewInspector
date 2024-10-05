@@ -2,10 +2,10 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ConditionalContentTests: XCTestCase {
-    
-    @MainActor
+
     func testConditionalView() throws {
         let view = ConditionalView()
         let string1 = try view.inspect().implicitAnyView().group().text(0).string()

@@ -5,6 +5,9 @@ import UIKit
 #endif
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
+#if swift(>=6.0)
+@MainActor
+#endif
 public enum ViewHosting { }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 6.0, *)
@@ -119,9 +122,13 @@ public extension ViewHosting {
 
     internal static func medium(function: String = #function) -> Content.Medium {
         let viewId = ViewHosting.ViewId(function: function)
+        #if swift(>=6.0)
+        return hosted[viewId]?.medium ?? .empty
+        #else
         return MainActor.assumeIsolated {
             hosted[viewId]?.medium ?? .empty
         }
+        #endif
     }
 }
 

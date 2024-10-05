@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 7.0, *)
 final class TabViewTests: XCTestCase {
     
@@ -54,8 +55,7 @@ final class TabViewTests: XCTestCase {
         XCTAssertEqual(try view.inspect().find(text: "xyz").pathToRoot,
                        "anyView().tabView().text(0).tabItem().text()")
     }
-    
-    @MainActor
+
     func testTabSelection() throws {
         let sut = TestTabSelectionView()
         let viewNotFound = "Search did not find a match"
@@ -100,6 +100,7 @@ private struct TestTabSelectionView: View {
 
 // MARK: - View Modifiers
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class GlobalModifiersForTabView: XCTestCase {
     

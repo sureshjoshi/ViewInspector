@@ -1,5 +1,8 @@
 import SwiftUI
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension ViewType.Text.Attributes {
     
@@ -21,6 +24,9 @@ internal extension ViewType.Text.Attributes {
     }
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension ViewType.Text.Attributes {
     
@@ -294,6 +300,9 @@ public extension ViewType.Text {
     }
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 public extension Font {
     

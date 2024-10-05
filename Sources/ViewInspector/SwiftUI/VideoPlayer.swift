@@ -39,6 +39,9 @@ public extension InspectableView where View: MultipleViewContent {
 
 // MARK: - Non Standard Children
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 extension ViewType.VideoPlayer: SupplementaryChildren {
     static func supplementaryChildren(_ parent: UnwrappedView) throws -> LazyGroup<SupplementaryView> {

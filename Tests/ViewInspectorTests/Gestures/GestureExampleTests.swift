@@ -5,6 +5,7 @@ import SwiftUI
 import Combine
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, *)
 @available(tvOS, unavailable)
 final class GestureExampleTests: XCTestCase {
@@ -45,8 +46,7 @@ final class GestureExampleTests: XCTestCase {
         XCTAssertEqual(gesture.minimumDistance, 20)
         XCTAssertEqual(gesture.coordinateSpace, .global)
     }
-    
-    @MainActor
+
     func testTestGestureUpdating() throws {
         guard #available(tvOS 14.0, *) else { throw XCTSkip() }
         let sut = TestGestureView5()
@@ -69,7 +69,6 @@ final class GestureExampleTests: XCTestCase {
         wait(for: [exp1, exp2], timeout: 0.1)
     }
 
-    @MainActor
     func testTestGestureChanged() throws {
         guard #available(tvOS 14.0, *) else { throw XCTSkip() }
         let sut = TestGestureView6()
@@ -90,8 +89,7 @@ final class GestureExampleTests: XCTestCase {
         ViewHosting.host(view: sut)
         wait(for: [exp1, exp2], timeout: 0.1)
     }
-    
-    @MainActor
+
     func testTestGestureEnded() throws {
         guard #available(tvOS 14.0, *) else { throw XCTSkip() }
         let sut = TestGestureView7()

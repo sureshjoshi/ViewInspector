@@ -41,6 +41,9 @@ public extension InspectableView where View == ViewType.MapAnnotation {
 
 // MARK: - SwiftUI MapAnnotation
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
 public extension MapAnnotation {
     
@@ -63,6 +66,9 @@ public extension MapAnnotation {
 
 // MARK: - SwiftUI MapMarker
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
 public extension MapMarker {
     
@@ -79,6 +85,9 @@ public extension MapMarker {
 
 // MARK: - SwiftUI MapPin
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 14.0, tvOS 14.0, macOS 11.0, watchOS 7.0, *)
 public extension MapPin {
     

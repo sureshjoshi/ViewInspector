@@ -239,11 +239,17 @@ public extension Inspector {
      (lldb) po Inspector.print(view) as AnyObject
      ```
      */
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     static func print(_ value: Any) -> String {
         let tree = attributesTree(value: value, medium: .empty, visited: [])
         return typeName(value: value) + print(tree, level: 1)
     }
 
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     fileprivate static func print(_ value: Any, level: Int) -> String {
         let prefix = Inspector.newline(value: value)
         if let array = value as? [Any] {
@@ -268,6 +274,9 @@ public extension Inspector {
         return needsNewLine ? "\n" : ""
     }
 
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     private static func attributesTree(value: Any, medium: Content.Medium, visited: [AnyObject]) -> Any {
         var visited = visited
         if type(of: value) is AnyClass {
@@ -308,6 +317,9 @@ public extension Inspector {
     }
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 fileprivate extension Dictionary where Key == String {
     func description(level: Int) -> String {
@@ -318,6 +330,9 @@ fileprivate extension Dictionary where Key == String {
     }
 }
 
+#if swift(>=6.0)
+@MainActor
+#endif
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 fileprivate extension Array {
     func description(level: Int) -> String {
@@ -335,6 +350,9 @@ fileprivate extension Array {
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension Inspector {
 
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     static func viewsInContainer(view: Any, medium: Content.Medium) throws -> LazyGroup<Content> {
         let unwrappedContainer = try Inspector.unwrap(content: Content(view, medium: medium.resettingViewModifiers()))
         guard Inspector.isTupleView(unwrappedContainer.view) else {
@@ -347,10 +365,16 @@ internal extension Inspector {
         return Inspector.typeName(value: view, generics: .remove) == ViewType.TupleView.typePrefix
     }
 
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     static func unwrap(view: Any, medium: Content.Medium) throws -> Content {
         return try unwrap(content: Content(view, medium: medium))
     }
 
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     // swiftlint:disable:next cyclomatic_complexity
     static func unwrap(content: Content) throws -> Content {
         switch Inspector.typeName(value: content.view, generics: .remove) {

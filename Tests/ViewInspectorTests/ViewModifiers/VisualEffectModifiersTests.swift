@@ -4,6 +4,7 @@ import SwiftUI
 
 // MARK: - ViewGraphicalEffectsTests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ViewGraphicalEffectsTests: XCTestCase {
     
@@ -178,6 +179,7 @@ extension LinearGradient: BinaryEquatable { }
 
 // MARK: - ViewMaskingTests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ViewMaskingTests: XCTestCase {
     
@@ -237,6 +239,7 @@ final class ViewMaskingTests: XCTestCase {
 
 // MARK: - ViewHidingTests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ViewHidingTests: XCTestCase {
     

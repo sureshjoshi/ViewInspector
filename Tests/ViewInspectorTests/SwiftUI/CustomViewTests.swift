@@ -4,10 +4,10 @@ import SwiftUI
 
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 7.0, *)
 final class CustomViewTests: XCTestCase {
-    
-    @MainActor
+
     func testLocalStateChanges() throws {
         let sut = LocalStateTestView(flag: false)
         let exp = sut.inspection.inspect { view in
@@ -20,8 +20,7 @@ final class CustomViewTests: XCTestCase {
         ViewHosting.host(view: sut)
         wait(for: [exp], timeout: 0.5)
     }
-    
-    @MainActor
+
     func testObservedStateChanges() throws {
         let viewModel = ExternalState()
         let view = ObservedStateTestView(viewModel: viewModel)
@@ -31,8 +30,7 @@ final class CustomViewTests: XCTestCase {
         let text2 = try view.inspect().implicitAnyView().text().string()
         XCTAssertEqual(text2, "abc")
     }
-    
-    @MainActor
+
     func testEnvironmentStateChanges() throws {
         let sut = EnvironmentStateTestView()
         let viewModel = ExternalState()
@@ -46,15 +44,13 @@ final class CustomViewTests: XCTestCase {
         ViewHosting.host(view: sut.environmentObject(viewModel))
         wait(for: [exp], timeout: 0.1)
     }
-    
-    @MainActor
+
     func testEnvironmentObjectModifier() throws {
         let viewModel = ExternalState()
         let view = EnvironmentStateTestView().environmentObject(viewModel)
         XCTAssertNoThrow(try view.inspect().view(EnvironmentStateTestView.self))
     }
 
-    @MainActor
     func testEnvironmentObjectActualView() throws {
         let viewModel = ExternalState()
         let view = EnvironmentStateTestView().environmentObject(viewModel)
@@ -110,8 +106,7 @@ final class CustomViewTests: XCTestCase {
             call with .emptyView(0)
             """)
     }
-    
-    @MainActor
+
     func testEnvViewResetsModifiers() throws {
         let sut = EnvironmentStateTestView()
         let exp = sut.inspection.inspect { view in
@@ -121,8 +116,7 @@ final class CustomViewTests: XCTestCase {
         ViewHosting.host(view: sut.environmentObject(ExternalState()).padding())
         wait(for: [exp], timeout: 0.1)
     }
-    
-    @MainActor
+
     @available(watchOS, deprecated: 7.0)
     func testExtractionOfTestViewRepresentable() throws {
         let view = AnyView(TestViewRepresentable())
@@ -148,8 +142,7 @@ final class CustomViewTests: XCTestCase {
                         "View for TestViewRepresentable is absent")
         #endif
     }
-    
-    @MainActor
+
     func testExtractionOfViewControllerRepresentable() throws {
         #if !os(watchOS)
         let view = AnyView(TestViewControllerRepresentable())
@@ -181,15 +174,13 @@ final class CustomViewTests: XCTestCase {
         XCTAssertNoThrow(try view.inspect().hStack().view(SimpleTestView.self, 0))
         XCTAssertNoThrow(try view.inspect().hStack().view(SimpleTestView.self, 1))
     }
-    
-    @MainActor
+
     func testExtractionEnvView1FromSingleViewContainer() throws {
         let viewModel = ExternalState()
         let view = AnyView(EnvironmentStateTestView().environmentObject(viewModel))
         XCTAssertNoThrow(try view.inspect().anyView().view(EnvironmentStateTestView.self))
     }
-    
-    @MainActor
+
     func testExtractionEnvViewFromMultipleViewContainer() throws {
         let view = HStack { EnvironmentStateTestView(); EnvironmentStateTestView() }
         XCTAssertNoThrow(try view.inspect().hStack().view(EnvironmentStateTestView.self, 0))
@@ -216,8 +207,7 @@ final class CustomViewTests: XCTestCase {
         #endif
 
     }
-    
-    @MainActor
+
     func testAsyncSearch() throws {
         let view = EnvironmentStateTestView()
         let sut = AnyView(view)
@@ -234,8 +224,7 @@ final class CustomViewTests: XCTestCase {
         ViewHosting.host(view: sut.environmentObject(viewModel))
         wait(for: [exp], timeout: 0.1)
     }
-    
-    @MainActor
+
     func testActualView() throws {
         let sut = LocalStateTestView(flag: true)
         let exp = sut.inspection.inspect { view in
@@ -301,8 +290,7 @@ final class CustomViewTests: XCTestCase {
             is not \(prefix)<Swift.Int>.TestView
             """)
     }
-    
-    @MainActor
+
     func testTestViews() {
         XCTAssertNoThrow(SimpleTestView().body)
         XCTAssertNoThrow(ObservedStateTestView(viewModel: ExternalState()).body)

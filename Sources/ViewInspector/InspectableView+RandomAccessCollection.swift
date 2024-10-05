@@ -2,11 +2,13 @@ import Foundation
 import SwiftUI
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-extension InspectableView: Sequence where View: MultipleViewContent {
-    
-    public typealias Element = InspectableView<ViewType.ClassifiedView>
+extension InspectableView: @preconcurrency Sequence where View: MultipleViewContent {
 
-    public struct Iterator: IteratorProtocol {
+    public typealias Element = InspectableView<ViewType.ClassifiedView>
+    #if swift(>=6.0)
+    @MainActor
+    #endif
+    public struct Iterator: @preconcurrency IteratorProtocol {
         
         private var index: Int = -1
         private let group: LazyGroup<Content>
@@ -37,7 +39,9 @@ extension InspectableView: Sequence where View: MultipleViewContent {
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-extension InspectableView: Collection, BidirectionalCollection, RandomAccessCollection
+extension InspectableView: @preconcurrency Collection,
+                           @preconcurrency BidirectionalCollection,
+                           @preconcurrency RandomAccessCollection
     where View: MultipleViewContent {
     
     public typealias Index = Int

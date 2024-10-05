@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ToggleTests: XCTestCase {
     
@@ -69,16 +70,15 @@ final class ToggleTests: XCTestCase {
 
 // MARK: - View Modifiers
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class GlobalModifiersForToggle: XCTestCase {
-    
-    @MainActor
+
     func testToggleStyle() throws {
         let sut = EmptyView().toggleStyle(DefaultToggleStyle())
         XCTAssertNoThrow(try sut.inspect().emptyView())
     }
-    
-    @MainActor
+
     func testToggleStyleInspection() throws {
         let sut = EmptyView().toggleStyle(DefaultToggleStyle())
         XCTAssertTrue(try sut.inspect().toggleStyle() is DefaultToggleStyle)
@@ -90,8 +90,7 @@ final class GlobalModifiersForToggle: XCTestCase {
         XCTAssertFalse(sut1.isOn)
         XCTAssertTrue(sut2.isOn)
     }
-    
-    @MainActor
+
     func testCustomMenuStyleInspection() throws {
         let sut = TestToggleStyle()
         XCTAssertEqual(try sut.inspect(isOn: true).implicitAnyView().vStack().styleConfigurationLabel(0).blur().radius, 5)

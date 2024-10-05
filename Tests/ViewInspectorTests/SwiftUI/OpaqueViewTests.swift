@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class OpaqueViewTests: XCTestCase {
     
@@ -27,8 +28,7 @@ final class OpaqueViewTests: XCTestCase {
         XCTAssertEqual(try sut.string(), "Test")
         XCTAssertEqual(sut.content.medium.viewModifiers.count, 0)
     }
-    
-    @MainActor
+
     func testInspectableTestViews() {
         XCTAssertNoThrow(InspectableTestView().body)
         XCTAssertNoThrow(EnvInspectableTestView().body)

@@ -4,8 +4,8 @@ import XCTest
 
 @MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-public protocol InspectionEmissary: AnyObject {
-    
+public protocol InspectionEmissary: AnyObject, Sendable {
+
     associatedtype V
     var notice: PassthroughSubject<UInt, Never> { get }
     var callbacks: [UInt: (V) -> Void] { get set }
@@ -169,7 +169,7 @@ private extension InspectionEmissary {
         }
         return exp
     }
-    
+
     @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
     func inspect<P>(onReceive publisher: P,
                     after delay: SuspendingClock.Duration,
@@ -177,7 +177,8 @@ private extension InspectionEmissary {
                     inspection: @escaping SubjectInspection
     ) async throws where P: Publisher {
         async let setup: Void = try await setup(inspection: inspection, function: function, file: file, line: line)
-        _ = try await publisher.values.first { _ in true }
+        // This simply awaits for the first value from the publisher:
+        for try await _ in publisher.values.map({ _ in 0 }) { break }
         let clock = SuspendingClock()
         try await clock.sleep(until: clock.now + delay)
         Task { @MainActor [weak notice] in
@@ -231,10 +232,11 @@ public extension View {
                      function: String = #function, file: StaticString = #file, line: UInt = #line,
                      perform: @escaping ((InspectableView<ViewType.View<Self>>) throws -> Void)
     ) -> XCTestExpectation {
-        return Inspector.injectInspectionCallback(
-            value: &self, keyPath: keyPath, function: function, file: file, line: line) { body in
-                body.inspect(function: function, file: file, line: line, inspection: perform)
-            }
+        let injector = Inspector.CallbackInjector(value: self, function: function, line: line, keyPath: keyPath) { body in
+            body.inspect(function: function, file: file, line: line, inspection: perform)
+        }
+        self = injector.value
+        return injector.expectation
     }
 }
 
@@ -245,29 +247,40 @@ public extension ViewModifier {
                      function: String = #function, file: StaticString = #file, line: UInt = #line,
                      perform: @escaping ((InspectableView<ViewType.ViewModifier<Self>>) throws -> Void)
     ) -> XCTestExpectation {
-        return Inspector.injectInspectionCallback(
-            value: &self, keyPath: keyPath, function: function, file: file, line: line) { body in
-                body.inspect(function: function, file: file, line: line, inspection: perform)
-            }
+        let injector = Inspector.CallbackInjector(value: self, function: function, line: line, keyPath: keyPath) { body in
+            body.inspect(function: function, file: file, line: line, inspection: perform)
+        }
+        self = injector.value
+        return injector.expectation
     }
 }
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 private extension Inspector {
-    static func injectInspectionCallback<T>(
-        value: inout T, keyPath: WritableKeyPath<T, ((T) -> Void)?>,
-        function: String, file: StaticString, line: UInt,
-        inspection: @escaping ((T) -> Void)
-    ) -> XCTestExpectation {
-        let description = Inspector.typeName(value: self) + " callback at line #\(line)"
-        let expectation = XCTestExpectation(description: description)
-        value[keyPath: keyPath] = { body in
-            Task { @MainActor in
-                inspection(body)
-                ViewHosting.expel(function: function)
-                expectation.fulfill()
+
+    @MainActor
+    final class CallbackInjector<T> {
+        var value: T
+        let keyPath: WritableKeyPath<T, ((T) -> Void)?>
+        let inspection: (T) -> Void
+        let expectation: XCTestExpectation
+
+        init(value: T, function: String, line: UInt,
+             keyPath: WritableKeyPath<T, ((T) -> Void)?>,
+             inspection: @escaping (T) -> Void) {
+            self.value = value
+            self.keyPath = keyPath
+            self.inspection = inspection
+            let description = Inspector.typeName(value: value) + " callback at line #\(line)"
+            let expectation = XCTestExpectation(description: description)
+            self.expectation = expectation
+            self.value[keyPath: keyPath] = { body in
+                Task { @MainActor in
+                    inspection(body)
+                    ViewHosting.expel(function: function)
+                    expectation.fulfill()
+                }
             }
         }
-        return expectation
     }
 }

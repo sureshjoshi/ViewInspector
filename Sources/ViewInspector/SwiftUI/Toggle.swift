@@ -119,12 +119,18 @@ public extension ToggleStyle {
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 internal extension ToggleStyleConfiguration {
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     private struct Allocator17 {
         let isOn: Binding<Bool>
         init(isOn: Bool) {
             self.isOn = .init(wrappedValue: isOn)
         }
     }
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     private struct Allocator42 {
         let isOn: Binding<Bool>
         let isMixed = Binding<Bool>(wrappedValue: false)
@@ -134,6 +140,9 @@ internal extension ToggleStyleConfiguration {
             self.isOn = .init(wrappedValue: isOn)
         }
     }
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     private struct Allocator96 {
         let isOn: Binding<Bool>
         let buffer1: (Int64, Int64) = (0, 0)
@@ -144,6 +153,9 @@ internal extension ToggleStyleConfiguration {
             self.isOn = .init(wrappedValue: isOn)
         }
     }
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     init(isOn: Bool) {
         switch MemoryLayout<Self>.size {
         case 17:

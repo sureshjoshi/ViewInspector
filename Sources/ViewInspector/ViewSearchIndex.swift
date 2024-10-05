@@ -180,12 +180,13 @@ internal protocol CustomViewIdentityMapping {
 internal extension ViewSearch {
 
     struct ViewIdentity {
-        
+
+        typealias ViewBuilder = @MainActor (Content, UnwrappedView?, Int?) throws -> UnwrappedView
         typealias ChildrenBuilder = @MainActor (UnwrappedView) throws -> LazyGroup<UnwrappedView>
         typealias SupplementaryBuilder = @MainActor (UnwrappedView) throws -> LazyGroup<SupplementaryView>
 
         let viewType: KnownViewType.Type
-        let builder: (Content, UnwrappedView?, Int?) throws -> UnwrappedView
+        let builder: ViewBuilder
         let children: ChildrenBuilder
         let modifiers: ChildrenBuilder
         let supplementary: ChildrenBuilder
@@ -376,7 +377,11 @@ internal extension ViewSearch {
     ]
     
     struct ModifierIdentity: Sendable {
+        #if swift(>=6.0)
+        typealias Builder = @MainActor @Sendable (UnwrappedView, Int?) throws -> UnwrappedView
+        #else
         typealias Builder = @Sendable (UnwrappedView, Int?) throws -> UnwrappedView
+        #endif
         let name: String
         let builder: Builder
         

@@ -4,17 +4,16 @@ import SwiftUI
 
 // MARK: - CustomStyleModifiersTests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class CustomStyleModifiersTests: XCTestCase {
-    
-    @MainActor
+
     func testHelloWorldStyle() throws {
         let sut = EmptyView().helloWorldStyle(RedOutlineHelloWorldStyle())
         XCTAssertNoThrow(try sut.inspect().implicitAnyView().emptyView())
         print(type(of: sut))
     }
-    
-    @MainActor
+
     func testHelloWorldStyleInspection() throws {
         let sut = EmptyView().helloWorldStyle(RedOutlineHelloWorldStyle())
         #if compiler(<6)
@@ -28,8 +27,7 @@ final class CustomStyleModifiersTests: XCTestCase {
         let style = DefaultHelloWorldStyle()
         XCTAssertNoThrow(try style.inspect().implicitAnyView().zStack())
     }
-    
-    @MainActor
+
     func testHelloWorldStyleAsyncInspection() throws {
         let style = RedOutlineHelloWorldStyle()
         var body = try style.inspect().implicitAnyView().view(RedOutlineHelloWorldStyle.StyleBody.self).actualView()
@@ -137,6 +135,7 @@ extension View {
     }
 }
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 extension DefaultHelloWorldStyle {
     func inspect() throws -> InspectableView<ViewType.ClassifiedView> {
@@ -145,6 +144,7 @@ extension DefaultHelloWorldStyle {
     }
 }
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 extension RedOutlineHelloWorldStyle {
     func inspect() throws -> InspectableView<ViewType.ClassifiedView> {

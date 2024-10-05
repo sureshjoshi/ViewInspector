@@ -2,6 +2,7 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ModifiedContentTests: XCTestCase {
     
@@ -52,7 +53,6 @@ final class ModifiedContentTests: XCTestCase {
                         "EmptyView does not have 'TestModifier' modifier at index 1")
     }
     
-    @MainActor
     func testEmptyModifierUnwrapping() throws {
         let view = Text("Test")
             .modifier(EmptyModifier.identity)
@@ -76,7 +76,6 @@ final class ModifiedContentTests: XCTestCase {
         #endif
     }
     
-    @MainActor
     func testMultipleModifiersInspection() throws {
         let binding = Binding(wrappedValue: false)
         let view = EmptyView()
@@ -116,7 +115,6 @@ final class ModifiedContentTests: XCTestCase {
         #endif
     }
     
-    @MainActor
     func testDirectAsyncInspection() throws {
         let binding = Binding(wrappedValue: false)
         var sut = TestModifier2(value: binding)
@@ -135,7 +133,6 @@ final class ModifiedContentTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
-    @MainActor
     func testOnAsyncInspection() throws {
         let binding = Binding(wrappedValue: false)
         var sut = TestModifier2(value: binding)
@@ -149,7 +146,6 @@ final class ModifiedContentTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
     
-    @MainActor
     func testModifierWithEnvObjects() throws {
         let sut1 = EmptyView().modifier(TestModifier3())
         XCTAssertThrows(try sut1.inspect().emptyView().modifier(TestModifier3.self, 0).text(1),
@@ -180,7 +176,6 @@ final class ModifiedContentTests: XCTestCase {
         #endif
     }
     
-    @MainActor
     func testApplyingInnerModifiersToTheContent() throws {
         let obj = ExternalState()
         let sut = TestModifier4.ViewWithEnvObject()

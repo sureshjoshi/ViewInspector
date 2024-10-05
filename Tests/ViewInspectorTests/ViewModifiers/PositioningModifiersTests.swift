@@ -4,6 +4,7 @@ import SwiftUI
 
 // MARK: - ViewPositioningTests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ViewPositioningTests: XCTestCase {
     
@@ -103,6 +104,7 @@ final class ViewPositioningTests: XCTestCase {
 
 // MARK: - ViewAligningTests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ViewAligningTests: XCTestCase {
     
@@ -119,6 +121,7 @@ final class ViewAligningTests: XCTestCase {
 
 // MARK: - ViewLayeringTests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class ViewLayeringTests: XCTestCase {
     
@@ -168,8 +171,7 @@ final class ViewLayeringTests: XCTestCase {
         let background = try sut.inspect().emptyView().background()
         XCTAssertEqual(try background.alignment(), .bottom)
     }
-    
-    @MainActor
+
     func testOverlayAndBackgroundStyle() throws {
         guard #available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
         else { throw XCTSkip() }

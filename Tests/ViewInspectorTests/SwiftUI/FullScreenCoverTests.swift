@@ -3,6 +3,7 @@ import SwiftUI
 @testable import ViewInspector
 
 #if !os(macOS)
+@MainActor
 final class FullScreenCoverTests: XCTestCase {
 
     func testFullScreenCover() throws {
@@ -33,7 +34,6 @@ final class FullScreenCoverTests: XCTestCase {
             """)
     }
 
-    @MainActor
     func testInspectionErrorFullScreenCoverNotPresented() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -43,7 +43,6 @@ final class FullScreenCoverTests: XCTestCase {
                         "View for FullScreenCover is absent")
     }
 
-    @MainActor
     func testInspectionErrorFullScreenCoverWithItemNotPresented() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -53,7 +52,6 @@ final class FullScreenCoverTests: XCTestCase {
                         "View for FullScreenCover is absent")
     }
 
-    @MainActor
     func testContentInspection() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -70,7 +68,6 @@ final class FullScreenCoverTests: XCTestCase {
         #endif
     }
 
-    @MainActor
     func testContentInteraction() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -89,7 +86,6 @@ final class FullScreenCoverTests: XCTestCase {
         #endif
     }
 
-    @MainActor
     func testDismiss() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -111,7 +107,6 @@ final class FullScreenCoverTests: XCTestCase {
         wait(for: [exp], timeout: 0.1)
     }
 
-    @MainActor
     func testDismissForItemVersion() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -125,7 +120,6 @@ final class FullScreenCoverTests: XCTestCase {
         XCTAssertThrows(try sut.inspect().implicitAnyView().emptyView().fullScreenCover(), "View for FullScreenCover is absent")
     }
 
-    @MainActor
     func testMultipleFullScreenCoversInspection() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -168,7 +162,6 @@ final class FullScreenCoverTests: XCTestCase {
                         "Search did not find a match")
     }
 
-    @MainActor
     func testFindAndPathToRoots() throws {
         guard #available(iOS 14.0, tvOS 14.0, watchOS 7.0, *)
         else { throw XCTSkip() }
@@ -236,7 +229,6 @@ private extension View {
             isPresented: isPresented, onDismiss: onDismiss, popupBuilder: content))
     }
 
-    @MainActor
     func fullScreenCover2<Item, FullScreenCover>(item: Binding<Item?>,
                                                  onDismiss: (() -> Void)? = nil,
                                                  content: @escaping (Item) -> FullScreenCover

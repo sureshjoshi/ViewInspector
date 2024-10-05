@@ -7,6 +7,7 @@ import Combine
 
 // MARK: - Drag Gesture Tests
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, *)
 @available(tvOS, unavailable)
 final class DragGestureTests: XCTestCase {

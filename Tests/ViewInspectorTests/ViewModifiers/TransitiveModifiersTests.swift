@@ -2,10 +2,10 @@ import XCTest
 import SwiftUI
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, watchOS 9.0, *)
 final class TransitiveModifiersTests: XCTestCase {
 
-    @MainActor
     func testHiddenTransitivity() throws {
         let sut = try HittenTestView().inspect()
         XCTAssertFalse(try sut.find(text: "abc").isHidden())
@@ -19,7 +19,6 @@ final class TransitiveModifiersTests: XCTestCase {
         #endif
     }
 
-    @MainActor
     func testDisabledStateInheritance() throws {
         let sut = try TestDisabledView().inspect()
         XCTAssertFalse(try sut.find(button: "1").isDisabled())
@@ -65,7 +64,6 @@ final class TransitiveModifiersTests: XCTestCase {
         XCTAssertEqual(try text4.colorScheme(), .light)
     }
 
-    @MainActor
     func testAllowsHitTestingInheritance() throws {
         guard #available(macOS 11.0, *) else { throw XCTSkip() }
         let sut = try AllowsHitTestingTestView().inspect()

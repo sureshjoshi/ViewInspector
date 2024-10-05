@@ -3,6 +3,7 @@ import SwiftUI
 import Combine
 @testable import ViewInspector
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class InspectorTests: XCTestCase {
     
@@ -205,6 +206,7 @@ final class InspectorTests: XCTestCase {
     }
 }
 
+@MainActor
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
 final class InspectableViewModifiersTests: XCTestCase {
     

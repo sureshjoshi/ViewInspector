@@ -46,7 +46,10 @@ extension ViewType.AsyncImage: SupplementaryChildren {
             }
         }
     }
-    
+
+    #if swift(>=6.0)
+    @MainActor
+    #endif
     @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
     fileprivate static func view(for phase: AsyncImagePhase, parent: UnwrappedView
     ) throws -> InspectableView<ViewType.ClassifiedView> {
