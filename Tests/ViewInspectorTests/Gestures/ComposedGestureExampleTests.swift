@@ -30,6 +30,7 @@ final class ComposedGestureExampleTests: XCTestCase {
         }
 
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2], timeout: 0.2)
     }
 
@@ -53,6 +54,7 @@ final class ComposedGestureExampleTests: XCTestCase {
         }
 
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2], timeout: 0.2)
     }
 
@@ -76,6 +78,7 @@ final class ComposedGestureExampleTests: XCTestCase {
         }
 
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2], timeout: 0.2)
     }
     
@@ -106,6 +109,7 @@ final class ComposedGestureExampleTests: XCTestCase {
         }
 
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.2)
     }
 }

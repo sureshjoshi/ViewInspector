@@ -63,6 +63,7 @@ class EnvironmentObjectInjectionTests: XCTestCase {
             XCTAssertNoThrow(try view.find(text: "env_false"))
         }
         ViewHosting.host(view: sut.environmentObject(obj1).environmentObject(obj2))
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.5)
     }
     
@@ -82,6 +83,7 @@ class EnvironmentObjectInjectionTests: XCTestCase {
             XCTAssertNoThrow(try view.find(text: "env_true"))
         }
         ViewHosting.host(view: sut.environmentObject(obj1).environmentObject(obj2))
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2], timeout: 0.5)
     }
     

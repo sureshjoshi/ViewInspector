@@ -77,6 +77,7 @@ final class TabViewTests: XCTestCase {
             XCTAssertNoThrow(try view.find(text: "tab_3"))
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp, exp2], timeout: 2)
     }
 }

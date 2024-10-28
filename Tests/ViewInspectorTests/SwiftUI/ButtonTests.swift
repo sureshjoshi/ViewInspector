@@ -159,6 +159,7 @@ final class ButtonStyleInspectionTests: XCTestCase {
             XCTAssertEqual(try updatedLabel.blur().radius, 5)
         }
         ViewHosting.host(view: view)
+        defer { ViewHosting.expel() }
         wait(for: [exp, triggerExp], timeout: 0.3)
     }
     #endif

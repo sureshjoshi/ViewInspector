@@ -38,7 +38,8 @@ final class CustomStyleModifiersTests: XCTestCase {
             XCTAssertEqual(try rectangle.strokeStyle().lineWidth, 1)
             XCTAssertEqual(try rectangle.fillStyle().isAntialiased, true)
         }
-        ViewHosting.host(view: body, size: CGSize(width: 300, height: 300))
+        ViewHosting.host(view: body)
+        defer { ViewHosting.expel() }
         wait(for: [expectation], timeout: 1.0)
     }
 }

@@ -66,6 +66,7 @@ final class GestureExampleTests: XCTestCase {
         }
 
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2], timeout: 0.1)
     }
 
@@ -87,6 +88,7 @@ final class GestureExampleTests: XCTestCase {
         }
 
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2], timeout: 0.1)
     }
 
@@ -109,6 +111,7 @@ final class GestureExampleTests: XCTestCase {
         }
 
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2], timeout: 0.1)
     }
     

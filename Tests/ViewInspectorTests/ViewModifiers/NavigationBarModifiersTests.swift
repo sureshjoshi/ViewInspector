@@ -134,6 +134,7 @@ final class NavigationBarItemsTests: XCTestCase {
             "Please insert '.navigationBarItems()' before vStack() for unwrapping the underlying view hierarchy.")
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 1.0)
     }
 
@@ -145,6 +146,7 @@ final class NavigationBarItemsTests: XCTestCase {
             "Please substitute 'VStack<Text>.self' as the parameter for 'navigationBarItems()' inspection call")
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 1.0)
     }
 
@@ -157,6 +159,7 @@ final class NavigationBarItemsTests: XCTestCase {
             XCTAssertEqual(value, "abc")
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 1.0)
     }
 }

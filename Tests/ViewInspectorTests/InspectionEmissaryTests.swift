@@ -16,6 +16,7 @@ final class InspectionEmissaryTests: XCTestCase {
             XCTAssertTrue(try view.actualView().flag)
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.1)
     }
     
@@ -32,6 +33,7 @@ final class InspectionEmissaryTests: XCTestCase {
             .modifier(sut)
             .environmentObject(ExternalState())
         ViewHosting.host(view: view)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.1)
     }
 
@@ -48,6 +50,7 @@ final class InspectionEmissaryTests: XCTestCase {
             XCTAssertEqual(text, "true")
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2], timeout: 0.2)
     }
     
@@ -70,6 +73,7 @@ final class InspectionEmissaryTests: XCTestCase {
             .modifier(sut)
             .environmentObject(ExternalState())
         ViewHosting.host(view: view)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2], timeout: 0.2)
     }
     
@@ -91,6 +95,7 @@ final class InspectionEmissaryTests: XCTestCase {
             XCTAssertEqual(text, "false")
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2, exp3], timeout: 0.2)
     }
     
@@ -112,6 +117,7 @@ final class InspectionEmissaryTests: XCTestCase {
             XCTAssertEqual(text, "false")
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2, exp3], timeout: 0.2)
     }
     
@@ -137,6 +143,7 @@ final class InspectionEmissaryTests: XCTestCase {
             .modifier(sut)
             .environmentObject(ExternalState())
         ViewHosting.host(view: view)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2, exp3], timeout: 0.2)
     }
     
@@ -162,6 +169,7 @@ final class InspectionEmissaryTests: XCTestCase {
             .modifier(sut)
             .environmentObject(ExternalState())
         ViewHosting.host(view: view)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2, exp3], timeout: 0.2)
     }
     

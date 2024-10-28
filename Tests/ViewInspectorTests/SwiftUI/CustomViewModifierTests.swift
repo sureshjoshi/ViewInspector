@@ -130,6 +130,7 @@ final class ModifiedContentTests: XCTestCase {
         }
         let view = EmptyView().modifier(sut)
         ViewHosting.host(view: view)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.1)
     }
     
@@ -143,6 +144,7 @@ final class ModifiedContentTests: XCTestCase {
         }
         let view = EmptyView().modifier(sut)
         ViewHosting.host(view: view)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.1)
     }
     

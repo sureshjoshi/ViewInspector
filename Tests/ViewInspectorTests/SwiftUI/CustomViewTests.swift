@@ -18,6 +18,7 @@ final class CustomViewTests: XCTestCase {
             XCTAssertEqual(text2, "true")
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.5)
     }
 
@@ -42,6 +43,7 @@ final class CustomViewTests: XCTestCase {
             XCTAssertEqual(text2, "abc")
         }
         ViewHosting.host(view: sut.environmentObject(viewModel))
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.1)
     }
 
@@ -114,6 +116,7 @@ final class CustomViewTests: XCTestCase {
             XCTAssertEqual(sut.content.medium.viewModifiers.count, 0)
         }
         ViewHosting.host(view: sut.environmentObject(ExternalState()).padding())
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.1)
     }
 
@@ -222,6 +225,7 @@ final class CustomViewTests: XCTestCase {
             #endif
         }
         ViewHosting.host(view: sut.environmentObject(viewModel))
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.1)
     }
 
@@ -232,6 +236,7 @@ final class CustomViewTests: XCTestCase {
             XCTAssertTrue(value)
         }
         ViewHosting.host(view: sut.environmentObject(ExternalState()).padding())
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.1)
     }
     

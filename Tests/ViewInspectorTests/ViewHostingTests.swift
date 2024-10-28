@@ -23,6 +23,7 @@ final class ViewHostingTests: XCTestCase {
             ViewHosting.expel()
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.1)
     }
 
@@ -39,6 +40,7 @@ final class ViewHostingTests: XCTestCase {
             }
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.2)
     }
 
@@ -62,6 +64,7 @@ final class ViewHostingTests: XCTestCase {
             }
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.2)
     }
     
@@ -76,6 +79,7 @@ final class ViewHostingTests: XCTestCase {
             }
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.2)
     }
 }
@@ -95,6 +99,7 @@ final class ViewHostingTests: XCTestCase {
             ViewHosting.expel()
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.1)
     }
 
@@ -111,6 +116,7 @@ final class ViewHostingTests: XCTestCase {
             }
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.2)
     }
     
@@ -134,6 +140,7 @@ final class ViewHostingTests: XCTestCase {
             }
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.2)
     }
     
@@ -148,6 +155,7 @@ final class ViewHostingTests: XCTestCase {
             }
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.2)
     }
 }
@@ -168,6 +176,7 @@ final class ViewHostingTests: XCTestCase {
             ViewHosting.expel()
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.1)
     }
     
@@ -182,6 +191,7 @@ final class ViewHostingTests: XCTestCase {
             }
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 1)
     }
 }
