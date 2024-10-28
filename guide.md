@@ -342,6 +342,7 @@ func testStateValueChanges() {
         XCTAssertTrue(try view.actualView().flag)
     }
     ViewHosting.host(view: sut)
+    defer { ViewHosting.expel() }
     wait(for: [exp], timeout: 0.1)
 }
 ```
@@ -413,6 +414,7 @@ final class ContentViewTests: XCTestCase {
             XCTAssertTrue(try view.actualView().flag)
         }
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp], timeout: 0.1)
     }
 }
@@ -458,6 +460,7 @@ final class ContentViewTests: XCTestCase {
         }
         
         ViewHosting.host(view: sut)
+        defer { ViewHosting.expel() }
         wait(for: [exp1, exp2, exp3], timeout: 0.3)
     }
 }
@@ -533,6 +536,7 @@ func testViewModifier() {
     }
     let view = EmptyView().modifier(sut)
     ViewHosting.host(view: view)
+    defer { ViewHosting.expel() }
     wait(for: [exp], timeout: 0.1)
 }
 ```
@@ -562,6 +566,7 @@ func testViewModifier() {
     }
     let view = EmptyView().modifier(sut)
     ViewHosting.host(view: view)
+    defer { ViewHosting.expel() }
     wait(for: [exp], timeout: 0.2)
 }
 ```
@@ -588,7 +593,7 @@ From there you can use UIKit API to inspect subviews. However, if you're using U
 
 ## Async inspection
 
-If you're writing an `async` test some of the APIs change slightly. The biggest change is to `ViewHosting` which now uses a closure.
+If you're writing an `async` test some of the APIs change slightly. The biggest change is to `ViewHosting` which now uses a closure, and no longer needs an explicit `ViewHosting.expel()` call.
 
 ```swift
 let sut = TestView(flag: false)
