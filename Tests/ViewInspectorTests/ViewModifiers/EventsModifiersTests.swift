@@ -186,7 +186,23 @@ final class ViewEventsTests: XCTestCase {
         try sut.inspect().callOnSubmit(of: .search)
         wait(for: [expSearch, expText], timeout: 0.1)
     }
-    
+
+    func testRefreshable() throws {
+        guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
+        let sut = EmptyView().refreshable { }
+        XCTAssertNoThrow(try sut.inspect().emptyView())
+    }
+
+    func testRefreshableInspection() async throws {
+        guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
+        let exp = XCTestExpectation(description: #function)
+        let sut = EmptyView().padding().refreshable {
+            exp.fulfill()
+        }.padding().onDisappear(perform: { })
+        try await sut.inspect().emptyView().callRefreshable()
+        await fulfillment(of: [exp], timeout: 0.1)
+    }
+
     func testTask() throws {
         guard #available(iOS 15, macOS 12, tvOS 15, watchOS 8, *) else { throw XCTSkip() }
         let sut = EmptyView().task { }
