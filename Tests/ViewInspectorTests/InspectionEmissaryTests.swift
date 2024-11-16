@@ -172,6 +172,18 @@ final class InspectionEmissaryTests: XCTestCase {
         defer { ViewHosting.expel() }
         wait(for: [exp1, exp2, exp3], timeout: 0.2)
     }
+
+    @MainActor
+    @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+    func testAsyncViewInspect() async throws {
+        let sut = TestView(flag: false)
+        try await ViewHosting.host(sut) {
+            try await $0.inspection.inspect { view in
+                let text = try view.implicitAnyView().button().labelView().text().string()
+                XCTAssertEqual(text, "false")
+            }
+        }
+    }
     
     @MainActor
     @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
@@ -358,6 +370,8 @@ final class Inspection<V>: InspectionEmissary {
     func visit(_ view: V, _ line: UInt) {
         if let callback = callbacks.removeValue(forKey: line) {
             callback(view)
+        } else {
+            assertionFailure()
         }
     }
 }
