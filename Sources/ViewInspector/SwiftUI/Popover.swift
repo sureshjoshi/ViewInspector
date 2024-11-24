@@ -99,6 +99,12 @@ public extension InspectableView where View == ViewType.Popover {
     func arrowEdge() throws -> Edge {
         let popover = try Inspector.cast(value: content.view, type: ViewType.PopupContainer<ViewType.Popover>.self)
         let modifier = try popover.presenter.content().standardPopoverModifier()
+        if let edgeSet = try? Inspector.attribute(
+            path: "arrowEdges|some", value: modifier, type: Edge.Set.self) {
+            for edge in Edge.allCases where edgeSet == Edge.Set.init(edge) {
+                return edge
+            }
+        }
         return try Inspector.attribute(
             label: "arrowEdge", value: modifier, type: Edge.self)
     }
