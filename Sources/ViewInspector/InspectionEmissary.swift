@@ -143,13 +143,7 @@ private extension InspectionEmissary {
                  function: String, file: StaticString, line: UInt,
                  inspection: @escaping SubjectInspection
     ) async throws {
-        async let setup: Void = try await setup(inspection: inspection, function: function, file: file, line: line)
-        let clock = SuspendingClock()
-        try await clock.sleep(until: clock.now + delay)
-        Task { @MainActor [weak notice] in
-            notice?.send(line)
-        }
-        try await setup
+        try await setup(inspection: inspection, delay: delay, function: function, file: file, line: line)
     }
     
     func inspect<P>(onReceive publisher: P,
@@ -176,15 +170,9 @@ private extension InspectionEmissary {
                     function: String, file: StaticString, line: UInt,
                     inspection: @escaping SubjectInspection
     ) async throws where P: Publisher {
-        async let setup: Void = try await setup(inspection: inspection, function: function, file: file, line: line)
         // This simply awaits for the first value from the publisher:
         for try await _ in publisher.values.map({ _ in 0 }) { break }
-        let clock = SuspendingClock()
-        try await clock.sleep(until: clock.now + delay)
-        Task { @MainActor [weak notice] in
-            notice?.send(line)
-        }
-        try await setup
+        try await setup(inspection: inspection, delay: delay, function: function, file: file, line: line)
     }
     
     func setup(inspection: @escaping SubjectInspection,
@@ -205,7 +193,9 @@ private extension InspectionEmissary {
         }
     }
 
+    @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
     func setup(inspection: @escaping SubjectInspection,
+               delay: SuspendingClock.Duration,
                function: String, file: StaticString, line: UInt) async throws {
         try await withCheckedThrowingContinuation { continuation in
             Task { @MainActor in
@@ -218,6 +208,9 @@ private extension InspectionEmissary {
                         }
                     }
                 }
+                let clock = SuspendingClock()
+                try await clock.sleep(until: clock.now + delay)
+                notice.send(line)
             }
         }
     }
