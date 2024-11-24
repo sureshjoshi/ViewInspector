@@ -18,6 +18,7 @@ public extension ViewHosting {
         var key: String { function }
     }
 
+    @available(*, deprecated, message: "Use `host` version that doesn't supply the view in the `whileHosted` closure. See: https://github.com/nalexn/ViewInspector/discussions/354")
     @MainActor
     static func host<V>(_ view: V, size: CGSize? = nil,
                         function: String = #function,
@@ -27,6 +28,16 @@ public extension ViewHosting {
         host(view: view, size: size, viewId: viewId)
         try await whileHosted(view)
         expel(viewId: viewId)
+    }
+
+    @MainActor
+    static func host<V>(_ view: V, size: CGSize? = nil,
+                        function: String = #function,
+                        whileHosted: @MainActor () async throws -> Void
+    ) async throws where V: View {
+        try await host(view, function: function, whileHosted: { _ in
+            try await whileHosted()
+        })
     }
 
     static func host<V>(view: V, size: CGSize? = nil, function: String = #function) where V: View {

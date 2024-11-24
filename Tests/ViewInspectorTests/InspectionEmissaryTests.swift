@@ -1,5 +1,5 @@
 import XCTest
-import Combine
+@preconcurrency import Combine
 import SwiftUI
 
 @testable import ViewInspector
@@ -178,7 +178,7 @@ final class InspectionEmissaryTests: XCTestCase {
     func testAsyncViewInspect() async throws {
         let sut = TestView(flag: false)
         try await ViewHosting.host(sut) {
-            try await $0.inspection.inspect { view in
+            try await sut.inspection.inspect { view in
                 let text = try view.implicitAnyView().button().labelView().text().string()
                 XCTAssertEqual(text, "false")
             }
@@ -190,12 +190,12 @@ final class InspectionEmissaryTests: XCTestCase {
     func testAsyncViewInspectAfter() async throws {
         let sut = TestView(flag: false)
         try await ViewHosting.host(sut) {
-            try await $0.inspection.inspect { view in
+            try await sut.inspection.inspect { view in
                 let text = try view.implicitAnyView().button().labelView().text().string()
                 XCTAssertEqual(text, "false")
                 sut.publisher.send(true)
             }
-            try await $0.inspection.inspect(after: .seconds(0.1)) { view in
+            try await sut.inspection.inspect(after: .seconds(0.1)) { view in
                 let text = try view.implicitAnyView().button().labelView().text().string()
                 XCTAssertEqual(text, "true")
             }
@@ -210,7 +210,7 @@ final class InspectionEmissaryTests: XCTestCase {
         let view = EmptyView()
             .modifier(sut)
             .environmentObject(ExternalState())
-        try await ViewHosting.host(view) { _ in
+        try await ViewHosting.host(view) {
             try await sut.inspection.inspect { view in
                 let text = try view.implicitAnyView().hStack().button(1).labelView().text().string()
                 XCTAssertEqual(text, "false")
@@ -229,7 +229,7 @@ final class InspectionEmissaryTests: XCTestCase {
     @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
     func testAsyncViewInspectOnReceive() async throws {
         let sut = TestView(flag: false)
-        try await ViewHosting.host(sut) { sut in
+        try await ViewHosting.host(sut) {
             try await withThrowingDiscardingTaskGroup { group in
                 group.addTask {
                     try await sut.inspection.inspect { view in
@@ -261,7 +261,7 @@ final class InspectionEmissaryTests: XCTestCase {
     @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
     func testAsyncViewInspectOnReceiveAfter() async throws {
         let sut = TestView(flag: false)
-        try await ViewHosting.host(sut) { sut in
+        try await ViewHosting.host(sut) {
             try await withThrowingDiscardingTaskGroup { group in
                 group.addTask {
                     try await sut.inspection.inspect { view in
@@ -297,7 +297,7 @@ final class InspectionEmissaryTests: XCTestCase {
         let view = EmptyView()
             .modifier(sut)
             .environmentObject(ExternalState())
-        try await ViewHosting.host(view) { _ in
+        try await ViewHosting.host(view) {
             try await withThrowingDiscardingTaskGroup { group in
                 group.addTask {
                     try await sut.inspection.inspect { view in
@@ -333,7 +333,7 @@ final class InspectionEmissaryTests: XCTestCase {
         let view = EmptyView()
             .modifier(sut)
             .environmentObject(ExternalState())
-        try await ViewHosting.host(view) { _ in
+        try await ViewHosting.host(view) {
             try await withThrowingDiscardingTaskGroup { group in
                 group.addTask {
                     try await sut.inspection.inspect { view in
