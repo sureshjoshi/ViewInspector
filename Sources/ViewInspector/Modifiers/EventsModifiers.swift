@@ -52,6 +52,23 @@ public extension InspectableView {
 @available(iOS 15, macOS 12, tvOS 15, watchOS 8, *)
 public extension InspectableView {
 
+    func callRefreshable() async throws {
+        if #available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *) {
+            let callback = try modifierAttribute(
+                modifierName: "RefreshableModifier", path: "modifier|action",
+                type: (@Sendable () async -> Void).self, call: "refreshable")
+            await callback()
+        } else {
+            guard let modifier = content.medium.environmentModifiers.last(where: { modifier in
+                (try? modifier.keyPath() as? KeyPath<EnvironmentValues, RefreshAction?>) == \.refresh
+            }) else {
+                throw InspectionError.modifierNotFound(
+                    parent: Inspector.typeName(value: content.view), modifier: "refreshable", index: 0)
+            }
+            try await Inspector.cast(value: try modifier.value(), type: RefreshAction?.self)?.callAsFunction()
+        }
+    }
+
     func callOnSubmit(of triggers: SubmitTriggers = .text) throws {
         let callback = try modifierAttribute(
             modifierLookup: { modifier -> Bool in

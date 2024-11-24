@@ -525,7 +525,7 @@ This document reflects the current status of the [ViewInspector](https://github.
 |:technologist:| `func listSectionSeparator(_ visibility: Visibility, edges: VerticalEdge.Set) -> some View` |
 |:technologist:| `func listSectionSeparatorTint(_ color: Color?, edges: VerticalEdge.Set) -> some View` |
 |:technologist:| `func headerProminence(_ prominence: Prominence) -> some View` |
-|:technologist:| `func refreshable(action: @Sendable () async -> Void) -> some View` |
+|:white_check_mark:| `func refreshable(action: @Sendable () async -> Void) -> some View` |
 |:technologist:| `func searchable(text: Binding<String>, placement: SearchFieldPlacement, prompt: LocalizedStringKey) -> some View` |
 |:technologist:| `func searchCompletion(_ completion: String) -> some View` |
 
