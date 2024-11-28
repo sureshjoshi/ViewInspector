@@ -597,8 +597,8 @@ If you're writing an `async` test some of the APIs change slightly. The biggest 
 
 ```swift
 let sut = TestView(flag: false)
-try await ViewHosting.host(sut) { hostedView in
-    try await hostedView.inspection.inspect { view in
+try await ViewHosting.host(sut) {
+    try await sut.inspection.inspect { view in
         let text = try view.button().labelView().text().string()
         XCTAssertEqual(text, "false")
         sut.publisher.send(true)
@@ -610,7 +610,7 @@ For instances where a test is `async` but the view utilizes Combine to listen to
 
 ```swift
 let sut = TestView(flag: false)
-try await ViewHosting.host(sut) { sut in
+try await ViewHosting.host(sut) {
     try await withThrowingDiscardingTaskGroup { group in
         group.addTask {
             try await sut.inspection.inspect { view in
