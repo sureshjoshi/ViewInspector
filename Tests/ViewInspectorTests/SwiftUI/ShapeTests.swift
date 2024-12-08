@@ -127,6 +127,12 @@ final class ShapeTests: XCTestCase {
         XCTAssertEqual(try sut.endPoint(), UnitPoint.bottomLeading)
     }
     
+    func testFillColor() throws {
+        let view = Ellipse().fill(Color.blue)
+        let fillColor = try view.inspect().shape().fillShapeStyle(Color.self)
+        XCTAssertEqual(fillColor, Color.blue)
+    }
+
     func testFillStyle() throws {
         let fillStyle = FillStyle(eoFill: true, antialiased: false)
         let view = Ellipse().fill(style: fillStyle)
