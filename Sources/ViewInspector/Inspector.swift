@@ -2,7 +2,31 @@ import Foundation
 import SwiftUI
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-public struct Inspector {
+public enum Inspector { }
+
+// MARK: - Public methods
+
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+public extension Inspector {
+    /**
+     Use this function to lookup the struct content:
+     ```
+     (lldb) po Inspector.print(view) as AnyObject
+     ```
+     */
+    #if swift(>=6.0)
+    @MainActor
+    #endif
+    static func print(_ value: Any) -> String {
+        let tree = attributesTree(value: value, medium: .empty, visited: [])
+        return typeName(value: value) + print(tree, level: 1)
+    }
+}
+
+// MARK: - Internal methods
+
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+internal extension Inspector {
     /// Removes the "(unknown context at <memory_address>)" portion of a type name.
     /// Calls to this method are memoized and retained for the lifetime of the program.
     /// - Parameter typeName: The raw type name. (e.g. `SomeTypeName.(unknown context at $138b3290c).SomePropertyName`)
@@ -231,21 +255,7 @@ internal extension Inspector {
 // MARK: - Attributes lookup
 
 @available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
-public extension Inspector {
-
-    /**
-     Use this function to lookup the struct content:
-     ```
-     (lldb) po Inspector.print(view) as AnyObject
-     ```
-     */
-    #if swift(>=6.0)
-    @MainActor
-    #endif
-    static func print(_ value: Any) -> String {
-        let tree = attributesTree(value: value, medium: .empty, visited: [])
-        return typeName(value: value) + print(tree, level: 1)
-    }
+internal extension Inspector {
 
     #if swift(>=6.0)
     @MainActor
