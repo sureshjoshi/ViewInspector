@@ -115,6 +115,14 @@ public extension SwiftUI.Image {
         return try Inspector
             .attribute(label: "scale", value: rawImage(), type: CGFloat.self)
     }
+  
+    func renderingMode() throws -> TemplateRenderingMode? {
+        guard let renderingMode = try imageContent().medium.viewModifiers
+            .compactMap({ try? Inspector.attribute(label: "renderingMode", value: $0, type: TemplateRenderingMode.self) }).first else {
+                throw InspectionError.attributeNotFound(label: "renderingMode", type: "Image")
+        }
+        return renderingMode
+    }
     
     private func rawImage() throws -> Any {
         return try Inspector.attribute(path: "provider|base", value: try imageContent().view)
