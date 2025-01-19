@@ -46,6 +46,12 @@ final class ImageTests: XCTestCase {
         #endif
         XCTAssertEqual(image, testImage)
     }
+  
+    func testRenderingMode() throws {
+        let view = AnyView(imageView().renderingMode(.template).resizable())
+        let renderingMode = try view.inspect().anyView().image().actualImage().renderingMode()
+        XCTAssertEqual(renderingMode, .template)
+    }
     
     func testExtractionCGImage() throws {
         let cgImage = testImage.cgImage!
