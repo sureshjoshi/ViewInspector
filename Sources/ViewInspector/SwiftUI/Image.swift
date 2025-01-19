@@ -116,10 +116,10 @@ public extension SwiftUI.Image {
             .attribute(label: "scale", value: rawImage(), type: CGFloat.self)
     }
   
-    func renderingMode() throws -> TemplateRenderingMode {
+    func renderingMode() throws -> TemplateRenderingMode? {
         return try imageContent().modifierAttribute(
-            modifierName: "RenderingModeProvider", path: "provider|renderingMode|some",
-            type: TemplateRenderingMode.self, call: "renderingMode")
+            modifierName: "RenderingModeProvider", path: "provider|renderingMode",
+            type: TemplateRenderingMode?.self, call: "renderingMode")
     }
     
     private func rawImage() throws -> Any {
