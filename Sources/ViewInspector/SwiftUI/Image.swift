@@ -117,18 +117,9 @@ public extension SwiftUI.Image {
     }
   
     func renderingMode() throws -> TemplateRenderingMode {
-        guard let renderingMode = try imageContent().medium.viewModifiers.compactMap({
-                try? Inspector.attribute(
-                    label: "renderingMode",
-                    value: $0,
-                    type: TemplateRenderingMode.self
-                )
-            }).first
-        else {
-            throw InspectionError.attributeNotFound(label: "renderingMode", type: "Image")
-        }
-        
-        return renderingMode
+        return try imageContent().modifierAttribute(
+            modifierName: "RenderingModeProvider", path: "provider|renderingMode|some",
+            type: TemplateRenderingMode.self, call: "renderingMode")
     }
     
     private func rawImage() throws -> Any {
@@ -149,9 +140,23 @@ private extension Inspector {
         let provider = try Inspector.attribute(path: "provider|base", value: image)
         if let child = try? Inspector.attribute(label: "base", value: provider, type: Image.self) {
             let content = try unwrap(image: child)
-            let medium = content.medium.appending(viewModifier: provider)
+            let medium = content.medium.appending(viewModifier: ImageProviderContainer(provider: provider))
             return Content(content.view, medium: medium)
         }
         return Content(image)
+    }
+}
+
+#if swift(>=6.0)
+@MainActor
+#endif
+@available(iOS 13.0, macOS 10.15, tvOS 13.0, *)
+private struct ImageProviderContainer: ModifierNameProvider {
+
+    var provider: Any
+    var customModifier: Any? { nil }
+
+    func modifierType(prefixOnly: Bool) -> String {
+        return Inspector.typeName(value: provider, generics: prefixOnly ? .remove : .keep)
     }
 }
