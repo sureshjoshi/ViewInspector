@@ -199,3 +199,21 @@ final class StatusBarConfigurationTests: XCTestCase {
     }
     #endif
 }
+
+@MainActor
+@available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+final class NavigationTitleBindingTests: XCTestCase {
+
+    func testNavigationTitleInspection() throws {
+        let sut = EmptyView().navigationTitle(.constant("bound"))
+        XCTAssertNoThrow(try sut.inspect().emptyView())
+    }
+
+    func testNavigationTitleBinding() throws {
+        let binding = Binding(wrappedValue: "123")
+        let sut = try EmptyView().navigationTitle(binding).inspect()
+        XCTAssertEqual(try sut.navigationTitle(), "123")
+        try sut.setNavigationTitle("abc")
+        XCTAssertEqual(try sut.navigationTitle(), "abc")
+    }
+}
