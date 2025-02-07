@@ -536,6 +536,7 @@ This document reflects the current status of the [ViewInspector](https://github.
 |:white_check_mark:| `func navigationBarItems(...) -> some View` |
 |:technologist:| `func navigationBarTitle(...) -> some View` |
 |:technologist:| `func navigationTitle(...) -> some View` |
+|:white_check_mark:| `func navigationTitle(_ title: Binding<String>) -> some View` |
 |:technologist:| `func navigationSubtitle(...) -> some View` |
 |:technologist:| `func navigationBarTitleDisplayMode(NavigationBarItem.TitleDisplayMode) -> some View` |
 |:white_check_mark:| `func navigationBarHidden(Bool) -> some View` |
