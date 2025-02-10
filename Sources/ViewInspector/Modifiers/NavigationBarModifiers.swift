@@ -45,7 +45,11 @@ public extension InspectableView {
 
     @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
     func navigationTitle() throws -> String {
-        return try navigationTitleBinding().wrappedValue
+        do {
+            return try navigationTitleBinding().wrappedValue
+        } catch {
+            throw InspectionError.notSupported("navigationTitle() is only supported with a Binding<String> parameter.")
+        }
     }
 
     @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
