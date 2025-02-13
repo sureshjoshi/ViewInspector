@@ -224,5 +224,11 @@ final class NavigationTitleBindingTests: XCTestCase {
                         "navigationTitle() is only supported with a Binding<String> parameter.")
         XCTAssertThrows(try EmptyView().navigationTitle(String("123")).inspect().navigationTitle(),
                         "navigationTitle() is only supported with a Binding<String> parameter.")
+        XCTAssertThrows(try EmptyView().navigationTitle(Text("123")).inspect().setNavigationTitle(""),
+                        "navigationTitle() is only supported with a Binding<String> parameter.")
+        XCTAssertThrows(try EmptyView().navigationTitle("123").inspect().setNavigationTitle(""),
+                        "navigationTitle() is only supported with a Binding<String> parameter.")
+        XCTAssertThrows(try EmptyView().navigationTitle(String("123")).inspect().setNavigationTitle(""),
+                        "navigationTitle() is only supported with a Binding<String> parameter.")
     }
 }
