@@ -42,6 +42,31 @@ public extension InspectableView {
             modifierName: "TransactionalPreferenceModifier<Bool, StatusBarKey>",
             path: "modifier|value", type: Bool.self, call: "statusBar(hidden:)")
     }
+
+    @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+    func navigationTitle() throws -> String {
+        do {
+            return try navigationTitleBinding().wrappedValue
+        } catch {
+            throw InspectionError.notSupported("navigationTitle() is only supported with a Binding<String> parameter.")
+        }
+    }
+
+    @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+    func setNavigationTitle(_ value: String) throws {
+        do {
+            try navigationTitleBinding().wrappedValue = value
+        } catch {
+            throw InspectionError.notSupported("navigationTitle() is only supported with a Binding<String> parameter.")
+        }
+    }
+
+    @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+    private func navigationTitleBinding() throws -> Binding<String> {
+        return try modifierAttribute(
+            modifierName: "NavigationPropertiesModifier<Never, EmptyView, TextField<Text>>",
+            path: "modifier|title|some|_text", type: Binding<String>.self, call: "navigationTitle")
+    }
 }
 
 @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
